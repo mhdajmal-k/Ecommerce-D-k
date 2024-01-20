@@ -3,7 +3,7 @@
         <div class="mobile-header-wrapper-inner">
             <div class="mobile-header-top">
                 <div class="mobile-header-logo">
-                    <a href="index.html"><img src="assets/imgs/theme/logo.svg" alt="logo"></a>
+                    <a href="index.html"><img src="asset/imgs/theme/logo.svg" alt="logo"></a>
                 </div>
                 <div class="mobile-menu-close close-style-wrap close-style-position-inherit">
                     <button class="close-style search-close">
@@ -215,31 +215,28 @@
                                         </p>
                                         <form method="post" action="otp_verification">
                                             <div class="form-group">
-                                                <input type="text" required="" name="username" placeholder="Username">
+                                                <input type="text" id="username" name="username" onkeyup="validatename()" placeholder="Username" autocomplete="off">
+                                                <p class="text-danger" id="username_error"></p>
                                             </div>
                                             <div class="form-group">
-                                                <input type="text" required="" name="email" placeholder="Email">
+                                                <input type="email" id="email" name="email" onkeyup="validateEmail()" placeholder="Email" autocomplete="off">
+                                                <p class="text-danger" id="email_error"></p>
                                             </div>
                                             <div class="form-group">
-                                                <input type="text" required="" name="mobile" placeholder="mobile">
+                                                <input type="text"  id="mobile" name="mobile" onkeyup="validatemobile()" placeholder="mobile">
+                                                <p class="text-danger" id="mobile_error"></p>
                                             </div>
                                             <div class="form-group">
-                                                <input required="" type="password" name="password" placeholder="Password">
+                                                <input  type="password" id="password" name="password" onkeyup="validate_password()" placeholder="Password">
+                                                <p class="text-danger" id="password_error"></p>
                                             </div>
                                             <div class="form-group">
-                                                <input required="" type="password" name="password" placeholder="Confirm password">
+                                                <input  type="password" name="password"  id="password_conform" onkeyup="conformpassword()" placeholder="Confirm password">
+                                                <p class="text-danger" id="password_coform_error"></p>
                                             </div>
-                                            <div class="login_footer form-group">
-                                                <div class="chek-form">
-                                                    <div class="custome-checkbox">
-                                                        <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox12" value="">
-                                                        <label class="form-check-label" for="exampleCheckbox12"><span>I agree to terms &amp; Policy.</span></label>
-                                                    </div>
-                                                </div>
-                                                <a href="page-privacy-policy.html"><i class="fi-rs-book-alt mr-5 text-muted"></i>Lean more</a>
-                                            </div>
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login">Submit &amp; Register</button>
+            
+                                            <div class="form-group " style="text-align: center;">
+                                                <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login" onclick="Check_all()">Submit &amp; Register</button>
                                             </div>
                                         </form>
                                         <div class="divider-text-center mt-15 mb-15">
@@ -259,4 +256,85 @@
             </div>
         </section>
     </main>
+    <script>
+        const username=document.getElementById("username")
+        const email=document.getElementById("email")
+        const mobile=document.getElementById("mobile") 
+         const password=document.getElementById("password")
+        const password_conform=document.getElementById("password_conform")
+        const user_name_error=document.getElementById("username_error")
+        const email_error=document.getElementById("email_error")
+        const mobile_error=document.getElementById("mobile_error")
+        const password_error=document.getElementById("password_error")
+        const password_conform_error=document.getElementById("password_conform_error")
+
+        function validatename(){
+            const name_value = username.value
+    if(name_value.trim() === "")
+    {
+        user_name_error.style.display = "block"
+        user_name_error.innerHTML = "Please Enter a valid Name."
+    }
+    else{
+        user_name_error.style.display = "none"
+        user_name_error.innerHTML = ""
+    }      
+        }
+     
+         function validatemobile(){
+            const mobileNumber=mobile.value
+            if(mobileNumber<10 ){
+                mobile_error.innerHTML="Enter a valid mobile number"
+                mobile_error.style.display = "block"
+
+            }
+            else if(mobileNumber>14){
+                mobile_error.innerHTML="Enter a valid mobile number"
+                .style.display = "block"
+
+            }
+            else{
+                email_error.style.display = "none"
+        email_error.innerHTML = ""
+
+            }
+         }
+         function validateEmail(){
+            const Email=email.value
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if(!emailPattern.test(Email)){
+                email_error.innerHTML="Enter a valid email "
+            }else if(Email==""){
+                email_error.innerHTML="Enter a valid email "
+            }
+           else{
+            email_error.style.display = "none"
+        email_error.innerHTML = ""
+
+           }
+        }
+         function validate_password(){
+            const Password=password.value
+            const pass=/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
+            if(!pass.test(Password)){
+                password_error.innerHTML="Enter a valid Password"
+                password.style.display = "block"
+            }else{
+
+            }
+         }
+         function conformpassword(){
+            const conforme_pass=password_conform.value
+            const password=password.value
+            if(conforme_pass===password){
+                password_conform_error.innerHTML="Password should be same"
+                
+            }else{
+
+            }
+         }
+     
+
+
+    </script>
     <%- include ("../partilas/userfooter") -%>
