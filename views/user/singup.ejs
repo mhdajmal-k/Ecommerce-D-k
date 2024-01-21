@@ -213,7 +213,7 @@
                                         <p class="mb-50 font-sm">
                                             Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our privacy policy
                                         </p>
-                                        <form method="post" action="otp_verification">
+                                        <form method="post" action="otp_verification" onsubmit="return Check_all()">
                                             <div class="form-group">
                                                 <input type="text" id="username" name="username" onkeyup="validatename()" placeholder="Username" autocomplete="off">
                                                 <p class="text-danger" id="username_error"></p>
@@ -231,12 +231,12 @@
                                                 <p class="text-danger" id="password_error"></p>
                                             </div>
                                             <div class="form-group">
-                                                <input  type="password" name="password"  id="password_conform" onkeyup="conformpassword()" placeholder="Confirm password">
-                                                <p class="text-danger" id="password_coform_error"></p>
+                                                <input  type="password" name="password"  id="password_conform" onkeyup="conformPassword()" placeholder="Confirm password">
+                                                <p class="text-danger" id="password_conform_error"></p>
                                             </div>
             
                                             <div class="form-group " style="text-align: center;">
-                                                <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login" onclick="Check_all()">Submit &amp; Register</button>
+                                                <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login" >Submit &amp; Register</button>
                                             </div>
                                         </form>
                                         <div class="divider-text-center mt-15 mb-15">
@@ -257,82 +257,92 @@
         </section>
     </main>
     <script>
-        const username=document.getElementById("username")
-        const email=document.getElementById("email")
-        const mobile=document.getElementById("mobile") 
-         const password=document.getElementById("password")
-        const password_conform=document.getElementById("password_conform")
-        const user_name_error=document.getElementById("username_error")
-        const email_error=document.getElementById("email_error")
-        const mobile_error=document.getElementById("mobile_error")
-        const password_error=document.getElementById("password_error")
-        const password_conform_error=document.getElementById("password_conform_error")
+     const username = document.getElementById("username");
+const email = document.getElementById("email");
+const mobile = document.getElementById("mobile");
+const password = document.getElementById("password");
+const password_conform = document.getElementById("password_conform");
+const user_name_error = document.getElementById("username_error");
+const email_error = document.getElementById("email_error");
+const mobile_error = document.getElementById("mobile_error");
+const password_error = document.getElementById("password_error");
+const password_conform_error = document.getElementById("password_conform_error");
 
-        function validatename(){
-            const name_value = username.value
-    if(name_value.trim() === "")
-    {
-        user_name_error.style.display = "block"
-        user_name_error.innerHTML = "Please Enter a valid Name."
-    }
-    else{
-        user_name_error.style.display = "none"
-        user_name_error.innerHTML = ""
-    }      
-        }
-     
-         function validatemobile(){
-            const mobileNumber=mobile.value
-            if(mobileNumber<10 ){
-                mobile_error.innerHTML="Enter a valid mobile number"
-                mobile_error.style.display = "block"
+function validatename() {
+  const name_value = username.value;
+  if (name_value.trim() === "") {
+    user_name_error.style.display = "block";
+    user_name_error.innerHTML = "Please Enter a valid Name.";
+  } else {
+    user_name_error.style.display = "none";
+    user_name_error.innerHTML = "";
+  }
+}
 
-            }
-            else if(mobileNumber>14){
-                mobile_error.innerHTML="Enter a valid mobile number"
-                .style.display = "block"
+function validatemobile() {
+  const mobileNumber = mobile.value;
+  if (mobileNumber.length < 10) {
+    mobile_error.innerHTML = "Enter a valid mobile number (at least 10 digits)";
+    mobile_error.style.display = "block";
+  } else if (mobileNumber.length >= 14) {
+    mobile_error.innerHTML = "Enter a valid mobile number (less than 14 digits)";
+    mobile_error.style.display = "block";
+  } else {
+    mobile_error.style.display = "none";
+    mobile_error.innerHTML = "";
+  }
+}
 
-            }
-            else{
-                email_error.style.display = "none"
-        email_error.innerHTML = ""
+function validateEmail() {
+  const Email = email.value;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(Email) || Email === "") {
+    email_error.innerHTML = "Enter a valid email ";
+    return false;
+  } else {
+    email_error.style.display = "none";
+    email_error.innerHTML = "";
+    return true;
+  }
+}
 
-            }
-         }
-         function validateEmail(){
-            const Email=email.value
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if(!emailPattern.test(Email)){
-                email_error.innerHTML="Enter a valid email "
-            }else if(Email==""){
-                email_error.innerHTML="Enter a valid email "
-            }
-           else{
-            email_error.style.display = "none"
-        email_error.innerHTML = ""
+function validate_password() {
+  const Password = password.value;
+  const pass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+  if (!pass.test(Password) || Password === "") {
+    password_error.innerHTML = "Enter a Strong Password eg: Strong@1234";
+    password_error.style.display = "block";
+  } else {
+    password_error.style.display = "none";
+    password_error.innerHTML = "";
+  }
+}
 
-           }
-        }
-         function validate_password(){
-            const Password=password.value
-            const pass=/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/
-            if(!pass.test(Password)){
-                password_error.innerHTML="Enter a valid Password"
-                password.style.display = "block"
-            }else{
+function conformPassword() {
+  const passwordValue = password.value;
+  const confirmPasswordValue = password_conform.value;
+  
+  if (passwordValue !== confirmPasswordValue) {
+  
+    password_conform_error.innerHTML = "Passwords must match";
+    password_conform_error.style.display = "block";
+  } else {
+    password_conform_error.style.display = "none";
+    password_conform_error.innerHTML = "";
+  }
+}
 
-            }
-         }
-         function conformpassword(){
-            const conforme_pass=password_conform.value
-            const password=password.value
-            if(conforme_pass===password){
-                password_conform_error.innerHTML="Password should be same"
-                
-            }else{
-
-            }
-         }
+function Check_all(e) {
+  if (validateEmail() || validate_password() || validatemobile() || validatename()) {
+    }else{
+      
+      return false
+      e.preventDefault()
+    
+  }
+}
+         
+          
      
 
 
