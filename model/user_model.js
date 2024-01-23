@@ -28,10 +28,14 @@ const user_schema = new Schema({
     type: Number,
     default: 0,
   },
-  isActive: {
+  is_block: {
     type: Boolean,
-    default: true,
+    default: false,
   },
+  is_verified:{
+    type:Number,
+    default:0
+  }
 });
 
 const user=mongoose.model("users",user_schema)
