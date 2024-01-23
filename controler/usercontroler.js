@@ -1,5 +1,6 @@
 const user=require("../model/user_model")
 const bcrypt=require("bcrypt")
+const nodemailer=require("nodemailer")
 
 const landing_page=async(req,res)=>{
     try {
