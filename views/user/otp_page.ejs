@@ -6,17 +6,21 @@
             <h2 class="mt-5 mb-4">OTP Verification</h2>
             <p>Please enter the OTP sent to your registered email </p>
 
-            <form method="post" action="/verify">
+            <form method="post" action="/otp_verification">
                 <div class="mb-3">
                     <label for="otp" class="form-label">Enter OTP:</label>
                     <input type="text" class="form-control" id="otp" name="otp" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Verify OTP</button>
+                <% if (locals.message) { %>
+                <p class="text-danger text-8" ><%= message %></p> 
+                <% } %> 
             </form>
 
             <p class="mt-3">Didn't receive the OTP? <a href="#">Resend OTP</a></p>
         </div>
     </div>
 </div>
+
 <%- include ("../partilas/userfooter") -%>

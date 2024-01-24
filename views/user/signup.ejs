@@ -213,7 +213,7 @@
                                         <p class="mb-50 font-sm">
                                             Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our privacy policy
                                         </p>
-                                        <form method="post" action="/signup" onsubmit="return Check_all()">
+                                        <form method="post" action="/signup" onsubmit="return Check_all(event)">
                                             <div class="form-group">
                                                 <input type="text" id="username" name="username" onkeyup="validateName()" placeholder="Username">
                                                 <p class="text-danger" id="username_error"></p>
@@ -306,11 +306,11 @@ function validateEmail() {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(Email) || Email === "") {
     email_error.innerHTML = "Enter a valid email ";
-    return false;
+    
   } else {
     email_error.style.display = "none";
     email_error.innerHTML = "";
-    return true;
+
   }
 }
 
@@ -341,11 +341,15 @@ function conformPassword() {
 }
 
 function Check_all(e) {
-  if (validateEmail() || validate_password() || validatemobile() || validateName()) {
+    validateEmail()
+    validate_password()
+    validatemobile()
+    validateName()
+  if ( password_conform_error.innerHTML || password_error.innerHTML ||email_error.innerHTML || user_name_error.innerHTML ) {
+    e.preventDefault()
     }else{
-      
-      return false
-      e.preventDefault()
+
+   
     
   }
 }
