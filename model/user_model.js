@@ -24,10 +24,6 @@ const user_schema = new Schema({
     type: Date,
     default: Date.now,
   },
-  is_admin: {
-    type: Number,
-    default: 0,
-  },
   is_block: {
     type: Boolean,
     default: false,

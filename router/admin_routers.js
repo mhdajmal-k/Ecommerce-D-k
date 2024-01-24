@@ -8,7 +8,11 @@ admin_router.set("views",'./views/admin')
 
 
 
-admin_router.get("/",admin_controller.admin_dashboard)
-admin_router.get("/product_list",admin_controller.load_product)
+
+admin_router.get("/",admin_controller.login_load)
+admin_router.post("/",admin_controller.verify_login)
+admin_router.get("/dashboard",admin_controller. Dashboard_load)
+admin_router.get("/userLoad",admin_controller.userLoad)
+
 
 module.exports=admin_router
