@@ -26,6 +26,12 @@ app.use('/admin',admin_router)
 
 
 
+app.use("*",(req,res)=>{
+   res.status(404).json("page not found!")
+ 
+})
+
+
 port=process.env.port||3001
 app.listen(port,()=>{
     console.log(`server is ready${port}`)
