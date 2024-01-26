@@ -99,25 +99,6 @@ const Dashboard_load=async (req,res)=>{
    
   }
 
-  const load_Addcategory=(req,res)=>{
-    try {
-      res.status(201).render("editCategory")
-    } catch (error) {
-      res.status(400).send(error)
-    }
-  }
-  const load_category=(req,res)=>{
-    try {
-      res.status(201).render("categories")
-    } catch (error) {
-      res.status(400).send(error)
-    }
-  }
-
-
-
-
-
 module.exports = {
   login_load,
   verify_login,
@@ -125,6 +106,6 @@ module.exports = {
   userLoad,
   userBlockUnblock,
   add_Product,
-  load_category,
-  load_Addcategory
+
+
 };

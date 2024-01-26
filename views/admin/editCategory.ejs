@@ -1,6 +1,6 @@
 <%- include ("../partilas/admin") -%>
     <section class="content-main">
-        <form action="" method="post" id="myForm">
+        <form action="addcategory" method="post" id="myForm">
             <div class="row text-center divider-text-center mx-auto  justify-content-center ">
                 <div class="col-9">
                     <div class="content-header text-center">
@@ -11,9 +11,13 @@
                 <div class="col-lg-6 ">
                     <div class="card mb-4">
                         <div class="card-body">
+                            <% if (locals.message) { %>
+                                <h6 class="text-danger"><%= message  %></h6>
+                              <% } %>
+                        
                             <div class="mb-4">
                                 <label for="product_title" class="form-label">categoryName</label>
-                                <input type="text" placeholder="Type here" class="form-control" id="product_title">
+                                <input type="text" placeholder="Type here" name="categoryName" class="form-control" id="product_title">
                                 <span id="categoryNameError" class="error"></span>
                             </div>
 
@@ -24,7 +28,7 @@
                         <div class="card-body">
                             <div>
                                 <label class="form-label">Description</label>
-                                <input type="text" placeholder="Type here" class="form-control" rows="4"
+                                <input type="text" placeholder="Type here" name="Description" class="form-control" rows="4"
                                     type="description" id="description"></textarea>
                                 <span id="categoryDescriptionError" class="error"></span>
                             </div>
@@ -41,7 +45,8 @@
 
                         <button type="submit" class="btn btn-fill-out btn-success hover-up" name="Publish"
                           >Publish</button>
-                        <h6></h6>
+
+                         
 
 
 

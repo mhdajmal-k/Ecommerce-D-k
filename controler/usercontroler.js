@@ -58,22 +58,17 @@ const load_signup = async (req, res) => {
 const submit_signup = async (req, res) => {
   try {
     const { email, username, mobile, password } = req.body;
-    //checking existing Email
 
-    const existingEmail = await user.findOne({ email });
+    const existingUser = await user.findOne({
+      $or: [{ email:email }, { mobile:mobile }],
+    });
 
-    //checking existing mobile
-    const existingMobile = await user.findOne({ mobile });
-
-    if (existingEmail && existingMobile) {
+    if (existingUser) {
       res.render("signup", { message: "User Already Existing..." });
     } else {
-      console.log(password);
       const securedPassword = await securePassword(password);
       const user_data = { email, username, mobile, securedPassword };
       req.session.user = user_data;
-      // req.session.email=email
-      console.log("chekilng" + req.session.user.email);
       const OTP = await generateOTP(6);
       req.session.OTP = OTP;
       console.log(OTP);
@@ -136,7 +131,7 @@ const otp_submit = async (req, res) => {
         password: securedPassword,
         is_verified: 1,
       });
-      const userData = await saving_data.save(); 
+      const userData = await saving_data.save();
       delete req.session.OTP;
 
       if (userData) {

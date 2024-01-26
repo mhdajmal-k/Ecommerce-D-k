@@ -30,6 +30,10 @@ app.use("*",(req,res)=>{
    res.status(404).json("page not found!")
  
 })
+app.use((err, req, res, next) => {
+    console.error('An error occurred:', err);
+    res.status(500).send('Internal Server Error');
+});
 
 
 port=process.env.port||3001
