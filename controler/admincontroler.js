@@ -1,5 +1,6 @@
 const user=require('../model/user_model')
 const admin_model = require('../model/admin_model')
+const { category } = require('../model/category')
 
 
 //login page
@@ -24,6 +25,7 @@ const verify_login=async(req,res)=>{
         const adminPassword=await admin_model.findOne({password:password})
         if (adminPassword) {
           req.session.id=adminEmail._id
+          console.log(req.session.id+"its form session id")
           res.redirect('/admin/dashboard')
         } else {
           res.render('adminLogin',{message:"password is incorrect!"}) 
@@ -53,7 +55,6 @@ const Dashboard_load=async (req,res)=>{
 
   const userLoad=async(req,res)=>{
     try {
-      console.log("hel;ooo");
       const userData=await user.find({})
       res.render("usersList",{users:userData})
     } catch (error) {
@@ -86,7 +87,32 @@ const Dashboard_load=async (req,res)=>{
     }
   }
 
+  //add product page
 
+  const add_Product=(req,res)=>{
+    try {
+      res.render('addProduct')
+    } catch (error) {
+      console.log(error.message)
+      
+    }
+   
+  }
+
+  const load_Addcategory=(req,res)=>{
+    try {
+      res.status(201).render("editCategory")
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  }
+  const load_category=(req,res)=>{
+    try {
+      res.status(201).render("categories")
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  }
 
 
 
@@ -97,5 +123,8 @@ module.exports = {
   verify_login,
   Dashboard_load,
   userLoad,
-  userBlockUnblock
+  userBlockUnblock,
+  add_Product,
+  load_category,
+  load_Addcategory
 };

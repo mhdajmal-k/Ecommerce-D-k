@@ -15,7 +15,9 @@ admin_router.post("/",admin_controller.verify_login)
 admin_router.get("/dashboard",Auth.sessionChecker,admin_controller.Dashboard_load);
 admin_router.get("/userLoad",admin_controller.userLoad)
 admin_router.post('/block_user',admin_controller.userBlockUnblock)
-// admin_router.get('/Unblock_user',admin_controller.Unblock_user)
+admin_router.get('/addproduct',admin_controller.add_Product)
+admin_router.get('/addcategory',admin_controller.load_Addcategory)
+admin_router.get('/category',admin_controller.load_category)
 
 
 module.exports=admin_router
