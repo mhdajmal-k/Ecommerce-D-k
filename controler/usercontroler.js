@@ -2,6 +2,7 @@ const user = require("../model/user_model");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const { render } = require("../router/user_routers");
+const {sendMail}=require("../controler/helper/nodemailer")
 
 //secure Password
 
@@ -72,32 +73,13 @@ const submit_signup = async (req, res) => {
       const OTP = await generateOTP(6);
       req.session.OTP = OTP;
       console.log(OTP);
-
-      //creating node mailer
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        port: 587,
-        secure: false,
-        requireTLS: true,
-        auth: {
-          user: process.env.nodemailer_email,
-          pass: process.env.password,
-        },
-      });
-      const mailOption = {
-        from: process.env.nodemailer_email,
-        to: email,
-        subject: "OTP Verification",
-        text: `Your OTP for Verification is ${OTP}`,
-      };
-      transporter.sendMail(mailOption, (error, info) => {
-        if (error) {
-          console.error("Mailing error", error);
-        } else {
-          console.log("Email sent: " + info.response);
-          res.redirect("/otp_verification");
-        }
-      });
+      const a=await sendMail(email,OTP)
+      console.log("heloo");
+        res.redirect("/otp_verification");
+      
+   
+ 
+     
     }
   } catch (error) {
     console.log(error.message);

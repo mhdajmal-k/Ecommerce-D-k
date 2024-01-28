@@ -35,6 +35,10 @@ admin_router.get('/addproduct',admin_controller.add_Product)
 admin_router.get('/category',category_controller.load_category)
 admin_router.get('/addcategory',category_controller.load_Addcategory)
 admin_router.post('/addcategory',category_controller.addCategory )
+admin_router.get('/updateCategory',category_controller.load_editCategory)
+admin_router.post('/updateCategory',category_controller.editCategory)
+
+
 
 
 

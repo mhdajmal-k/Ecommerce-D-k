@@ -1,6 +1,6 @@
 const user=require('../model/user_model')
 const admin_model = require('../model/admin_model')
-const { category } = require('../model/category')
+
 
 
 //login page
@@ -56,6 +56,7 @@ const Dashboard_load=async (req,res)=>{
   const userLoad=async(req,res)=>{
     try {
       const userData=await user.find({})
+      console.log(userData);
       res.render("usersList",{users:userData})
     } catch (error) {
       console.log(error.message)
