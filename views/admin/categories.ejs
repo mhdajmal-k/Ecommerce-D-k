@@ -1,104 +1,123 @@
 <%- include ("../partilas/admin") -%>
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Categories </h2>
-                    <p>Add, edit or delete a category</p>
-                </div>
-                <div>
-                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
-                </div>
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Categories </h2>
+                <p>Add, edit or delete a category</p>
             </div>
-            <a href="/admin/addcategory">
-                <button class="btn btn-success m-auto mb-20">
-                    ADD
-                </button>
-               </a>
-            <div class="card ">
-                <div class="card-body ">
-                    <div class="row w-100 ">
-                        
-                        <div class="col-md-9 w-100">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div>
-                                            </th>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                          
-                                            <th class="text-end">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                  <% if (categoryData) { %>
-                            
-                                <% for( let i = 0; i < categoryData.length; i++ ) { %>
-                                    <tr>
-                                    <td class="text-center">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" />
-                                        </div> 
-                                    </td>
-                                    <td></td>
-                                    <td><b><%= categoryData[i].categoryTitle %></b></td>
-                                    <td><%= categoryData[i].description %></td>
-                                  
-                                        <td class="text-end ml-15 ">
+            <div>
+                <input type="text" placeholder="Search Categories" class="form-control bg-white">
+            </div>
+        </div>
+        <a href="/admin/addcategory">
+            <button class="btn btn-success m-auto mb-20">
+                ADD
+            </button>
+        </a>
+        <div class="card ">
+            <div class="card-body ">
+                <div class="row w-100 ">
 
-                                            <button class="btn btn-success m-auto">
-                                                <a href="/admin/updateCategory?id=<%= categoryData[i]._id %>" style="text-decoration: none; color: white;">
-                                                    Edit
-                                                </a>
-                                            </button>
-                                            
-                                           
-                                            <a href="/admin/blockandUnblock?id=<%= categoryData[i]._id %>">
-                                             <button class="btn btn-danger m-auto">
-                                                Delete
-                                             </button>
-                                            </a>
-                                             </div> <!-- dropdown //end -->
-                                         </td>
-                                    
-                                    
-                                </tr>
-                                
-                                <% } %>
-                                   
-                                  <% } %>
-                                          
-                                     
-                                        
-                                  
-                                      
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div> <!-- .col// -->
-                    </div> <!-- .row // -->
-                </div> <!-- card body .// -->
-            </div> <!-- card .// -->
-        </section> <!-- content-main end// -->
-        <footer class="main-footer font-xs">
-            <div class="row pb-30 pt-15">
-                <div class="col-sm-6">
-                    <script>
-                        document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end">
-                        All rights reserved
+                    <div class="col-md-9 w-100">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" />
+                                            </div>
+                                        </th>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+
+                                        <th class="text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <% if (categoryData) { %>
+
+                                        <% for( let i=0; i < categoryData.length; i++ ) { %>
+                                            <tr>
+                                                <td class="text-center">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="" />
+                                                    </div>
+                                                </td>
+                                                <td></td>
+                                                <td><b>
+                                                        <%= categoryData[i].categoryTitle %>
+                                                    </b></td>
+                                                <td>
+                                                    <%= categoryData[i].description %>
+                                                </td>
+
+                                                <td class="text-end ml-15 ">
+
+                                                    <button class="btn btn-success m-auto">
+                                                        <a href="/admin/updateCategory?id=<%= categoryData[i]._id %>"
+                                                            style="text-decoration: none; color: white;">
+                                                            Edit
+                                                        </a>
+                                                    </button>
+
+                                                    <% if (categoryData[i].isList==true) { %>
+                                                        <button class="btn btn-danger m-auto">
+                                                            <a href="/admin/block_user?id=<%= categoryData[i]._id %>"
+                                                                style="text-decoration: none; color: white;">
+                                                               unList
+                                                            </a>
+                                                        </button>
+                                                    <% } else { %>
+                                                        <button class="btn btn-success m-auto">
+                                                            <a href="/admin/block_user?id=<%= categoryData[i]._id %>"
+                                                                style="text-decoration: none; color: white;">
+                                                              list
+                                                            </a>
+                                                        </button>
+                                                    <% } %>
+                                                    
+                        </div>
+
                     </div>
+                        <!-- dropdown //end -->
+                        </td>
+
+
+                        </tr>
+
+                        <% } %>
+
+                            <% } %>
+
+
+
+
+
+                                </tbody>
+                                </table>
+                </div>
+            </div> <!-- .col// -->
+        </div> <!-- .row // -->
+        </div> <!-- card body .// -->
+        </div> <!-- card .// -->
+    </section> <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
+                    document.write(new Date().getFullYear())
+                </script> ©, Evara - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">
+                    All rights reserved
                 </div>
             </div>
-        </footer>
+        </div>
+    </footer>
     </main>
     <script src="/asset/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/asset/js/vendors/bootstrap.bundle.min.js"></script>
@@ -107,6 +126,39 @@
     <script src="/asset/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="/asset/js/main.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        function listandunlist(id, status) {
+            alert(id + "chekcing")
+            alert(status)
+
+            console.log(id)
+            $.ajax({
+                url: '/admin/listAndUnList',
+                method: "post",
+                data: {
+                    _id: id,
+                    status: status
+                },
+                success: (response) => {
+                    if (response.status === true) {
+
+
+
+                    } else {
+                        alert("error")
+                    }
+                }
+
+            })
+        }
+    </script>
+
     </body>
+
 
     </html>

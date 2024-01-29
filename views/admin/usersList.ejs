@@ -131,8 +131,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         function userBlockUnblock(userId, status) {
-            // alert(userId)
-            // alert(status)
+
 
             $.ajax({
                 url: "/admin/block_user",
@@ -143,9 +142,9 @@
                 },
                 success: (response) => {
                     if (response.status === true) {
-                        // updateUI(userId, status);
+
                         // not working with out reload
-                        location.reload() 
+                        location.reload()
                     } else {
                         alert("error")
                     }
@@ -153,7 +152,7 @@
             })
         }
 
-     
+
 
 
     </script>

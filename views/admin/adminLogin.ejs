@@ -78,7 +78,7 @@
                         <div class="mb-4">
                             <button type="submit" class="btn btn-primary w-100"> Login </button>
                             <% if (locals.message) { %>
-                                <p><%= message %></p>
+                                <p id="erromMessage" class="text-danger text-center"><%= message %></p>
                              
                             <% } %>
                         </div> <!-- form-group// -->
@@ -102,6 +102,12 @@
     <script src="/asset/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="/asset/js/main.js" type="text/javascript"></script>
+   
 </body>
+<script> 
+setTimeout(()=>{
+document.getElementById("erromMessage").style.display="none"
+},2000)
+</script>
 
 </html>

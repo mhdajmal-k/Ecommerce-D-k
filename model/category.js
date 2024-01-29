@@ -12,6 +12,11 @@ const category_schema=new mongoose.Schema({
     createdAt:{
         type:Date,
         default: Date.now,
+    },
+    isList:{
+        type:Boolean,
+        default:true
+
     }
     
 })
