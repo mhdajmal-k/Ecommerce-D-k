@@ -201,9 +201,10 @@
                                             <div class="form-group">
                                                 <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login">Log in</button>
                                                 <% if (locals.message) { %>
-                                                   <h3 class="text-warning" id="SingUpError" >
+                                                    
+                                                   <p class=" mt-10 alert-danger alert-dismissible fade show"  id="SingUpError" >
                                                     <%= message %>
-                                                   </h3> 
+                                                   </p> 
                                                  
                                                 <% } %>
                                             </div>

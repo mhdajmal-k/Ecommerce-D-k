@@ -1,5 +1,6 @@
 const user=require('../model/user_model')
 const admin_model = require('../model/admin_model')
+const session = require('express-session')
 
 
 
@@ -7,9 +8,11 @@ const admin_model = require('../model/admin_model')
 
 const login_load=async(req,res)=>{
   try {
-    res.render('adminLogin')
+      // const message=req.flash()
+      // console.log(message);
+      res.render('adminLogin')
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message+"from herer")
   }
 }
 ////////////////////////////////////////////////////////
@@ -24,7 +27,7 @@ const verify_login=async(req,res)=>{
       if (adminEmail) {
         const adminPassword=await admin_model.findOne({password:password})
         if (adminPassword) {
-          req.session.id=adminEmail._id
+          req.session.admin=adminEmail._id
           console.log(req.session.id+"its form session id")
           res.redirect('/admin/dashboard')
         } else {
@@ -88,7 +91,19 @@ const Dashboard_load=async (req,res)=>{
     }
   }
 
-  //add product page
+  //logout
+
+
+  const logout=async(req,res)=>{
+    try {
+      // req.flash('message', 'You have been successfully logged out.')
+      req.session.destroy()
+      res.redirect("/admin")
+      
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
 
 
 module.exports = {
@@ -97,6 +112,7 @@ module.exports = {
   Dashboard_load,
   userLoad,
   userBlockUnblock,
+  logout
   
 
 

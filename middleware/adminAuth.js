@@ -2,7 +2,7 @@
 // adminAuth.js
 const sessionChecker = (req, res, next) => {
     
-        if (req.session.id) {
+        if (req.session.admin) {
      
       
             next();
@@ -15,4 +15,6 @@ const sessionChecker = (req, res, next) => {
 
 };
 
-module.exports = { sessionChecker };
+
+
+module.exports = { sessionChecker};

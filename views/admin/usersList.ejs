@@ -128,25 +128,38 @@
     <script src="/asset/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="/asset/js/main.js" type="text/javascript"></script>
+      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         function userBlockUnblock(userId, status) {
-      $.ajax({
-                url: "/admin/block_user",
-                method: "post",
-                data: {
-                    userId: userId,
-                    status: status
-                },
-                success: (response) => {
-                    if (response.status === true) {
-                        // not working with out reload
-                        location.reload()
-                    } else {
-                        alert("error")
+            swal({
+                title: "Are you sure?",
+                text: "Are you sure you want to update this item",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((value) => {
+                if(value){
+                    $.ajax({
+                    url: "/admin/block_user",
+                    method: "post",
+                    data: {
+                        userId: userId,
+                        status: status
+                    },
+                    success: (response) => {
+                        if (response.status === true) {
+                            // not working with out reload
+                            location.reload()
+                        } else {
+                            alert("error")
+                        }
                     }
+                })
                 }
+               
             })
+
         }
 
 

@@ -4,6 +4,8 @@ const app=express()
 const path=require("path")
 const dbConnect=require('./configure/dbconnect')
 const session=require("express-session")
+const flash=require("flash")
+const nocache = require('nocache');
 dbConnect()
 
 app.use(session({
@@ -12,7 +14,12 @@ app.use(session({
     saveUninitialized:false,
 }))
 
+
+app.use(nocache())
 app.use(express.json())
+app.use(flash())
+
+
 app.use(express.urlencoded({extended:true}))
 app.use(express.static(path.join(__dirname,'public')));
 app.use("/uploads",express.static(path.join(__dirname,'/uploads')));

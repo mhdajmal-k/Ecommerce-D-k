@@ -88,8 +88,6 @@ const load_editCategory = async (req, res) => {
 const editCategory=async(req,res)=>{
   try {
     const {categoryName,Description,id}=req.body
-    console.log(Description);
-    console.log(id+"id get ");
     const updateCategory=await category.findByIdAndUpdate({_id:id},{$set:{
 categoryTitle:categoryName,
 description:Description
@@ -109,7 +107,7 @@ description:Description
 
 const listAndUnList=async(req,res)=>{
   try {
-    console.log("Hello");
+
     const id=req.query.id
     console.log(id)
     const _id=await category.findById({_id:id})

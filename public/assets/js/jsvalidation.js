@@ -9,11 +9,15 @@ function validateForm(e) {
     categoryDescriptionError.style.display = "none";
     categoryDescriptionError.innerHTML = "";
 
-    if (productTitle === "") {
+    if (productTitle === "" ) {
         errorMessageElement.style.display = "block";
         errorMessageElement.innerHTML = "Product title is required";
         e.preventDefault();
     } else if (description === "") {
+        categoryDescriptionError.style.display = "block";
+        categoryDescriptionError.innerHTML = "Description is required";
+        e.preventDefault();
+    }else if(productTitle.length>20){
         categoryDescriptionError.style.display = "block";
         categoryDescriptionError.innerHTML = "Description is required";
         e.preventDefault();

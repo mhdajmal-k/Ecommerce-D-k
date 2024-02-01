@@ -4,6 +4,7 @@ const category = require('../model/category');
 const product=require('../model/product_model');
 const { rawListeners } = require('../model/user_model');
 
+//product page  
 
 const load_products=async(req,res)=>{
   try {  const productData=await product.find({}).populate("categoryId")
@@ -13,16 +14,6 @@ const load_products=async(req,res)=>{
     console.log(error.message)
   }
 }
-
-
-
-
-
-
-
-
-
-
 
 //============================== addProduct page+===========================
 
@@ -40,18 +31,14 @@ const add_ProductLoad=async(req,res)=>{
 
 const add_Product=async(req,res)=>{
   try {
-    console.log("helloo");
     const images = [];
                 if (req.files && req.files.length > 0) {
                     for (let i = 0; i < req.files.length; i++) {
                         images.push(req.files[i].filename);
                       }}
-    if(req.body){
-    console.log(req.body);       
+    if(req.body){     
     const { productId, productName, color, size,quantity, price, sellingPrice,description,categories}=req.body
-
       const productNameExist=await product.findOne({productName:{$regex:new RegExp('^'+productName+"$","i")}})
-
       const newProduct= new product({
         productId:productId,
         productName:productName,
@@ -69,7 +56,6 @@ const add_Product=async(req,res)=>{
         if(productNameExist.size==size){
            res.render("addProduct",{message:"product Id already exists1!"})
         }else{
-         
         await newProduct.save()
         res.redirect('/admin/addProduct')
       }
@@ -77,7 +63,6 @@ const add_Product=async(req,res)=>{
       await newProduct.save()
       res.redirect('/admin/addProduct')
     }
-
     }else{
       res.send(400).json("invalid request")
     }
@@ -88,30 +73,29 @@ const add_Product=async(req,res)=>{
 
 
 
+// product edit page
 
 const load_editProduct=async(req,res)=>{
   try {
     const id=req.query.procductID
-   console.log(id+"id goted")
     if(id){
 const productData=await product.findById(id)
-console.log("Hello");
 console.log(productData+"just gotted");
 res.render("editProducts",{products:productData})
     }else{
       res.status(400),json("error")
     }
-  
+
   } catch (error) {
     console.log(error.message)
   }
 }
 
+
+//post edit
+
 const editProduct=async (req,res)=>{
   try {
-    console.log("heloo");
-  console.log(req.body);
-  console.log(req.body.id);
   const {productId,productName,color,size,quantity,price,sellingPrice,id,description}=req.body
 const updateProduct=await product.findByIdAndUpdate({_id:id},{$set:{
   productId:productId,
@@ -130,13 +114,13 @@ if(updateProduct){
 
   res.render('editProducts',{message:"some error happen"})
 }
-
   } catch (error) {
     console.log(error.message)
   }
 }
 
 
+//list products
 const listAndUnList=async (req,res)=>{
   try {
     const {productId,status}=req.body
@@ -149,7 +133,6 @@ const listAndUnList=async (req,res)=>{
       const unblock=await product.findOneAndUpdate({_id:productId},{$set:{
         isBlocked:false
       }})
-      console.log(unblock+"hello3");
       res.json({status:true})
     }
   } catch (error) {
@@ -157,7 +140,6 @@ const listAndUnList=async (req,res)=>{
   }
 }
   
-
 
   module.exports={
     add_ProductLoad,

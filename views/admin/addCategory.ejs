@@ -12,14 +12,17 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <% if (locals.message) { %>
-                                <h6 class="text-danger"><%= message  %></h6>
-                              
-                           <% } %>
-                            <div class="mb-4">
-                                <label for="product_title" class="form-label">categoryName</label>
-                                <input type="text" placeholder="Type here" name="categoryName" class="form-control" id="product_title">
-                                <span id="categoryNameError" class="error"></span>
-                            </div>
+                                <h6 class="text-danger">
+                                    <%= message %>
+                                </h6>
+
+                                <% } %>
+                                    <div class="mb-4">
+                                        <label for="product_title" class="form-label">categoryName</label>
+                                        <input type="text" placeholder="Type here" name="categoryName"
+                                            class="form-control" id="product_title">
+                                        <span id="categoryNameError" class="error"></span>
+                                    </div>
 
 
                         </div>
@@ -28,8 +31,8 @@
                         <div class="card-body">
                             <div>
                                 <label class="form-label">Description</label>
-                                <input type="text" placeholder="Type here" name="Description" class="form-control" rows="4"
-                                    type="description" id="description" ></textarea>
+                                <input type="text" placeholder="Type here" name="Description" class="form-control"
+                                    rows="4" type="description" id="description"></textarea>
                                 <span id="categoryDescriptionError" class="error"></span>
                             </div>
                         </div>
@@ -43,10 +46,10 @@
                         </div> -->
                     <div class="mb-15">
 
-                        <button type="submit" class="btn btn-fill-out btn-success hover-up" name="Publish"
-                          >Publish</button>
+                        <button type="submit" class="btn btn-fill-out btn-success hover-up"
+                            name="Publish">Publish</button>
 
-                         
+
 
 
 
@@ -55,7 +58,7 @@
             </div>
 
             </div>
-         
+
         </form>
     </section>
     <footer class="main-footer font-xs">
@@ -73,41 +76,9 @@
         </div>
     </footer>
     <script>
-
-// function validateForm(e) {
-//     const productTitle = document.getElementById('product_title').value.trim();
-//     const description = document.getElementById('description').value.trim();
-//     const errorMessageElement = document.getElementById('categoryNameError');
-//     const categoryDescriptionError = document.getElementById("categoryDescriptionError");
-
-//     errorMessageElement.style.display = "none";
-//     errorMessageElement.innerHTML = "";
-//     categoryDescriptionError.style.display = "none";
-//     categoryDescriptionError.innerHTML = "";
-
-//     if (productTitle === "") {
-//         errorMessageElement.style.display = "block";
-//         errorMessageElement.innerHTML = "Product title is required";
-//         e.preventDefault();
-//     } else if (description === "") {
-//         categoryDescriptionError.style.display = "block";
-//         categoryDescriptionError.innerHTML = "Description is required";
-//         e.preventDefault();
-//     }
-// }
-
-// // Add event listener to the form submission
-// document.getElementById('myForm').addEventListener('submit', function(event) {
-//     validateForm(event);
-// });
-
-         
-
-
-
     </script>
     </main>
-  
+
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="assets/js/vendors/select2.min.js"></script>

@@ -24,7 +24,6 @@ const generateOTP = (length) => {
     const digit = Math.floor(Math.random() * 10);
     otp += digit.toString();
   }
-
   return otp;
 };
 
@@ -33,7 +32,6 @@ const generateOTP = (length) => {
 const landing_page = async (req, res) => {
   try {
     const products=await product.find({isBlocked:false}).limit(7).populate("categoryId")
-    console.log(products);
     if(products)
     res.render("landing_page",{products:products});
   } catch (error) {
@@ -50,6 +48,7 @@ const load_login = async (req, res) => {
   }
 };
 
+
 //signup page
 const load_signup = async (req, res) => {
   try {
@@ -59,15 +58,14 @@ const load_signup = async (req, res) => {
   }
 };
 
+
 //submit_signup
 const submit_signup = async (req, res) => {
   try {
     const { email, username, mobile, password } = req.body;
-
     const existingUser = await user.findOne({
       $or: [{ email:email }, { mobile:mobile }],
     });
-
     if (existingUser) {
       res.render("signup", { message: "User Already Existing..." });
     } else {
@@ -78,17 +76,14 @@ const submit_signup = async (req, res) => {
       req.session.OTP = OTP;
       console.log(OTP);
       const a=await sendMail(email,OTP)
-      console.log("heloo");
-        res.redirect("/otp_verification");
-      
-   
- 
-     
+        res.redirect("/otp_verification")
     }
   } catch (error) {
     console.log(error.message);
   }
 };
+
+
 
 //load otp
 const otp_verification = async (req, res) => {
@@ -98,6 +93,8 @@ const otp_verification = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
 
 //otp checking...
 const otp_submit = async (req, res) => {
@@ -131,6 +128,8 @@ const otp_submit = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
 
 //user login
 
@@ -177,6 +176,8 @@ const load_shop=async (req,res)=>{
   }
   
 }
+
+//one product details
 
 const shopProduct=async (req,res)=>{
   try {
