@@ -1,8 +1,9 @@
-const user = require("../model/user_model");
+const user = require("../model/user_model")
+const product=require("../model/product_model")
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const { render } = require("../router/user_routers");
-const {sendMail}=require("../controler/helper/nodemailer")
+const {sendMail}=require("./helper/nodemailer")
 
 //secure Password
 
@@ -31,7 +32,10 @@ const generateOTP = (length) => {
 
 const landing_page = async (req, res) => {
   try {
-    res.render("landing_page");
+    const products=await product.find({isBlocked:false}).limit(7).populate("categoryId")
+    console.log(products);
+    if(products)
+    res.render("landing_page",{products:products});
   } catch (error) {
     console.log(error.message);
   }
@@ -158,6 +162,36 @@ const verify_login = async (req, res) => {
   }
 };
 
+
+//get log page
+
+const load_shop=async (req,res)=>{
+  console.log("heloo");
+  try {
+      const products=await product.find({isBlocked:false})
+      console.log(products+"form here");
+  res.render("shop",{product:products})
+    
+  } catch (error) {
+    console.log(error.message)
+  }
+  
+}
+
+const shopProduct=async (req,res)=>{
+  try {
+    console.log("hello");
+  const {id}=req.query
+  console.log(id);
+  const products=await product.findOne({_id:id}).populate("categoryId")
+  console.log(products);
+  res.render("viewOneproduct",{products})
+}
+   catch (error) {
+    console.log(error.message);
+  }
+}
+
 module.exports = {
   landing_page,
   load_login,
@@ -166,4 +200,6 @@ module.exports = {
   otp_verification,
   otp_submit,
   verify_login,
+  load_shop,
+  shopProduct
 };

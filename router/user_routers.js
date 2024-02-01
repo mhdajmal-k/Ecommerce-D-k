@@ -20,5 +20,7 @@ user_router.post('/signup',userController. submit_signup)
 user_router.get('/otp_verification',userController.otp_verification)
 user_router.post('/otp_verification',userController.otp_submit)
 user_router.post('/login',userController.verify_login)
+user_router.get('/shop',userController.load_shop)
+user_router.get('/shopProduct',userController.shopProduct)
 
 module.exports=user_router

@@ -176,7 +176,7 @@
                             </div>
                             <div class="col-lg-7 col-md-6">
                                 <div class="single-slider-img single-slider-img-1">
-                                    <img class="animated slider-1-1" src="/assets/imgs/slider/slider-1.png" alt="">
+                                    <img class="animated slider-1-1" src="/assets/imgs/slider/" alt="">
                                 </div>
                             </div>
                         </div>
@@ -211,12 +211,12 @@
                                     <h2 class="animated fw-900">Big Deals From</h2>
                                     <h1 class="animated fw-900 text-8">Manufacturer</h1>
                                     <p class="animated">Clothing, Shoes, Bags, Wallets...</p>
-                                    <a class="animated btn btn-brush btn-brush-1" href="shop-product-right.html"> Shop Now </a>
+                                    <button class="btn btn-danger"> <a class="animated" href=""></a> Shop Now</button>
                                 </div>
                             </div>
                             <div class="col-lg-7 col-md-6">
                                 <div class="single-slider-img single-slider-img-1">
-                                    <img class="animated slider-1-3" src="/assets/imgs/slider/slider-3.png" alt="">
+                                    <img class="animated slider-1-3" src="./assets/imgs/slider/slider-3.jpg" alt="">
                                 </div>
                             </div>
                         </div>
@@ -288,15 +288,18 @@
                 <div class="tab-content wow fadeIn animated" id="myTabContent">
                     <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
                         <div class="row product-grid-4">
+                            <% if (products) { %>
+                                <% for( let i = 0; i < products.length; i++ ) { %>
                             <div class="col-lg-3 col-md-4 col-12 col-sm-6">
                                 <div class="product-cart-wrap mb-30">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="/assets/imgs/shop/product-1-1.jpg" alt="">
-                                                <img class="hover-img" src="/assets/imgs/shop/product-1-2.jpg" alt="">
+                                                <img class="default-img" src="/uploads/products/<%= products[i].image[1] %>" alt="">
+                                                <img class="hover-img" src="/uploads/products/<%=products[i].image[3] %>" alt="">
                                             </a>
                                         </div>
+                                        
                                         <div class="product-action-1">
                                             <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
                                             <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
@@ -306,26 +309,31 @@
                                             <span class="hot">Hot</span>
                                         </div>
                                     </div>
-                                    <div class="product-content-wrap">
-                                        <div class="product-category">
-                                            <a href="shop-grid-right.html">Clothing</a>
-                                        </div>
-                                        <h2><a href="shop-product-right.html">Colorful Pattern Shirts</a></h2>
-                                        <div class="rating-result" title="90%">
-                                            <span>
-                                                <span>90%</span>
-                                            </span>
-                                        </div>
-                                        <div class="product-price">
-                                            <span>$238.85 </span>
-                                            <span class="old-price">$245.8</span>
-                                        </div>
-                                        <div class="product-action-1 show">
-                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                  
+                                            <div class="product-content-wrap">
+                                                <div class="product-category">
+                                                    <a href="shop-grid-right.html"><%= products[i].categoryId.categoryTitle  %></a>
+                                                </div>
+                                                <h2><a href="shop-product-right.html"><%= products[i].productsName %></a></h2>
+                                                <div  title="90%">
+                                                    <span>
+                                                        <span>90%</span>
+                                                    </span>
+                                                </div>
+                                                <div class="product-price">
+                                                    <span> RS-<%= products[i].sellingPrice %> </span>
+                                                    <span class="old-price"><%= products[i].price %></span>
+                                                </div>
+                                                <div class="product-action-1 show">
+                                                    <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                        <% } %>
+                                     
+                                    <% } %>
+                                    
                             <div class="col-lg-3 col-md-4 col-12 col-sm-6">
                                 <div class="product-cart-wrap mb-30">
                                     <div class="product-img-action-wrap">

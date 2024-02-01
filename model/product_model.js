@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
+const { array } = require("../controler/helper/multer");
 
 const Product_model = new mongoose.Schema({
   productId: {
     type: String,
-    require: true,
-    unique: true,
+    require: true
   },
   productName: {
     type: String,
@@ -14,33 +14,37 @@ const Product_model = new mongoose.Schema({
     type: String,
     require: true,
   },
+  color:{
+type:String
+  },
   price: {
     type: Number,
     require: true,
   },
-  offerPrice: {
+ sellingPrice: {
     type: Number,
   },
-  image: {
+  image: [{
     type: String,
     require: true,
-  },
-  category: {
+  }],
+  categoryId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "category",
+    ref: "categories",
     require: true,
   },
   size: {
-    type: Number,
+    type: String,
     require: true,
   },
   quantity: {
     type: Number,
     require: true,
   },
-  productStatus: {
+  isBlocked: {
     type: Boolean,
     require: true,
+    default:false
   },
 });
 

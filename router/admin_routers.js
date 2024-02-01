@@ -2,6 +2,10 @@ const express=require("express")
 const admin_router=express()
 const admin_controller=require('../controler/admincontroler')
 const category_controller=require('../controler/categorycontrol')
+const product_controller=require('../controler/prodctcontoler')
+const upload=require('../controler/helper/multer')
+
+
 
 
 
@@ -32,9 +36,35 @@ admin_router.post('/block_user',admin_controller.userBlockUnblock)
 
 
 
+//==================================  product controller================================
+
+admin_router.get('/products',product_controller. load_products)
+admin_router.get('/addproduct',product_controller. add_ProductLoad)
+admin_router.post('/addproduct',upload.array('images', 5),product_controller.add_Product)
+admin_router.get('/editProduct',product_controller.load_editProduct)
+admin_router.post('/editProduct',product_controller.editProduct)
+admin_router.post('/productListAndUnList',product_controller.listAndUnList)
 
 
-admin_router.get('/addproduct',admin_controller.add_Product)
+
+
+//==================================  product controller================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -90,15 +90,6 @@ const Dashboard_load=async (req,res)=>{
 
   //add product page
 
-  const add_Product=(req,res)=>{
-    try {
-      res.render('addProduct')
-    } catch (error) {
-      console.log(error.message)
-      
-    }
-   
-  }
 
 module.exports = {
   login_load,
@@ -106,7 +97,7 @@ module.exports = {
   Dashboard_load,
   userLoad,
   userBlockUnblock,
-  add_Product,
+  
 
 
 };

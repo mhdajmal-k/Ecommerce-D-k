@@ -47,19 +47,19 @@
                                 <% for (let i=0; i < users.length; i++) { %>
                                     <tr>
                                         <td width="40%">
-                                            <h6 class="mb-0 title">
+                                            <p class="mb-0 title">
                                                 <%= users[i].username %>
-                                            </h6>
+                                            </p>
                                         </td>
                                         <td width="40%">
-                                            <h6>
+                                            <p>
                                                 <%= users[i].email %>
-                                            </h6>
+                                            </p>
                                         </td>
                                         <td width="40%">
-                                            <h6>
+                                            <p>
                                                 <%= users[i].mobile %>
-                                            </h6>
+                                            </p>
                                         </td>
 
 
@@ -131,9 +131,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
         function userBlockUnblock(userId, status) {
-
-
-            $.ajax({
+      $.ajax({
                 url: "/admin/block_user",
                 method: "post",
                 data: {
@@ -142,7 +140,6 @@
                 },
                 success: (response) => {
                     if (response.status === true) {
-
                         // not working with out reload
                         location.reload()
                     } else {
