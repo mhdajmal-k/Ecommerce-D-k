@@ -1,9 +1,9 @@
-const user = require("../model/user_model")
-const product=require("../model/product_model")
+const user = require("../model/user_model");
+const product = require("../model/product_model");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const { render } = require("../router/user_routers");
-const {sendMail}=require("./helper/nodemailer")
+const { sendMail } = require("./helper/nodemailer");
 
 //secure Password
 
@@ -31,9 +31,11 @@ const generateOTP = (length) => {
 
 const landing_page = async (req, res) => {
   try {
-    const products=await product.find({isBlocked:false}).limit(7).populate("categoryId")
-    if(products)
-    res.render("landing_page",{products:products});
+    const products = await product
+      .find({ isBlocked: false })
+      .limit(7)
+      .populate("categoryId");
+    if (products) res.render("landing_page", { products: products });
   } catch (error) {
     console.log(error.message);
   }
@@ -48,7 +50,6 @@ const load_login = async (req, res) => {
   }
 };
 
-
 //signup page
 const load_signup = async (req, res) => {
   try {
@@ -58,13 +59,12 @@ const load_signup = async (req, res) => {
   }
 };
 
-
 //submit_signup
 const submit_signup = async (req, res) => {
   try {
     const { email, username, mobile, password } = req.body;
     const existingUser = await user.findOne({
-      $or: [{ email:email }, { mobile:mobile }],
+      $or: [{ email: email }, { mobile: mobile }],
     });
     if (existingUser) {
       res.render("signup", { message: "User Already Existing..." });
@@ -75,15 +75,13 @@ const submit_signup = async (req, res) => {
       const OTP = await generateOTP(6);
       req.session.OTP = OTP;
       console.log(OTP);
-      const a=await sendMail(email,OTP)
-        res.redirect("/otp_verification")
+      const a = await sendMail(email, OTP);
+      res.redirect("/otp_verification");
     }
   } catch (error) {
     console.log(error.message);
   }
 };
-
-
 
 //load otp
 const otp_verification = async (req, res) => {
@@ -93,8 +91,6 @@ const otp_verification = async (req, res) => {
     console.log(error.message);
   }
 };
-
-
 
 //otp checking...
 const otp_submit = async (req, res) => {
@@ -129,24 +125,22 @@ const otp_submit = async (req, res) => {
   }
 };
 
-
-
 //user login
 
 const verify_login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user_email = await user.findOne({ email: email });
-    console.log(user_email + "cking user emali");
-
     if (user_email) {
       const passwordMatch = await bcrypt.compare(password, user_email.password);
       if (passwordMatch) {
         if (user_email.is_verified == 1) {
-          console.log(user_email._id);
-          req.session.id = user_email._id.toString();
-          console.log("its a sessin id" + req.session.id);
-          res.redirect("/");
+          if (!user_email.is_block) {
+            req.session.id = user_email._id;
+            res.redirect("/");
+          } else {
+            res.render("login_page", { message: "oop! you have been blocked" });
+          }
         } else {
           res.render("login_page", { message: "Please Verify email" });
         }
@@ -154,44 +148,40 @@ const verify_login = async (req, res) => {
         res.render("login_page", { message: "Invalid Password" });
       }
     } else {
-      res.render("login_page", { message: "Invalid Email and password" });
+      res.render("login_page", { message: "Invalid Email" });
     }
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
 //get log page
 
-const load_shop=async (req,res)=>{
+const load_shop = async (req, res) => {
   console.log("heloo");
   try {
-      const products=await product.find({isBlocked:false})
-      console.log(products+"form here");
-  res.render("shop",{product:products})
-    
+    const products = await product.find({ isBlocked: false });
+    console.log(products + "form here");
+    res.render("shop", { product: products });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-  
-}
+};
 
 //one product details
 
-const shopProduct=async (req,res)=>{
+const shopProduct = async (req, res) => {
   try {
     console.log("hello");
-  const {id}=req.query
-  console.log(id);
-  const products=await product.findOne({_id:id}).populate("categoryId")
-  console.log(products);
-  res.render("viewOneproduct",{products})
-}
-   catch (error) {
+    const { id } = req.query;
+    console.log(id);
+    const products = await product.findOne({ _id: id }).populate("categoryId");
+    console.log(products);
+    res.render("viewOneproduct", { products });
+  } catch (error) {
     console.log(error.message);
   }
-}
+};
 
 module.exports = {
   landing_page,
@@ -202,5 +192,5 @@ module.exports = {
   otp_submit,
   verify_login,
   load_shop,
-  shopProduct
+  shopProduct,
 };

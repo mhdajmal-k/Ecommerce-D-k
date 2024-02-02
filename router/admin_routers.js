@@ -8,7 +8,6 @@ const upload=require('../controler/helper/multer')
 
 
 
-
 const path=require("path")
 const Auth = require('../middleware/adminAuth');
 
@@ -32,11 +31,6 @@ admin_router.get('/logout',admin_controller.logout)
 
 
 
-
-
-
-
-
 //==================================  product controller================================
 
 admin_router.get('/products',Auth.sessionChecker,product_controller. load_products)
@@ -45,28 +39,9 @@ admin_router.post('/addproduct',Auth.sessionChecker,upload.array('images', 5),pr
 admin_router.get('/editProduct',Auth.sessionChecker,product_controller.load_editProduct)
 admin_router.post('/editProduct',Auth.sessionChecker,product_controller.editProduct)
 admin_router.post('/productListAndUnList',Auth.sessionChecker,product_controller.listAndUnList)
-
-
-
+admin_router.get('/blockProducts/:id',Auth.sessionChecker,product_controller.delete_product)
 
 //==================================  product controller================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

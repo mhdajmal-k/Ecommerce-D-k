@@ -313,13 +313,13 @@
         }
 
         function validatemobile() {
-            const mobileNumber = mobile.value;
+            const mobileNumber = mobile.value.trim();
             const mobilePattern = /^\d{10}$/
             if (mobileNumber.length < 10) {
                 mobile_error.innerHTML = "Enter a valid mobile number (at least 10 digits)";
                 mobile_error.style.display = "block";
             }
-            else if (mobilePattern.test(mobileNumber)) {
+            else if (!mobilePattern.test(mobileNumber)) {
                 mobile_error.innerHTML = "Enter a valid mobile number ";
                 mobile_error.style.display = "block";
             }
@@ -330,7 +330,7 @@
         }
 
         function validateEmail() {
-            const Email = email.value;
+            const Email = email.value.trim();
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailPattern.test(Email) || Email === "") {
                 email_error.innerHTML = "Enter a valid email ";
@@ -343,7 +343,7 @@
         }
 
         function validate_password() {
-            const Password = password.value;
+            const Password = password.value.trim();
             const pass = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
             if (!pass.test(Password) || Password === "") {
                 password_error.innerHTML = "Enter a Strong Password eg: Strong@1234";

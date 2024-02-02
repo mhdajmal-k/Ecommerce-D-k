@@ -2,7 +2,7 @@
 const { errorMonitor } = require('nodemailer/lib/xoauth2');
 const category = require('../model/category');
 const product=require('../model/product_model');
-const { rawListeners } = require('../model/user_model');
+const { rawListeners, findByIdAndDelete } = require('../model/user_model');
 
 //product page  
 
@@ -139,6 +139,28 @@ const listAndUnList=async (req,res)=>{
     console.log(error.message+"hello4")
   }
 }
+
+
+//delete product
+
+const delete_product=async (req,res) =>{
+  try {
+    const id=req.params.id
+    if(id){
+      const delete_products=await  product.findByIdAndDelete(id)
+      if(delete_products){
+        console.log("success");
+        res.redirect("/admin/products")
+      }
+  
+  }else{
+    res.render("editProduct",{message:"error happened"})
+  }
+
+  } catch (error) {
+    console.log(error.message)
+  }
+}
   
 
   module.exports={
@@ -147,5 +169,6 @@ const listAndUnList=async (req,res)=>{
     load_products,
     load_editProduct,
     editProduct,
-    listAndUnList
+    listAndUnList,
+    delete_product
   }

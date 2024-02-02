@@ -7,6 +7,9 @@ const session = require('express-session')
 //login page
 
 const login_load=async(req,res)=>{
+  if(req.session.admin){
+    res.redirect('/admin/dashboard')
+  }
   try {
       // const message=req.flash()
       // console.log(message);
@@ -77,14 +80,13 @@ const Dashboard_load=async (req,res)=>{
         const block=await user.updateOne({_id:userId},{$set:{is_block:true}})
         res.json({status : true})
       }else if(status === "unblockUser"){
-        const block=await user.updateOne({_id:userId},{$set:{is_block:false}})
+        const unblock=await user.updateOne({_id:userId},{$set:{is_block:false}})
         res.json({status : true})
       }else{
+        console.log('its from here');
         console.log(error.message);
         res.json({status : false})
       }
-
-      res.json({status : true})
       
     } catch (error) {
       console.error(error.message)
