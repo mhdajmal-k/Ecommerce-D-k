@@ -66,17 +66,17 @@ const submit_signup = async (req, res) => {
     const existingUser = await user.findOne({
       $or: [{ email: email }, { mobile: mobile }],
     });
-    if (existingUser) {
-      res.render("signup", { message: "User Already Existing..." });
-    } else {
+    if (!existingUser) {
       const securedPassword = await securePassword(password);
-      const user_data = { email, username, mobile, securedPassword };
-      req.session.user = user_data;
+      req.session.userTemp  = { email, username, mobile, securedPassword };
+      console.log(req.session.userTemp.email+"goted");
       const OTP = await generateOTP(6);
       req.session.OTP = OTP;
       console.log(OTP);
       const a = await sendMail(email, OTP);
       res.redirect("/otp_verification");
+    } else {
+      res.render("signup", { message: "User Already Existing..." });
     }
   } catch (error) {
     console.log(error.message);
@@ -86,11 +86,37 @@ const submit_signup = async (req, res) => {
 //load otp
 const otp_verification = async (req, res) => {
   try {
+    console.log("hhhhh")
+    console.log(req.session)
     res.render("otp_page");
   } catch (error) {
     console.log(error.message);
   }
 };
+
+//resend otp
+
+const resendOtp=async (req,res)=>{
+  try {
+    
+   
+    
+    console.log(req.session.OTP+"sessin");
+    console.log(req.session);
+    const newOtp = await generateOTP(6);
+    console.log(newOtp+"new otp");
+    req.session.OTP = newOtp;
+    const sessionEmail=  req.session.userTemp.email
+    console.log(sessionEmail+"agin ");
+    const a = await sendMail(sessionEmail, newOtp);
+    res.render("otp_page")
+    
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+
 
 //otp checking...
 const otp_submit = async (req, res) => {
@@ -99,10 +125,9 @@ const otp_submit = async (req, res) => {
     console.log(`otp ${otp}`);
     console.log(`session ${req.session.OTP}`);
 
-    if (otp !== req.session.OTP) {
-      res.render("otp_page", { message: "Entered OTP is INVALID!" });
-    } else {
-      const { email, securedPassword, mobile, username } = req.session.user;
+
+    if(otp==req.session.OTP){
+      const { email, securedPassword, mobile, username } = req.session.userTemp ;
       const saving_data = new user({
         username: username,
         email: email,
@@ -112,13 +137,12 @@ const otp_submit = async (req, res) => {
       });
       const userData = await saving_data.save();
       delete req.session.OTP;
-
-      if (userData) {
+       if( userData){
         res.redirect("/login");
-      } else {
-        console.log("error");
-        res.status(400).json("user data fail");
-      }
+    }
+    }
+    else{
+      res.render("otp_page", { message: "Entered OTP is INVALID!" });
     }
   } catch (error) {
     console.log(error.message);
@@ -193,4 +217,5 @@ module.exports = {
   verify_login,
   load_shop,
   shopProduct,
+  resendOtp
 };

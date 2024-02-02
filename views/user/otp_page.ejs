@@ -12,15 +12,36 @@
                     <input type="text" class="form-control" id="otp" name="otp" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Verify OTP</button>
+                <button type="submit" id="verify" class="btn btn-primary">Verify OTP</button>
                 <% if (locals.message) { %>
                 <p class="text-danger text-8" ><%= message %></p> 
                 <% } %> 
             </form>
 
-            <p class="mt-3">Didn't receive the OTP? <a href="#">Resend OTP</a></p>
+            <p class="mt-3">Didn't receive the OTP?
+                <p id="block"> Resend OTP in <span id="countdowntimer">60 </span> Seconds</p>
+            <p><a id="show" style="display: none;" href="/resendOtp">Resend OTP</a></p>
         </div>
     </div>
 </div>
 
+
 <%- include ("../partilas/userfooter") -%>
+<script>
+    var timeLeft = 60;
+    var downloadTimer = setInterval(function(){
+    timeLeft--;
+    document.getElementById("countdowntimer").textContent = timeLeft;
+    if(timeLeft <= 0)
+        clearInterval(downloadTimer);
+    
+    },1000);
+
+    setTimeout(() => {
+      document.getElementById("show").style.display = "block";
+      document.getElementById("verify").style.display = "none";
+      document.getElementById("block").style.display = "none";
+
+    }, 60000); 
+   
+</script>

@@ -12,7 +12,7 @@ dbConnect()
 app.use(session({
    secret:process.env.session,
     resave:false,
-    saveUninitialized:false,
+    saveUninitialized:true,
 }))
 
 
