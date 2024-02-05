@@ -101,13 +101,17 @@ res.render("editProducts",{products:productData,categories:categories})
 
 const editProduct=async (req,res)=>{
   try {
-  
-    const images = [];
+    const {productId,productName,color,size,quantity,price,sellingPrice,id,description,categories}=req.body
+
     if (req.files && req.files.length > 0) {
-        for (let i = 0; i < req.files.length; i++) {
-            images.push(req.files[i].filename);
-          }}
-  const {productId,productName,color,size,quantity,price,sellingPrice,id,description,categories}=req.body
+      const images = req.files.map(file => file.filename);
+  
+      const updatedProduct = await product.updateOne(
+          { productId: productId },
+          { $push: { image: { $each: images } } }
+          
+      );
+  
 const updateProduct=await product.findByIdAndUpdate({_id:id},{$set:{
   productId:productId,
   productName:productName,
@@ -118,7 +122,7 @@ const updateProduct=await product.findByIdAndUpdate({_id:id},{$set:{
   sellingPrice:sellingPrice,
   description:description,
   categoryId:categories,
-  image:images
+
 }})
 if(updateProduct){
   console.log("done");
@@ -127,7 +131,7 @@ if(updateProduct){
 
   res.render('editProducts',{message:"some error happen"})
 }
-  } catch (error) {
+  }} catch (error) {
     console.log(error.message)
   }
 }
