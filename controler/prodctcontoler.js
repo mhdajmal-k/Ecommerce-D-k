@@ -125,7 +125,7 @@ const updateProduct=await product.findByIdAndUpdate({_id:id},{$set:{
 
 }})
 if(updateProduct){
-  console.log("done");
+
   res.redirect("/admin/products")
 }else{
 
@@ -166,7 +166,6 @@ const delete_product=async (req,res) =>{
     if(id){
       const delete_products=await  product.findByIdAndDelete(id)
       if(delete_products){
-        console.log("success");
         res.redirect("/admin/products")
       }
   
@@ -181,10 +180,7 @@ const delete_product=async (req,res) =>{
 
 const delete_image=async(req,res)=>{
   try {
-    console.log("HEllo form delete image");
-   
     console.log( req.body.imageId,'this is img id LLLLLLL')
-   
     const {imageId,productId}=req.body
     const products = await product.findByIdAndUpdate(productId, {
       $pull: { image: imageId }
