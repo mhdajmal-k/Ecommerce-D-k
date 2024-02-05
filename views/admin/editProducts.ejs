@@ -1,69 +1,72 @@
 <%- include ("../partilas/admin") %>
 
     <section class="content-main">
-        <form method="post" action="/admin/editProduct" id="formdata">
+        <form method="post" action="/admin/editProduct" id="form">
 
             <div class="row">
                 <div class="col-9">
                     <div class="content-header">
                         <h2 class="content-title">Edit Product</h2>
-                     
+
                     </div>
                 </div>
-              
 
-                    <div class="col-lg-6" style="width: 100%;">
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <div class="btn btn-danger" onclick="deleteProduct('<%= products._id %>')">
-                                    Delete
+
+                <div class="col-lg-6" style="width: 100%;">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="btn btn-danger" onclick="deleteProduct('<%= products._id %>')">
+                                Delete
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label">Product Id</label>
+                                <input type="text" name="productId" placeholder="Type here" onblur="validateId()"
+                                    class="form-control" id="product_id" value="<%= products.productId %>">
+                                <p id="productError" class="text-danger "></p>
+                            </div>
+                            <div class="mb-4">
+                                <label for="product_title" class="form-label">product Name</label>
+                                <input type="text" name="productName" placeholder="Type here" onblur="validateTittle()"
+                                    class="form-control" id="product_title" value="<%= products.productName %>">
+                                <p id="productTitleError" class="text-danger "></p>
+                            </div>
+                            <div class="row gx-3">
+                                <div class="col-md-4  mb-3">
+                                    <label for="product_color" class="form-label">Color</label>
+                                    <input type="text" value="<%= products.color %>" placeholder="Type here"
+                                        name="color" onblur="validateColor()" class="form-control" id="product_color">
+                                    <p id="productColorError" class="text-danger "></p>
                                 </div>
-                                <div class="mb-4">
-                                    <label for="product_title" class="form-label">Product Id</label>
-                                    <input type="text" name="productId" placeholder="Type here" onkeyup="validateId()" class="form-control"
-                                        id="product_id"  value="<%= products.productId %>">
-                                    <p id="productError" class="text-danger "></p>
+                                <div class="col-md-4 mb-3">
+                                    <label for="product_size" class="form-label">Size</label>
+                                    <select name="size" class="form-control" id="product_size">
+                                        <option value="Small">Small</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Large">Large</option>
+                                        <option value="Extra-Large">Extra-Large</option>
+                                    </select>
+                                    <p id="productSizeError" class="text-danger"></p>
                                 </div>
-                                <div class="mb-4">
-                                    <label for="product_title" class="form-label">product Name</label>
-                                    <input type="text" name="productName" placeholder="Type here" onkeyup="validateTittle()" class="form-control"
-                                        id="product_title" value="<%= products.productName %>">
-                                    <p id="productTitleError" class="text-danger "></p>
-                                </div>
-                                <div class="row gx-3">
-                                    <div class="col-md-4  mb-3">
-                                        <label for="product_color" class="form-label">Color</label>
-                                        <input type="text" value="<%= products.color %>" placeholder="Type here" name="color" onkeyup="validateColor()" class="form-control"
-                                            id="product_color" >
-                                        <p id="productColorError" class="text-danger "></p>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <label for="product_size" class="form-label">Size</label>
-                                        <select name="size" class="form-control" id="product_size">
-                                            <option value="Small">Small</option>
-                                            <option value="Medium">Medium</option>
-                                            <option value="Large">Large</option>
-                                            <option value="Extra-Large">Extra-Large</option>
-                                        </select>
-                                        <p id="productSizeError" class="text-danger"></p>
-                                    </div>
-                                    
-    
+
+
                                 <div class="col-md-4  mb-3">
                                     <label for="product_size" class="form-label">quantity</label>
-                                    <input type="text" placeholder="Type here" onblur="validateQuantity()" name="quantity" class="form-control"
-                                        id="product_quantity" value="<%= products.quantity %>">
+                                    <input type="number" placeholder="Type here" onblur="validateQuantity()"
+                                        name="quantity" class="form-control" id="product_quantity"
+                                        value="<%= products.quantity %>">
                                     <p id="productQuantityError" class="text-danger "></p>
                                 </div>
                                 <div class="mb-4" style="width:20%;">
                                     <label class="form-label">Price</label>
-                                    <input type="text" value="<%= products.price %>" name="price" placeholder="Type here" onkeyup="validatePrice()" class="form-control"
+                                    <input type="number" value="<%= products.price %>" name="price"
+                                        placeholder="Type here" onblur="validatePrice()" class="form-control"
                                         id="product_price">
                                     <p id="productPriceError" class="text-danger "></p>
                                 </div>
                                 <div class="mb-4" style="width:20%;">
                                     <label class="form-label">Selling price</label>
-                                    <input type="text" value="<%= products.sellingPrice %>" name="sellingPrice" onblur="validateSellingPrice()" placeholder="Type here" class="form-control"
+                                    <input type="number" value="<%= products.sellingPrice %>" name="sellingPrice"
+                                        onblur="validateSellingPrice()" placeholder="Type here" class="form-control"
                                         id="sellingPrice">
                                     <p id="sellingPriceError" class="text-danger "></p>
                                 </div>
@@ -71,69 +74,78 @@
                                 <div class="mb-4">
                                     <label class="form-label">category</label>
                                     <select class="form-select" name="categories">
-                                       
-                                            <% for( let i=0; i < categories.length; i++ ) { %>
-                                                <option  value="<%=categories[i]._id %>">
-                                                    <%= categories[i].categoryTitle %>
-                                                </option>
-    
-    
-                                                <% } %>
-    
-                                                 
-    
+
+                                        <% for( let i=0; i < categories.length; i++ ) { %>
+                                            <option value="<%=categories[i]._id %>">
+                                                <%= categories[i].categoryTitle %>
+                                            </option>
+
+
+                                            <% } %>
+
+
+
                                     </select>
                                 </div>
                             </div>
-    
-                        </div>
-                    </div> <!-- card end// -->
-               
-                
-             
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div>
-                            <label class="form-label">Description</label>
-                            <input type="text" name="description" placeholder="Type here" onblur="validateDescription()" class="form-control"
-                                id="product_Description" rows="4" value="<%= products.description %>">
-                            <p id="productDescriptionError" class="text-danger "></p>
-                        </div>
-                    </div>
-                </div> <!-- card end// -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div>
-                            <% for (let i = 0; i < products.image.length; i++) { %>
-                                <div class="col-md-9">
-                                    <div class="mb-4">
-                                        <div class="col-12"> <td> <img class="rounded"  style="width: 50px; height: 60px;" src="/uploads/products/<%= products.image[i] %>" alt="image"></td></div>
-                                        <td><a href="/api/admin/deleteSingleImage?img=<%= products.image[i] %>&id=<%=products._id %>"><span class="badge rounded-pill alert-danger">Delete</span></a></td>
-                                    </div>
-                                   
-                                </div> <!-- col.// -->
-                                <% } %>
-                            <label class="form-label">Images</label>
-                            <input class="form-control" name="images" type="file" id="Images"   multiple >
-                            <p id="productImageError" class="text-danger "></p>
 
                         </div>
+                    </div> <!-- card end// -->
+
+
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <label class="form-label">Description</label>
+                                <input type="text" name="description" placeholder="Type here"
+                                    onblur="validateDescription()" class="form-control" id="product_Description"
+                                    rows="4" value="<%= products.description %>">
+                                <p id="productDescriptionError" class="text-danger "></p>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div>
+                                <% for (let i=0; i < products.image.length; i++) { %>
+                                    <div class="col-md-9">
+                                        <div class="mb-4">
+                                            <div class="col-12">
+                                                <td> <img class="rounded" style="width: 50px; height: 60px;"
+                                                        src="/uploads/products/<%= products.image[i] %>" alt="image">
+                                                </td>
+                                            </div>
+                                            <td><a
+                                                  class="btn btn-danger" onclick="deleteImage('<%=products._id %>','<%= products.image[i] %>')"><span
+                                                       >Delete</span></a></td>
+                                        </div>
+
+                                    </div> <!-- col.// -->
+                                    <% } %>
+                                        <label class="form-label">Images</label>
+                                        <input class="form-control" name="images" type="file" id="Images" multiple>
+                                        <p id="productImageError" class="text-danger "></p>
+
+                            </div>
+                        </div>
                     </div>
+                    <div class="text-center">
+                        <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
+                        <input type="submit" value="update" class="btn btn-success">
+                        <p id="submitError" class="text-danger error"></p>
+                    </div>
+                    <!-- card end// -->
                 </div>
-                <div class="text-center">
-                    <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
-                    <input type="submit" value="update" class="btn btn-success">
-                    <p id="submitError" class="text-danger error"></p>
-                </div> 
-                <!-- card end// -->
-            </div>
 
         </form>
     </section>
 
-   
+
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+   <script>
 
         const productId = document.getElementById("product_id")
         const product_title = document.getElementById("product_title")
@@ -154,17 +166,13 @@
 
 
         function validateId() {
-            productTitle = productId.value.trim()
-        alert("hello")
-        alert( productTitle)
-            if  (productTitle == "") {
-                productError.style.display = "block"
+            productvalue = productId.value.trim()
+            if (productvalue == "") {
                 productError.innerHTML = "product id is required"
-              
-            } else if ( productTitle.length > 15) {
                 productError.style.display = "block"
+            } else if (productvalue.length > 15) {
                 productError.innerHTML = "Enter a valid id"
-               
+                productError.style.display = "block"
             } else {
                 productError.innerHTML = ""
                 productError.style.display = "none"
@@ -199,22 +207,6 @@
             }
         }
 
-        // function validateSize() {
-        //     const size = product_size.value.trim()
-        //     const smallPatters = /^[a-z]+$/;
-        //     if (size == "") {
-        //         productSizeSmallError.style.display = "block"
-        //         productSizeSmallError.innerHTML = "size must be required"
-        //     } else if (!smallPatters.test(size)) {
-        //         productSizeSmallError.style.display = "block"
-        //         productSizeSmallError.innerHTML = "please you small character"
-        //     } else {
-        //         productSizeSmallError.style.display = "none"
-        //         productSizeSmallError.innerHTML = ""
-        //     }
-
-
-        // }
 
 
 
@@ -224,9 +216,11 @@
             if (quantity === "") {
                 productQuantityError.style.display = "block"
                 productQuantityError.innerHTML = "This filed must be required"
+
             } else if (!int.test(quantity)) {
                 productQuantityError.style.display = "block"
                 productQuantityError.innerHTML = "invalid quantity"
+
 
             }
             else {
@@ -242,25 +236,32 @@
             } else if (description.length < 10) {
                 productDescriptionError.style.display = "block"
                 productDescriptionError.innerHTML = "Product Description is short"
-            } else {
+            }
+            else {
                 productDescriptionError.style.display = "none"
                 productDescriptionError.innerHTML = ""
             }
         }
         function validatePrice() {
             const price = productPrice.value.trim();
+            
             if (price === "") {
+
                 productPriceError.style.display = "block";
-                productPriceError.innerHTML = "Invalid price";
+                productPriceError.innerHTML = "Invalid price 1";
+
             } else if (price < 0) {
+
                 productPriceError.style.display = "block";
-                productPriceError.innerHTML = "Invalid price";
-            } else if (isNaN(price)) {
-                productPriceError.style.display = "block";
-                productPriceError.innerHTML = "Price must be required";
+
+                productPriceError.innerHTML = "Invalid price 2";
+
+
             } else {
                 productPriceError.style.display = "none";
                 productPriceError.innerHTML = "";
+
+
             }
         }
 
@@ -269,7 +270,7 @@
 
         function validateSellingPrice() {
             const selling = parseFloat(sellingPrice.value.trim());
-            const price = parseFloat( productPrice.value.trim());
+            const price = parseFloat(productPrice.value.trim());
             if (selling > price) {
                 sellingPriceError.style.display = "block"
                 sellingPriceError.innerHTML = "INvalid price1!"
@@ -288,42 +289,79 @@
 
 
 
-        document.getElementById("formdata").addEventListener("submit", (e) => {
-            alert("hai")
+        document.getElementById("form").addEventListener("submit", (e) => {
+
             validateId()
-            alert("hello")
+
             validateTittle()
-            alert("hello")
+
             validateColor()
-               alert("hello")
+
             validateQuantity()
-            validateDescription()
+
             validatePrice()
+
+
+            validateDescription()
             validateSellingPrice()
-            if (productError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productSizeSmallError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML || productPriceError.innerHTML) {
+
+
+
+
+            if (productError.innerHTML || productQuantityError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML) {
+alert("form default")
                 e.preventDefault();
             } else {
-
+                alert("form else")
 
 
             }
         });
 
-        function deleteProduct(productID){
+
+        function deleteProduct(productID) {
             console.log(productID)
             swal({
-                title:"delete product",
-                text:"are you sure for delete the product",
-                icon:"warning"
-            }).then((value)=>{
-                if(value){
-                    window.location.href=`/admin/blockProducts/${productID}`
-                    }
-              
-                })
-           
+                title: "delete product",
+                text: "are you sure for delete the product",
+                icon: "warning"
+            }).then((value) => {
+                if (value) {
+                    window.location.href = `/admin/blockProducts/${productID}`
+                }
 
-            
+            })
+        }
+
+        function deleteImage(productID,imageId){
+            alert(productID)
+            swal({
+                title: "are you sure",
+                text: "are you sure for delete the image",
+                icon: "warning",
+                buttons: true,
+  dangerMode: true,
+            }).then ((value)=>{
+              if(value){
+                console.log(productID+"from here");
+                $.ajax({
+                    url:'/admin/deleteImage',
+                    method:"post",
+                    data:{
+                        productId:productID,
+                        imageId:imageId
+                    },success(response){
+                        if(response.status){
+
+                            window.location.reload()
+                        }else{
+                            alert('error')
+                        }
+                    }
+                })
+              }
+            })
+
         }
 
 

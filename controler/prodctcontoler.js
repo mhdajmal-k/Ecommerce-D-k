@@ -1,5 +1,5 @@
 
-const { errorMonitor } = require('nodemailer/lib/xoauth2');
+const { errorMonitor, consumers } = require('nodemailer/lib/xoauth2');
 const category = require('../model/category');
 const product=require('../model/product_model');
 const { rawListeners, findByIdAndDelete } = require('../model/user_model');
@@ -83,7 +83,6 @@ const load_editProduct=async(req,res)=>{
     if(id){
 const productData=await product.findById(id)
 const categories=await category.find({})
-console.log(productData);
 res.render("editProducts",{products:productData,categories:categories})
     }else{
       res.status(400),json("error")
@@ -172,6 +171,29 @@ const delete_product=async (req,res) =>{
     console.log(error.message)
   }
 }
+
+const delete_image=async(req,res)=>{
+  try {
+    console.log("HEllo form delete image");
+   
+    console.log( req.body.imageId,'this is img id LLLLLLL')
+   
+    const {imageId,productId}=req.body
+    const products = await product.findByIdAndUpdate(productId, {
+      $pull: { image: imageId }
+    });
+    const imagePath = path.join('uploads', 'products', imageId);
+    await unlinkAsync(imagePath);
+     console.log(products,'TTTTTTT');
+    if(products){
+      res.json({status:true})
+    }
+    
+    
+  } catch (error) {
+    console.log(error.message)
+  }
+}
   
 
   module.exports={
@@ -181,5 +203,6 @@ const delete_product=async (req,res) =>{
     load_editProduct,
     editProduct,
     listAndUnListProduct,
-    delete_product
+    delete_product,
+    delete_image
   }

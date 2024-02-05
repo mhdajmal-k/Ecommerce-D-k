@@ -54,19 +54,19 @@
 
                                         <div class="col-md-4  mb-3">
                                             <label for="product_size" class="form-label">quantity</label>
-                                            <input type="text" placeholder="Type here" onblur="validateQuantity()"
+                                            <input type="number" placeholder="Type here" onblur="validateQuantity()"
                                                 name="quantity" class="form-control" id="product_quantity">
                                             <p id="productQuantityError" class="text-danger "></p>
                                         </div>
                                         <div class="mb-4" style="width:20%;">
                                             <label class="form-label">Price</label>
-                                            <input type="text" name="price" placeholder="Type here"
-                                                onkeyup="validatePrice()" class="form-control" id="product_price">
+                                            <input type="number" name="price" placeholder="Type here"
+                                               onblur="validatePrice()" class="form-control" id="product_price">
                                             <p id="productPriceError" class="text-danger "></p>
                                         </div>
                                         <div class="mb-4" style="width:20%;">
                                             <label class="form-label">Selling price</label>
-                                            <input type="text" name="sellingPrice" onblur="validateSellingPrice()"
+                                            <input type="number" name="sellingPrice" onblur="validateSellingPrice()"
                                                 placeholder="Type here" class="form-control" id="sellingPrice">
                                             <p id="sellingPriceError" class="text-danger "></p>
                                         </div>
@@ -183,22 +183,6 @@
             }
         }
 
-        // function validateSize() {
-        //     const size = product_size.value.trim()
-        //     const smallPatters = /^[a-z]+$/;
-        //     if (size == "") {
-        //         productSizeSmallError.style.display = "block"
-        //         productSizeSmallError.innerHTML = "size must be required"
-        //     } else if (!smallPatters.test(size)) {
-        //         productSizeSmallError.style.display = "block"
-        //         productSizeSmallError.innerHTML = "please you small character"
-        //     } else {
-        //         productSizeSmallError.style.display = "none"
-        //         productSizeSmallError.innerHTML = ""
-        //     }
-
-
-        // }
 
 
 
@@ -208,9 +192,11 @@
             if (quantity === "") {
                 productQuantityError.style.display = "block"
                 productQuantityError.innerHTML = "This filed must be required"
+               
             } else if (!int.test(quantity)) {
                 productQuantityError.style.display = "block"
                 productQuantityError.innerHTML = "invalid quantity"
+               
 
             }
             else {
@@ -232,19 +218,25 @@
             }
         }
         function validatePrice() {
-            const price = parseFloat(productPrice.value.trim());
+            const price = productPrice.value.trim();
+            alert(price+"its the price")
             if (price === "") {
+              
                 productPriceError.style.display = "block";
-                productPriceError.innerHTML = "Invalid price";
+                productPriceError.innerHTML = "Invalid price 1";
+             
             } else if (price < 0) {
+             
                 productPriceError.style.display = "block";
-                productPriceError.innerHTML = "Invalid price";
-            } else if (isNaN(price)) {
-                productPriceError.style.display = "block";
-                productPriceError.innerHTML = "Price must be required";
+
+                productPriceError.innerHTML = "Invalid price 2";
+               
+            
             } else {
                 productPriceError.style.display = "none";
                 productPriceError.innerHTML = "";
+             
+
             }
         }
 
@@ -275,21 +267,23 @@
         document.getElementById("form").addEventListener("submit", (e) => {
          
             validateId()
-         
-            validateTittle()
-         
-            validateColor()
         
+            validateTittle()
+          
+            validateColor()
+     
             validateQuantity()
-         
-            validateDescription()
-         
+          
             validatePrice()
-       
+           
+            
+            validateDescription()
             validateSellingPrice()
+            
+
           
        
-            if (productError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productSizeSmallError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML || productPriceError.innerHTML) {
+            if (productError.innerHTML ||productQuantityError.innerHTML|| productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML ) {
     
                 e.preventDefault();
             } else {

@@ -109,9 +109,7 @@ const listAndUnList=async(req,res)=>{
   try {
 
     const id=req.query.id
-    console.log(id)
     const _id=await category.findById({_id:id})
-    console.log(_id)
     if(_id){
       if(_id.isList==true){
         const unList=await category.updateOne({_id},{$set:{isList:false}})

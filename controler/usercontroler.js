@@ -210,15 +210,15 @@ const load_shop = async (req, res) => {
 
 const shopProduct = async (req, res) => {
   try {
-    console.log("hello");
+   
     const { id } = req.query;
     console.log(id);
     const products = await product.findOne({ _id: id }).populate("categoryId");
-    if(products){
-      res.render("viewOneproduct", { products });
+    if(products ){
+      const relatedProducts = await product.find({ _id: { $ne: id } }).populate("categoryId").limit(4);
+      res.render("viewOneproduct", { products,relatedProducts});
     } 
     else{
-      console.log("hello");
       res.send("oops!")
     }
   

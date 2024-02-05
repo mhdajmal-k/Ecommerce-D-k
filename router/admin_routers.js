@@ -13,7 +13,7 @@ userBlockUnblock,
 logout}=admin_controller
 
 
-const {load_products,add_ProductLoad,add_Product,load_editProduct,delete_product,listAndUnListProduct,editProduct}=product_controller
+const {load_products,add_ProductLoad,add_Product,load_editProduct,delete_product,listAndUnListProduct,editProduct,delete_image}=product_controller
 
 
 
@@ -54,6 +54,7 @@ admin_router.get('/editProduct',Auth.sessionChecker,load_editProduct)
 admin_router.post('/editProduct',Auth.sessionChecker,editProduct)
 admin_router.post('/productListAndUnList',Auth.sessionChecker,listAndUnListProduct)
 admin_router.get('/blockProducts/:id',Auth.sessionChecker,delete_product)
+admin_router.post('/deleteImage',Auth.sessionChecker,delete_image)
 
 //==================================  product controller================================
 
