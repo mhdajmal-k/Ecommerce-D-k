@@ -31,11 +31,22 @@ const generateOTP = (length) => {
 
 const landing_page = async (req, res) => {
   try {
+    const user=req.session.user || false
+    console.log(user+"1");
+    
+  
     const products = await product
       .find({ isBlocked: false })
       .limit(7)
       .populate("categoryId");
-    if (products) res.render("landing_page", { products: products });
+if(user){
+  res.render("landing_page", { products: products,user:user });
+
+}else{
+  res.render("landing_page", { products: products });
+
+}
+    // if (products&&user) res.render("landing_page", { products: products,user:user });
   } catch (error) {
     console.log(error.message);
   }
@@ -44,6 +55,9 @@ const landing_page = async (req, res) => {
 //Login page
 const load_login = async (req, res) => {
   try {
+    if(req.session.user==true){
+      res.redirect('/')
+    }
     res.render("login_page");
   } catch (error) {
     console.log(error.message);
@@ -98,9 +112,6 @@ const otp_verification = async (req, res) => {
 
 const resendOtp=async (req,res)=>{
   try {
-    
-   
-    
     console.log(req.session.OTP+"sessin");
     console.log(req.session);
     const newOtp = await generateOTP(6);
@@ -161,6 +172,8 @@ const verify_login = async (req, res) => {
         if (user_email.is_verified == 1) {
           if (!user_email.is_block) {
             req.session.id = user_email._id;
+            req.session.user=true
+            req.session.save()
             res.redirect("/");
           } else {
             res.render("login_page", { message: "oop! you have been blocked" });
@@ -184,7 +197,8 @@ const verify_login = async (req, res) => {
 const load_shop = async (req, res) => {
   console.log("heloo");
   try {
-    const products = await product.find({ isBlocked: false });
+    const products = await product.find({ isBlocked: false })
+    // .populate("categoryId")
     console.log(products + "form here");
     res.render("shop", { product: products });
   } catch (error) {
@@ -200,12 +214,38 @@ const shopProduct = async (req, res) => {
     const { id } = req.query;
     console.log(id);
     const products = await product.findOne({ _id: id }).populate("categoryId");
-    console.log(products);
-    res.render("viewOneproduct", { products });
+    if(products){
+      res.render("viewOneproduct", { products });
+    } 
+    else{
+      console.log("hello");
+      res.send("oops!")
+    }
+  
   } catch (error) {
     console.log(error.message);
   }
 };
+
+
+//logout
+
+const logout=async(req,res)=>{
+  try {
+
+    console.log(req.session.id);
+   req.session.id=null
+   req.session.user=false
+   req.session.save()
+    console.log("hello",req.session.id);
+    res.redirect("/")
+
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+
 
 module.exports = {
   landing_page,
@@ -217,5 +257,6 @@ module.exports = {
   verify_login,
   load_shop,
   shopProduct,
-  resendOtp
+  resendOtp,
+  logout
 };

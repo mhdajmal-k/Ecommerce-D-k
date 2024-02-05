@@ -9,17 +9,18 @@ function validateForm(e) {
     categoryDescriptionError.style.display = "none";
     categoryDescriptionError.innerHTML = "";
 
-    if (productTitle === "" ) {
+    if (productTitle === "") {
         errorMessageElement.style.display = "block";
-        errorMessageElement.innerHTML = "Product title is required";
+        errorMessageElement.innerHTML = "Product title is required1";
         e.preventDefault();
-    } else if (description === "") {
+    } else if (description === "" ) {
         categoryDescriptionError.style.display = "block";
-        categoryDescriptionError.innerHTML = "Description is required";
+        categoryDescriptionError.innerHTML = "Description is required2";
         e.preventDefault();
-    }else if(productTitle.length>20){
-        categoryDescriptionError.style.display = "block";
-        categoryDescriptionError.innerHTML = "Description is required";
+    }
+    else if(productTitle.length>20){
+        errorMessageElement.style.display = "block";
+        errorMessageElement.innerHTML = "product tittle must be short3";
         e.preventDefault();
     }
 }

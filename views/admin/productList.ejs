@@ -13,6 +13,7 @@
                             <th scope="col"><b>Product name</b></th>
                             <th scope="col"><b>ProductImage</b></th>
                             <th scope="col"><b>Category</b></th>
+                            <th scope="col"><b>Quantity</b></th>
                             <th scope="col"><b>Regular Price</b></th>
                             <th scope="col"><b>Sale Price</b></th>
                             <th scope="col"><b>Action</b></th>
@@ -31,12 +32,16 @@
                                     </td>
                                     <td>
 
-                                        <img src="/uploads/products/<%= products[i].image[4] %>"
+                                        <img src="/uploads/products/<%= products[i].image[0] %>"
                                             class="img-sm img-thumbnail" alt="Item">
 
                                     </td>
+                                 
                                     <td>
-                                        <%= products[i].categoryId.categoryTitle %>
+                                        <%= products[i].categoryId?.categoryTitle %>
+                                    </td>
+                                    <td>
+                                        <%= products[i].quantity %>
                                     </td>
                                     <td>₹<%= products[i].price %>
                                     </td>
@@ -56,10 +61,18 @@
                                                 <% } %>
                                     </td>
                                     <td>
-                                        <button class="btn btn-warning" style="width: 80px;">
-                                            <a href="/admin/editProduct?procductID=<%=products[i]._id  %>"
-                                                class="text-white" style="text-decoration: none;">Edit</a>
-                                        </button>
+                                        <% if (products[i].isBlocked) { %>
+                                            <button  class="btn btn-warning" style="width: 80px; display: none;">
+                                                <a href="/admin/editProduct?procductID=<%=products[i]._id  %>"
+                                                    class="text-white" style="text-decoration: none;display: none; ">Edit</a>
+                                            </button>
+                                        <% }else { %>
+                                            <button  class="btn btn-warning" style="width: 80px; ;">
+                                                <a href="/admin/editProduct?procductID=<%=products[i]._id  %>"
+                                                    class="text-white" style="text-decoration: none; ">Edit</a>
+                                            </button>
+                                            <% } %>
+                                        
                                     </td>
                                 </tr>
                                 <% } %>

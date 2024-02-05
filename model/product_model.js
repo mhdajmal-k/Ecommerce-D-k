@@ -33,10 +33,10 @@ type:String
     ref: "categories",
     require: true,
   },
-  size: {
+  size: [{
     type: String,
     require: true,
-  },
+  }],
   quantity: {
     type: Number,
     require: true,

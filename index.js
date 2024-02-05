@@ -12,7 +12,7 @@ dbConnect()
 app.use(session({
    secret:process.env.session,
     resave:false,
-    saveUninitialized:true,
+    saveUninitialized:false,
 }))
 
 
@@ -34,7 +34,7 @@ app.use('/admin',admin_router)
 
 
 //404 page
-app.use("*",(req,res)=>{
+app.use("/*",(req,res)=>{
    res.status(404).json("page not found!")
  
 })

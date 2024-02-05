@@ -1,7 +1,7 @@
 <%- include ("../partilas/admin") %>
 
     <section class="content-main">
-        <form method="post" action="/admin/editProduct" id="form">
+        <form method="post" action="/admin/editProduct" id="formdata">
 
             <div class="row">
                 <div class="col-9">
@@ -20,13 +20,13 @@
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_title" class="form-label">Product Id</label>
-                                    <input type="text" name="productId" placeholder="Type here" onblur="validateId()" class="form-control"
-                                        id="product_id "  value="<%= products.productId %>">
+                                    <input type="text" name="productId" placeholder="Type here" onkeyup="validateId()" class="form-control"
+                                        id="product_id"  value="<%= products.productId %>">
                                     <p id="productError" class="text-danger "></p>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_title" class="form-label"></label>
-                                    <input type="text" name="productName" placeholder="Type here" onkeypress="validateTittle()" class="form-control"
+                                    <label for="product_title" class="form-label">product Name</label>
+                                    <input type="text" name="productName" placeholder="Type here" onkeyup="validateTittle()" class="form-control"
                                         id="product_title" value="<%= products.productName %>">
                                     <p id="productTitleError" class="text-danger "></p>
                                 </div>
@@ -63,7 +63,7 @@
                                 </div>
                                 <div class="mb-4" style="width:20%;">
                                     <label class="form-label">Selling price</label>
-                                    <input type="text" value="<%= products.sellingPrice %>" name="sellingPrice" onblur="validatePrice()" placeholder="Type here" class="form-control"
+                                    <input type="text" value="<%= products.sellingPrice %>" name="sellingPrice" onblur="validateSellingPrice()" placeholder="Type here" class="form-control"
                                         id="sellingPrice">
                                     <p id="sellingPriceError" class="text-danger "></p>
                                 </div>
@@ -71,7 +71,7 @@
                                 <div class="mb-4">
                                     <label class="form-label">category</label>
                                     <select class="form-select" name="categories">
-                                        <% if (locals.categories) { %>
+                                       
                                             <% for( let i=0; i < categories.length; i++ ) { %>
                                                 <option  value="<%=categories[i]._id %>">
                                                     <%= categories[i].categoryTitle %>
@@ -80,7 +80,7 @@
     
                                                 <% } %>
     
-                                                    <% } %>
+                                                 
     
                                     </select>
                                 </div>
@@ -154,13 +154,17 @@
 
 
         function validateId() {
-            productvalue = productId.value.trim()
-            if (productvalue == "") {
+            productTitle = productId.value.trim()
+        alert("hello")
+        alert( productTitle)
+            if  (productTitle == "") {
+                productError.style.display = "block"
                 productError.innerHTML = "product id is required"
+              
+            } else if ( productTitle.length > 15) {
                 productError.style.display = "block"
-            } else if (productvalue.length > 15) {
                 productError.innerHTML = "Enter a valid id"
-                productError.style.display = "block"
+               
             } else {
                 productError.innerHTML = ""
                 productError.style.display = "none"
@@ -195,22 +199,22 @@
             }
         }
 
-        function validateSize() {
-            const size = product_size.value.trim()
-            const smallPatters = /^[a-z]+$/;
-            if (size == "") {
-                productSizeSmallError.style.display = "block"
-                productSizeSmallError.innerHTML = "size must be required"
-            } else if (!smallPatters.test(size)) {
-                productSizeSmallError.style.display = "block"
-                productSizeSmallError.innerHTML = "please you small character"
-            } else {
-                productSizeSmallError.style.display = "none"
-                productSizeSmallError.innerHTML = ""
-            }
+        // function validateSize() {
+        //     const size = product_size.value.trim()
+        //     const smallPatters = /^[a-z]+$/;
+        //     if (size == "") {
+        //         productSizeSmallError.style.display = "block"
+        //         productSizeSmallError.innerHTML = "size must be required"
+        //     } else if (!smallPatters.test(size)) {
+        //         productSizeSmallError.style.display = "block"
+        //         productSizeSmallError.innerHTML = "please you small character"
+        //     } else {
+        //         productSizeSmallError.style.display = "none"
+        //         productSizeSmallError.innerHTML = ""
+        //     }
 
 
-        }
+        // }
 
 
 
@@ -265,7 +269,7 @@
 
         function validateSellingPrice() {
             const selling = parseFloat(sellingPrice.value.trim());
-            const price = parseFloat(product_price.value.trim());
+            const price = parseFloat( productPrice.value.trim());
             if (selling > price) {
                 sellingPriceError.style.display = "block"
                 sellingPriceError.innerHTML = "INvalid price1!"
@@ -284,11 +288,14 @@
 
 
 
-        document.getElementById("form").addEventListener("submit", (e) => {
+        document.getElementById("formdata").addEventListener("submit", (e) => {
+            alert("hai")
             validateId()
+            alert("hello")
             validateTittle()
+            alert("hello")
             validateColor()
-            validateSize()
+               alert("hello")
             validateQuantity()
             validateDescription()
             validatePrice()

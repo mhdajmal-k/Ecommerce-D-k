@@ -5,6 +5,20 @@ const category_controller=require('../controler/categorycontrol')
 const product_controller=require('../controler/prodctcontoler')
 const upload=require('../controler/helper/multer')
 
+const{login_load,
+verify_login,
+Dashboard_load,
+userLoad,
+userBlockUnblock,
+logout}=admin_controller
+
+
+const {load_products,add_ProductLoad,add_Product,load_editProduct,delete_product,listAndUnListProduct,editProduct}=product_controller
+
+
+
+const {load_category,load_Addcategory,addCategory,load_editCategory,editCategory,listAndUnList}=category_controller
+
 
 
 
@@ -20,12 +34,12 @@ admin_router.set("views",'./views/admin')
 
 
 
-admin_router.get("/",admin_controller.login_load)
-admin_router.post("/",admin_controller.verify_login)
-admin_router.get("/dashboard",Auth.sessionChecker,admin_controller.Dashboard_load);
-admin_router.get("/userLoad",Auth.sessionChecker,admin_controller.userLoad)
-admin_router.post('/block_user',Auth.sessionChecker,admin_controller.userBlockUnblock)
-admin_router.get('/logout',admin_controller.logout)
+admin_router.get("/",login_load)
+admin_router.post("/",verify_login)
+admin_router.get("/dashboard",Auth.sessionChecker,Dashboard_load);
+admin_router.get("/userLoad",Auth.sessionChecker,userLoad)
+admin_router.post('/block_user',Auth.sessionChecker,userBlockUnblock)
+admin_router.get('/logout',logout)
 
 //==================================  admin controller================================
 
@@ -33,13 +47,13 @@ admin_router.get('/logout',admin_controller.logout)
 
 //==================================  product controller================================
 
-admin_router.get('/products',Auth.sessionChecker,product_controller. load_products)
-admin_router.get('/addproduct',Auth.sessionChecker,product_controller. add_ProductLoad)
-admin_router.post('/addproduct',Auth.sessionChecker,upload.array('images', 5),product_controller.add_Product)
-admin_router.get('/editProduct',Auth.sessionChecker,product_controller.load_editProduct)
-admin_router.post('/editProduct',Auth.sessionChecker,product_controller.editProduct)
-admin_router.post('/productListAndUnList',Auth.sessionChecker,product_controller.listAndUnList)
-admin_router.get('/blockProducts/:id',Auth.sessionChecker,product_controller.delete_product)
+admin_router.get('/products',Auth.sessionChecker, load_products)
+admin_router.get('/addproduct',Auth.sessionChecker, add_ProductLoad)
+admin_router.post('/addproduct',Auth.sessionChecker,upload.array('images', 5),add_Product)
+admin_router.get('/editProduct',Auth.sessionChecker,load_editProduct)
+admin_router.post('/editProduct',Auth.sessionChecker,editProduct)
+admin_router.post('/productListAndUnList',Auth.sessionChecker,listAndUnListProduct)
+admin_router.get('/blockProducts/:id',Auth.sessionChecker,delete_product)
 
 //==================================  product controller================================
 
@@ -47,12 +61,12 @@ admin_router.get('/blockProducts/:id',Auth.sessionChecker,product_controller.del
 
 //==================================  category controller================================
 
-admin_router.get('/category',Auth.sessionChecker,category_controller.load_category)
-admin_router.get('/addcategory',Auth.sessionChecker,category_controller.load_Addcategory)
-admin_router.post('/addcategory',Auth.sessionChecker,category_controller.addCategory )
-admin_router.get('/updateCategory',Auth.sessionChecker,category_controller.load_editCategory)
-admin_router.post('/updateCategory',Auth.sessionChecker,category_controller.editCategory)
-admin_router.get('/block_user',Auth.sessionChecker,category_controller.listAndUnList)
+admin_router.get('/category',Auth.sessionChecker,load_category)
+admin_router.get('/addcategory',Auth.sessionChecker,load_Addcategory)
+admin_router.post('/addcategory',Auth.sessionChecker,addCategory )
+admin_router.get('/updateCategory',Auth.sessionChecker,load_editCategory)
+admin_router.post('/updateCategory',Auth.sessionChecker,editCategory)
+admin_router.get('/block_user',Auth.sessionChecker,listAndUnList)
 
 
 //==================================  category controller================================

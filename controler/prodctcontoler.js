@@ -21,7 +21,9 @@ const add_ProductLoad=async(req,res)=>{
     try {
       
       const categories=await category.find({isList:true})
-      res.render('addProduct',{categories:categories})
+
+      console.log(categories+"from addproduct");
+      res.render('addProduct',{category:categories})
     } catch (error) {
       console.log(error.message) 
     }
@@ -80,8 +82,9 @@ const load_editProduct=async(req,res)=>{
     const id=req.query.procductID
     if(id){
 const productData=await product.findById(id)
-console.log(productData+"just gotted");
-res.render("editProducts",{products:productData})
+const categories=await category.find({})
+console.log(productData);
+res.render("editProducts",{products:productData,categories:categories})
     }else{
       res.status(400),json("error")
     }
@@ -96,7 +99,13 @@ res.render("editProducts",{products:productData})
 
 const editProduct=async (req,res)=>{
   try {
-  const {productId,productName,color,size,quantity,price,sellingPrice,id,description}=req.body
+  
+    const images = [];
+    if (req.files && req.files.length > 0) {
+        for (let i = 0; i < req.files.length; i++) {
+            images.push(req.files[i].filename);
+          }}
+  const {productId,productName,color,size,quantity,price,sellingPrice,id,description,categories}=req.body
 const updateProduct=await product.findByIdAndUpdate({_id:id},{$set:{
   productId:productId,
   productName:productName,
@@ -105,7 +114,9 @@ const updateProduct=await product.findByIdAndUpdate({_id:id},{$set:{
   quantity:quantity,
   price:price,
   sellingPrice:sellingPrice,
-  description:description
+  description:description,
+  categoryId:categories,
+  image:images
 }})
 if(updateProduct){
   console.log("done");
@@ -121,7 +132,7 @@ if(updateProduct){
 
 
 //list products
-const listAndUnList=async (req,res)=>{
+const listAndUnListProduct=async (req,res)=>{
   try {
     const {productId,status}=req.body
     if(status==="block"){
@@ -169,6 +180,6 @@ const delete_product=async (req,res) =>{
     load_products,
     load_editProduct,
     editProduct,
-    listAndUnList,
+    listAndUnListProduct,
     delete_product
   }

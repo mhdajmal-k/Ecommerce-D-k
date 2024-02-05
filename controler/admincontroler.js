@@ -99,7 +99,10 @@ const Dashboard_load=async (req,res)=>{
   const logout=async(req,res)=>{
     try {
       // req.flash('message', 'You have been successfully logged out.')
-      req.session.destroy()
+      console.log("hello");
+     console.log(req.session.admin+"`1"); 
+      req.session.admin=null
+      console.log(  req.session.admin+"2");
       res.redirect("/admin")
       
     } catch (error) {

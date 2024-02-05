@@ -1,115 +1,122 @@
 <%- include ("../partilas/admin") %>
 
     <section class="content-main">
-        <form method="post" action="/admin/addproduct" id="form" enctype="multipart/form-data"  >
+        <form method="post" action="/admin/addproduct" id="form" enctype="multipart/form-data">
             <% if (locals.message) { %>
-             <p><%= message %></p>
-            <% } %>
-            <div class="row">
-                <div class="col-9">
-                    <div class="content-header">
-                        <h2 class="content-title">Add New Product</h2>
-                     
-                    </div>
-                </div>
-                <div class="col-lg-6" style="width: 100%;">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <label for="product_title" class="form-label">Product ID</label>
-                                <input type="text" name="productId" placeholder="Type here" onblur="validateId()" class="form-control"
-                                    id="product_id">
-                                <p id="productError" class="text-danger "></p>
+                <p>
+                    <%= message %>
+                </p>
+                <% } %>
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="content-header">
+                                <h2 class="content-title">Add New Product</h2>
+
                             </div>
-                            <div class="mb-4">
-                                <label for="product_title" class="form-label">Product title</label>
-                                <input type="text" name="productName" placeholder="Type here" onkeypress="validateTittle()" class="form-control"
-                                    id="product_title">
-                                <p id="productTitleError" class="text-danger "></p>
-                            </div>
-                            <div class="row gx-3">
-                                <div class="col-md-4  mb-3">
-                                    <label for="product_color" class="form-label">Color</label>
-                                    <input type="text" placeholder="Type here" name="color" onkeyup="validateColor()" class="form-control"
-                                        id="product_color">
-                                    <p id="productColorError" class="text-danger "></p>
+                        </div>
+                        <div class="col-lg-6" style="width: 100%;">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <label for="product_title" class="form-label">Product ID</label>
+                                        <input type="text" name="productId" placeholder="Type here"
+                                            onblur="validateId()" class="form-control" id="product_id">
+                                        <p id="productError" class="text-danger "></p>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="product_title" class="form-label">Product title</label>
+                                        <input type="text" name="productName" placeholder="Type here"
+                                            onblur="validateTittle()" class="form-control" id="product_title">
+                                        <p id="productTitleError" class="text-danger "></p>
+                                    </div>
+                                    <div class="row gx-3">
+                                        <div class="col-md-4  mb-3">
+                                            <label for="product_color" class="form-label">Color</label>
+                                            <input type="text" placeholder="Type here" name="color"
+                                                onkeyup="validateColor()" class="form-control" id="product_color">
+                                            <p id="productColorError" class="text-danger "></p>
+                                        </div>
+
+
+
+                                        <!-- <  CHECK BOX -->
+                                        <div class="col-md-4 mb-3">
+                                            <label for="product_size" class="form-label"  required>Size</label>
+                                            <select name="size" class="form-control" id="product_size">
+                                                <option value="Small">Small</option>
+                                                <option value="Medium">Medium</option>
+                                                <option value="Large">Large</option>
+                                                <option value="Extra-Large">Extra-Large</option>
+                                            </select>
+                                         
+                                        </div>
+
+
+                                        <div class="col-md-4  mb-3">
+                                            <label for="product_size" class="form-label">quantity</label>
+                                            <input type="text" placeholder="Type here" onblur="validateQuantity()"
+                                                name="quantity" class="form-control" id="product_quantity">
+                                            <p id="productQuantityError" class="text-danger "></p>
+                                        </div>
+                                        <div class="mb-4" style="width:20%;">
+                                            <label class="form-label">Price</label>
+                                            <input type="text" name="price" placeholder="Type here"
+                                                onkeyup="validatePrice()" class="form-control" id="product_price">
+                                            <p id="productPriceError" class="text-danger "></p>
+                                        </div>
+                                        <div class="mb-4" style="width:20%;">
+                                            <label class="form-label">Selling price</label>
+                                            <input type="text" name="sellingPrice" onblur="validateSellingPrice()"
+                                                placeholder="Type here" class="form-control" id="sellingPrice">
+                                            <p id="sellingPriceError" class="text-danger "></p>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label">category</label>
+                                            <select class="form-select" name="categories">
+                                                <% if (locals.category) { %>
+                                                    <% for( let i=0; i < category.length; i++ ) { %>
+                                                        <option value="<%=category[i]._id %>">
+                                                            <%=category[i].categoryTitle %>
+                                                        </option>
+
+
+                                                        <% } %>
+
+                                                            <% } %>
+
+                                            </select>
+                                        </div>
+                                    </div>
+
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="product_size" class="form-label">Size</label>
-                                    <select name="size" class="form-control" id="product_size">
-                                        <option value="Small">Small</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Large">Large</option>
-                                        <option value="Extra-Large">Extra-Large</option>
-                                    </select>
-                                    <p id="productSizeError" class="text-danger"></p>
+                            </div> <!-- card end// -->
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div>
+                                        <label class="form-label">Description</label>
+                                        <input type="text" name="description" placeholder="Type here"
+                                            onblur="validateDescription()" class="form-control" id="product_Description"
+                                            rows="4">
+                                        <p id="productDescriptionError" class="text-danger "></p>
+                                    </div>
                                 </div>
-                                
+                            </div> <!-- card end// -->
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div>
+                                        <label class="form-label">Images</label>
+                                        <input class="form-control" name="images" type="file" id="Images"  required multiple>
+                                        <p id="productImageError" class="text-danger "></p>
 
-                            <div class="col-md-4  mb-3">
-                                <label for="product_size" class="form-label">quantity</label>
-                                <input type="text" placeholder="Type here" onblur="validateQuantity()" name="quantity" class="form-control"
-                                    id="product_quantity">
-                                <p id="productQuantityError" class="text-danger "></p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-4" style="width:20%;">
-                                <label class="form-label">Price</label>
-                                <input type="text" name="price" placeholder="Type here" onkeyup="validatePrice()" class="form-control"
-                                    id="product_price">
-                                <p id="productPriceError" class="text-danger "></p>
-                            </div>
-                            <div class="mb-4" style="width:20%;">
-                                <label class="form-label">Selling price</label>
-                                <input type="text" name="sellingPrice" onblur="validatePrice()" placeholder="Type here" class="form-control"
-                                    id="sellingPrice">
-                                <p id="sellingPriceError" class="text-danger "></p>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">category</label>
-                                <select class="form-select" name="categories">
-                                    <% if (locals.categories) { %>
-                                        <% for( let i=0; i < categories.length; i++ ) { %>
-                                            <option  value="<%=categories[i]._id %>">
-                                                <%= categories[i].categoryTitle %>
-                                            </option>
-
-
-                                            <% } %>
-
-                                                <% } %>
-
-                                </select>
-                            </div>
+                            <div class="text-center">
+                                <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
+                                <input type="submit" value="submit" class="btn btn-success">
+                                <p id="submitError" class="text-danger error"></p>
+                            </div> <!-- card end// -->
                         </div>
-
-                    </div>
-                </div> <!-- card end// -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div>
-                            <label class="form-label">Description</label>
-                            <input type="text" name="description" placeholder="Type here" onblur="validateDescription()" class="form-control"
-                                id="product_Description" rows="4">
-                            <p id="productDescriptionError" class="text-danger "></p>
-                        </div>
-                    </div>
-                </div> <!-- card end// -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div>
-                            <label class="form-label">Images</label>
-                            <input class="form-control" name="images" type="file" id="Images"  required multiple >
-                            <p id="productImageError" class="text-danger "></p>
-
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center">
-                    <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button> -->
-                    <input type="submit" value="submit" class="btn btn-success">
-                    <p id="submitError" class="text-danger error"></p>
-                </div> <!-- card end// -->
-            </div>
 
         </form>
     </section>
@@ -176,22 +183,22 @@
             }
         }
 
-        function validateSize() {
-            const size = product_size.value.trim()
-            const smallPatters = /^[a-z]+$/;
-            if (size == "") {
-                productSizeSmallError.style.display = "block"
-                productSizeSmallError.innerHTML = "size must be required"
-            } else if (!smallPatters.test(size)) {
-                productSizeSmallError.style.display = "block"
-                productSizeSmallError.innerHTML = "please you small character"
-            } else {
-                productSizeSmallError.style.display = "none"
-                productSizeSmallError.innerHTML = ""
-            }
+        // function validateSize() {
+        //     const size = product_size.value.trim()
+        //     const smallPatters = /^[a-z]+$/;
+        //     if (size == "") {
+        //         productSizeSmallError.style.display = "block"
+        //         productSizeSmallError.innerHTML = "size must be required"
+        //     } else if (!smallPatters.test(size)) {
+        //         productSizeSmallError.style.display = "block"
+        //         productSizeSmallError.innerHTML = "please you small character"
+        //     } else {
+        //         productSizeSmallError.style.display = "none"
+        //         productSizeSmallError.innerHTML = ""
+        //     }
 
 
-        }
+        // }
 
 
 
@@ -225,7 +232,7 @@
             }
         }
         function validatePrice() {
-            const price = productPrice.value.trim();
+            const price = parseFloat(productPrice.value.trim());
             if (price === "") {
                 productPriceError.style.display = "block";
                 productPriceError.innerHTML = "Invalid price";
@@ -246,7 +253,7 @@
 
         function validateSellingPrice() {
             const selling = parseFloat(sellingPrice.value.trim());
-            const price = parseFloat(product_price.value.trim());
+            const price = parseFloat(productPrice.value.trim());
             if (selling > price) {
                 sellingPriceError.style.display = "block"
                 sellingPriceError.innerHTML = "INvalid price1!"
@@ -266,18 +273,27 @@
 
 
         document.getElementById("form").addEventListener("submit", (e) => {
+         
             validateId()
+         
             validateTittle()
+         
             validateColor()
-            validateSize()
+        
             validateQuantity()
+         
             validateDescription()
+         
             validatePrice()
+       
             validateSellingPrice()
+          
+       
             if (productError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productSizeSmallError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML || productPriceError.innerHTML) {
+    
                 e.preventDefault();
             } else {
-
+                alert("form else")
 
 
             }
