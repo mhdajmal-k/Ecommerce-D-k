@@ -33,10 +33,12 @@ type:String
     ref: "categories",
     require: true,
   },
-  size: [{
-    type: String,
-    require: true,
-  }],
+  size:  [
+    {
+        size: { type: String, enum: ["S", "M", "L", "XL"] },
+        quantity: { type: Number, default: 0 }
+    }
+],
   quantity: {
     type: Number,
     require: true,

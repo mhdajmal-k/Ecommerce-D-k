@@ -42,7 +42,8 @@ const add_Product=async(req,res)=>{
                         images.push(req.files[i].filename);
                       }}
     if(req.body){     
-    const { productId, productName, color, size,quantity, price, sellingPrice,description,categories}=req.body
+    const { productId, productName, color,sizeS,sizeM,sizeL,sizeXL, price, sellingPrice,description,categories}=req.body
+ 
       const productNameExist=await product.findOne({productName:{$regex:new RegExp('^'+productName+"$","i")}})
       const newProduct= new product({
         productId:productId,
@@ -50,11 +51,20 @@ const add_Product=async(req,res)=>{
         description:description,
         color:color,
         price:price,
-        size:size,
-        quantity:quantity,
         sellingPrice:sellingPrice,
         image:images,
-        categoryId:categories
+        categoryId:categories,
+        size:[
+          {
+          size:"S",quantity:sizeS
+        },  {
+          size:"M",quantity:sizeM
+        },  {
+          size:"S",quantity:sizeL
+        },  {
+          size:"S",quantity:sizeXL
+        },
+      ]
     })
 
       if(productNameExist){
@@ -180,14 +190,13 @@ const delete_product=async (req,res) =>{
 
 const delete_image=async(req,res)=>{
   try {
-    console.log( req.body.imageId,'this is img id LLLLLLL')
+  
     const {imageId,productId}=req.body
     const products = await product.findByIdAndUpdate(productId, {
       $pull: { image: imageId }
     });
     const imagePath = path.join('uploads', 'products', imageId);
     await unlinkAsync(imagePath);
-     console.log(products,'TTTTTTT');
     if(products){
       res.json({status:true})
     }
