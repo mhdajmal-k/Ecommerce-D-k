@@ -3,7 +3,10 @@ const { errorMonitor, consumers } = require('nodemailer/lib/xoauth2');
 const category = require('../model/category');
 const product=require('../model/product_model');
 const { rawListeners, findByIdAndDelete } = require('../model/user_model');
-
+const fs = require('fs');
+const { promisify } = require('util');
+const unlinkAsync = promisify(fs.unlink);
+const path= require('path')
 //product page  
 
 const load_products=async(req,res)=>{
