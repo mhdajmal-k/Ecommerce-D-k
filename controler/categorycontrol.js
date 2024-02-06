@@ -93,7 +93,6 @@ categoryTitle:categoryName,
 description:Description
     }})
     if(updateCategory){
-      console.log("success");
       res.redirect("/admin/category")
     }
   } catch (error) {

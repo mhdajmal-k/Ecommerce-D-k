@@ -37,7 +37,27 @@
                                         name="color" onblur="validateColor()" class="form-control" id="product_color">
                                     <p id="productColorError" class="text-danger "></p>
                                 </div>
+
                                 <div class="col-md-4 mb-3">
+                                    <label for="sizeS" class="form-label">Size S:</label>
+                                    <input type="number" id="sizeS" name="sizeS" class="form-control" value="<%= products.size[0].quantity %>" required placeholder="Enter the quantity">
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="sizeM" class="form-label">Size M:</label>
+                                    <input type="number" id="sizeM" name="sizeM" class="form-control" value="<%= products.size[1].quantity %>" required placeholder="Enter the quantity">
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="sizeL" class="form-label">Size L:</label>
+                                    <input type="number" id="sizeL" name="sizeL" class="form-control"  value="<%= products.size[2].quantity %>" required placeholder="Enter the quantity">
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="sizeXL" class="form-label">Size XL:</label>
+                                    <input type="number" id="sizeXL" name="sizeXL" class="form-control"  value="<%= products.size[3].quantity %>" required placeholder="Enter the quantity">
+                                </div>
+                                <!-- <div class="col-md-4 mb-3">
                                     <label for="product_size" class="form-label">Size</label>
                                     <select name="size" class="form-control" id="product_size">
                                         <option value="Small">Small</option>
@@ -53,9 +73,9 @@
                                     <label for="product_size" class="form-label">quantity</label>
                                     <input type="number" placeholder="Type here" onblur="validateQuantity()"
                                         name="quantity" class="form-control" id="product_quantity"
-                                        value="<%= products.quantity %>">
+                                        value="">
                                     <p id="productQuantityError" class="text-danger "></p>
-                                </div>
+                                </div> -->
                                 <div class="mb-4" style="width:20%;">
                                     <label class="form-label">Price</label>
                                     <input type="number" value="<%= products.price %>" name="price"

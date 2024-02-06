@@ -188,24 +188,24 @@
 
 
 
-        function validateQuantity() {
-            const int = /^[1-9][0-9]*$/
-            const quantity = product_quantity.value.trim()
-            if (quantity === "") {
-                productQuantityError.style.display = "block"
-                productQuantityError.innerHTML = "This filed must be required"
+        // function validateQuantity() {
+        //     const int = /^[1-9][0-9]*$/
+        //     const quantity = product_quantity.value.trim()
+        //     if (quantity === "") {
+        //         productQuantityError.style.display = "block"
+        //         productQuantityError.innerHTML = "This filed must be required"
                
-            } else if (!int.test(quantity)) {
-                productQuantityError.style.display = "block"
-                productQuantityError.innerHTML = "invalid quantity"
+        //     } else if (!int.test(quantity)) {
+        //         productQuantityError.style.display = "block"
+        //         productQuantityError.innerHTML = "invalid quantity"
                
 
-            }
-            else {
-                productQuantityError.style.display = "none"
-                productQuantityError.innerHTML = ""
-            }
-        }
+        //     }
+        //     else {
+        //         productQuantityError.style.display = "none"
+        //         productQuantityError.innerHTML = ""
+        //     }
+        // }
         function validateDescription() {
             const description = product_Description.value.trim()
             if (description == "") {
@@ -221,7 +221,6 @@
         }
         function validatePrice() {
             const price = productPrice.value.trim();
-            alert(price+"its the price")
             if (price === "") {
               
                 productPriceError.style.display = "block";
@@ -246,14 +245,12 @@
 
 
         function validateSellingPrice() {
-            const selling = parseFloat(sellingPrice.value.trim());
-            const price = parseFloat(productPrice.value.trim());
+            price = productPrice.value
+           selling = sellingPrice.value
+            
             if (selling > price) {
                 sellingPriceError.style.display = "block"
                 sellingPriceError.innerHTML = "INvalid price1!"
-            } else if (isNaN(selling)) {
-                sellingPriceError.style.display = "block"
-                sellingPriceError.innerHTML = "INvalid price2!"
             } else if (selling < 0) {
                 sellingPriceError.style.display = "block"
                 sellingPriceError.innerHTML = "INvalid price3!"
@@ -274,7 +271,7 @@
           
             validateColor()
      
-            validateQuantity()
+            // validateQuantity()
           
             validatePrice()
            
@@ -285,7 +282,7 @@
 
           
        
-            if (productError.innerHTML ||productQuantityError.innerHTML|| productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML ) {
+            if (productError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML ) {
     
                 e.preventDefault();
             } else {

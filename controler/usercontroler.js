@@ -100,8 +100,6 @@ const submit_signup = async (req, res) => {
 //load otp
 const otp_verification = async (req, res) => {
   try {
-    console.log("hhhhh")
-    console.log(req.session)
     res.render("otp_page");
   } catch (error) {
     console.log(error.message);
@@ -112,13 +110,10 @@ const otp_verification = async (req, res) => {
 
 const resendOtp=async (req,res)=>{
   try {
-    console.log(req.session.OTP+"sessin");
-    console.log(req.session);
     const newOtp = await generateOTP(6);
     console.log(newOtp+"new otp");
     req.session.OTP = newOtp;
     const sessionEmail=  req.session.userTemp.email
-    console.log(sessionEmail+"agin ");
     const a = await sendMail(sessionEmail, newOtp);
     res.render("otp_page")
     
@@ -199,7 +194,6 @@ const load_shop = async (req, res) => {
   try {
     const products = await product.find({ isBlocked: false })
     // .populate("categoryId")
-    console.log(products + "form here");
     res.render("shop", { product: products });
   } catch (error) {
     console.log(error.message);
@@ -212,7 +206,6 @@ const shopProduct = async (req, res) => {
   try {
    
     const { id } = req.query;
-    console.log(id);
     const products = await product.findOne({ _id: id }).populate("categoryId");
     if(products ){
       const relatedProducts = await product.find({ _id: { $ne: id } }).populate("categoryId").limit(4);
@@ -232,12 +225,9 @@ const shopProduct = async (req, res) => {
 
 const logout=async(req,res)=>{
   try {
-
-    console.log(req.session.id);
    req.session.id=null
    req.session.user=false
    req.session.save()
-    console.log("hello",req.session.id);
     res.redirect("/")
 
   } catch (error) {
@@ -245,6 +235,87 @@ const logout=async(req,res)=>{
   }
 }
 
+
+///FORGOT PASSWORD
+
+
+const load_forgotPassword=async(req,res)=>{
+  try {
+    res.render("forgotPassword")
+    
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const forgotPassword=async(req,res)=>{
+  try {
+    const {email}=req.body
+    console.log(email)
+    const existingUser=await user.findOne({email:email})
+    if(existingUser){
+      const forgotPassword_OTP= await generateOTP(6);
+      console.log(forgotPassword_OTP,"its the forgot password otp");
+      req.session.forgotPassword_OTP=forgotPassword_OTP
+      req.session.forgotPassword_email=email
+
+      const a = await sendMail(email, forgotPassword_OTP);
+      console.log("success");
+      res.redirect("/forgotPassword_verify")
+    }else{
+      res.render("forgotPassword",{message:"invalid email please sign up"})
+    }
+  
+    // render('verifyForgotPassword')
+
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const  verify_forgotPassword=async(req,res)=>{
+  try {
+    console.log("Hello")
+    res.render("verifyForgotPassword")
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const resetPassword=async (req,res)=>{
+  try {
+    const {otp,newPassword,conformNewPassword}=req.body
+    console.log(otp,newPassword,conformNewPassword);
+    console.log(req.session?.forgotPassword_OTP);
+    console.log(req.session.forgotPassword_email)
+    const {forgotPassword_email}=req.session
+  console.log(forgotPassword_email,"form session email");
+    if( otp==req.session?.forgotPassword_OTP){
+      if(newPassword==conformNewPassword){
+console.log("success on this steps");
+const hashedPassword=await securePassword(newPassword)
+console.log(hashedPassword);
+const updatePassword=await user.findOneAndUpdate({email:forgotPassword_email},{$set:{password:hashedPassword}})
+if(updatePassword){
+  req.session.forgotPassword_email=null
+  req.session.forgotPassword_OTP=null
+  res.redirect("\login")
+}
+      }else{
+        res.render("verifyForgotPassword",{message:"Password is not Match"})
+      }
+
+    }else{
+      res.render("verifyForgotPassword",{message:"invalid OTP"})
+    }
+   
+
+
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 
 module.exports = {
@@ -258,5 +329,9 @@ module.exports = {
   load_shop,
   shopProduct,
   resendOtp,
-  logout
+  logout,
+  load_forgotPassword,
+  forgotPassword, 
+  verify_forgotPassword,
+  resetPassword
 };

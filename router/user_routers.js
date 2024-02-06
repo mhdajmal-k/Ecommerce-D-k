@@ -4,6 +4,10 @@ const userController = require("../controler/usercontroler");
 const path = require("path");
 const { isLogin, isLogout } = require("../middleware/userAuth");
 
+
+
+
+//=============================user controller
 const {
   load_login,
   landing_page,
@@ -16,7 +20,17 @@ const {
   load_shop,
   shopProduct,
   logout,
+  load_forgotPassword,
+  forgotPassword,
+  verify_forgotPassword,
+  resetPassword
 } = userController;
+
+//=============================
+
+
+
+
 
 user_router.set("view engine", "ejs");
 user_router.set("views", "./views/user");
@@ -32,5 +46,9 @@ user_router.post("/login",verify_login);
 user_router.get("/shop",load_shop);
 user_router.get("/shopProduct",shopProduct);
 user_router.get("/logout", logout);
+user_router.get("/forgotPassword", load_forgotPassword);
+user_router.post("/forgotPassword", forgotPassword);
+user_router.get("/forgotPassword_verify", verify_forgotPassword);
+user_router.post("/forgotPassword_verify", resetPassword);
 
 module.exports = user_router;

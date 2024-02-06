@@ -25,7 +25,6 @@ const add_ProductLoad=async(req,res)=>{
       
       const categories=await category.find({isList:true})
 
-      console.log(categories+"from addproduct");
       res.render('addProduct',{category:categories})
     } catch (error) {
       console.log(error.message) 
@@ -66,7 +65,6 @@ const add_Product=async(req,res)=>{
         },
       ]
     })
-
       if(productNameExist){
         if(productNameExist.size==size){
            res.render("addProduct",{message:"product Id already exists1!"})
@@ -100,7 +98,6 @@ res.render("editProducts",{products:productData,categories:categories})
     }else{
       res.status(400),json("error")
     }
-
   } catch (error) {
     console.log(error.message)
   }
@@ -111,7 +108,7 @@ res.render("editProducts",{products:productData,categories:categories})
 
 const editProduct=async (req,res)=>{
   try {
-    const {productId,productName,color,size,quantity,price,sellingPrice,id,description,categories}=req.body
+    const {productId,productName,color,sizeS,sizeM,sizeL,sizeXL,price,sellingPrice,id,description,categories}=req.body
 
     if (req.files && req.files.length > 0) {
       const images = req.files.map(file => file.filename);
@@ -120,18 +117,27 @@ const editProduct=async (req,res)=>{
           { productId: productId },
           { $push: { image: { $each: images } } }
           
-      );
+      );}
   
 const updateProduct=await product.findByIdAndUpdate({_id:id},{$set:{
   productId:productId,
   productName:productName,
   color:color,
-  size:size,
-  quantity:quantity,
   price:price,
   sellingPrice:sellingPrice,
   description:description,
   categoryId:categories,
+  size:[
+    {
+    size:"S",quantity:sizeS
+  },  {
+    size:"M",quantity:sizeM
+  },  {
+    size:"S",quantity:sizeL
+  },  {
+    size:"S",quantity:sizeXL
+  },
+]
 
 }})
 if(updateProduct){
@@ -141,7 +147,7 @@ if(updateProduct){
 
   res.render('editProducts',{message:"some error happen"})
 }
-  }} catch (error) {
+  } catch (error) {
     console.log(error.message)
   }
 }
@@ -163,7 +169,7 @@ const listAndUnListProduct=async (req,res)=>{
       res.json({status:true})
     }
   } catch (error) {
-    console.log(error.message+"hello4")
+    console.log(error.message)
   }
 }
 
