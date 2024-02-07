@@ -203,10 +203,19 @@
                                     <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
                                         <div class="card">
                                             <div class="card-header">
-                                                <h5 class="mb-0">Hello Rosie! </h5>
+                                               
+                                                    <h5 class="mb-0">Hello <%= user.username %>! </h5>
+                                             
+                                              
                                             </div>
-                                            <div class="card-body">
-                                                <p>From your account dashboard. you can easily check &amp; view your <a href="#">recent orders</a>, manage your <a href="#">shipping and billing addresses</a> and <a href="#">edit your password and account details.</a></p>
+                                            <div class="card-body" >
+                                                <p>UserName:<%= user.username %></p>
+                                                <p>MobileNumber:<%= user.mobile %></p>
+                                                <p>Email:<%= user.email %></p>
+                                                <a href="/editProfile" class="btn btn-warning"
+                                                style="width: auto; margin: 10px;" > Edit</a>
+                                                <a href="#">shipping and billing addresses</a> 
+                                                <a href="#">recent orders</a>
                                             </div>
                                         </div>
                                     </div>
@@ -307,6 +316,9 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div>
+                                            <a href="/addAddress" class="btn mt-10"> ADD Address</a>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">

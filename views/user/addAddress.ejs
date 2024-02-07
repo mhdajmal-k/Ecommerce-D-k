@@ -1,0 +1,246 @@
+<%- include ("../partilas/userheader") -%>
+
+
+
+<section class="pt-150 pb-150" >
+    <div class="container-lg"> <!-- Change to container-lg for wider container -->
+        <div class="row">
+            <div class="col-lg-8 m-auto"> <!-- Adjust col-lg-8 for wider content -->
+                <div class="row">
+                    <div class="col-lg-6 mx-auto" style="width: 100%;"> <!-- Adjust col-lg-6 for wider content -->
+                        <div class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5" >
+                            <div class="padding_eight_all bg-white">
+                                <div class="heading_s1">
+                                    <h3 class="mb-30 text-center">ADD New Address</h3>
+                                </div>
+                                <form method="post" action="/addAddress" id="addressForm">
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label>Name <span class="required">*</span></label>
+                                            <input  class="form-control square" name="name" type="text"  placeholder="Enterv Name" id="name" onblur="validateName()">
+                                            <p id="nameError" class="alert text-danger"></p>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>Pin code<span class="required">*</span></label>
+                                            <input  type="number" class="form-control square" name="pinCode" placeholder="Enter pinCode" id="pinCode" onblur="validatePinCode() " >
+                                            <p id="pinCodeError" class="alert text-danger"></p>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>locality <span class="required">*</span></label>
+                                            <input class="form-control square" name="locality" type="text"  placeholder="Enter locality" id="locality"  onblur="validateLocality()">
+                                            <p id="localityError" class="alert text-danger"></p>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>Address(area and Street) <span class="required">*</span></label>
+                                            <input class="form-control square" name="address" type="address" placeholder="Enter address (area /street)" id="address"  onblur="validateAddress()">
+                                            <p id="addressAreaError" class="alert text-danger"></p>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label>City/District <span class="required">*</span></label>
+                                            <input id="district" class="form-control square" name="district" type="text" placeholder="Enter City"  onblur="validateDistrict()">
+                                            <p id="districtError" class="alert text-danger"></p>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>State <span class="required">*</span></label>
+                                            <input id="state" class="form-control square" name="state" type="text" placeholder="Enter the State"  onblur="validateState()">
+                                            <p id="stateError" class="alert text-danger"></p>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>Landmark(optional) <span class="required">*</span></label>
+                                            <input class="form-control square" id="landmark" name="landmark" type="text"  placeholder="Enter the Landmark"  onblur="validateLandmark()">
+                                            <p id="LandmarkError" class="alert text-danger"></p>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            <label>Alternative Number <span class="required">*</span></label>
+                                            <input class="form-control square" name="mobile" id="mobile" type="number"  placeholder="Alternative Number" onblur="validateMobile()">
+                                            <p id="mobileError" class="alert text-danger"></p>
+                                        </div>
+                                        <DIV style="width: 20PX;">
+                                            <div class="form-group col-md-3" >
+                                                <label>
+                                                    <input type="radio" name="location" value="home"> Home 
+                                                </label>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label>
+                                                    <input type="radio" name="location" value="work"> Work 
+                                                </label>
+                                            </div>
+                                        </DIV>
+                                       
+                                        
+                                        <div class="col-md-12">
+                                            <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">Save</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-muted text-center">Create account? <a href="signup">Sign in now</a></div>
+            </div>
+        </div>
+    </div>
+</section>
+<%- include ("../partilas/userfooter") -%>
+<script>
+
+
+
+
+
+
+
+
+
+const nameError=document.getElementById("nameError")
+const pinCodeError=document.getElementById("pinCodeError")
+const localityError=document.getElementById("localityError")
+const districtError=document.getElementById("districtError")
+const stateError=document.getElementById("stateError")
+const LandmarkError=document.getElementById("LandmarkError")
+const mobileError=document.getElementById("mobileError")
+const addressAreaError=document.getElementById("addressAreaError")
+
+function validateName() {
+    const name=document.getElementById("name").value.trim()
+            if (name=="") {
+                nameError.style.display = "block";
+                nameError.innerHTML = "Please Enter a valid Name.";
+            }else if(name.length>30){
+                nameError.style.display = "block";
+                nameError.innerHTML = "Please Enter a valid Name.";
+            }
+             else {
+                nameError.style.display = "none";
+                nameError.innerHTML = "";
+            }
+        }
+
+        function validateDistrict() {
+            
+const district=document.getElementById("district").value.trim()
+            if (district=="") {
+                districtError.style.display = "block";
+                districtError.innerHTML = "Its must be required";
+            }
+             else {
+                districtError.style.display = "none";
+                districtError.innerHTML = "";
+            }
+        }
+
+        function validatePinCode() {
+            const pinCode=document.getElementById("pinCode").value.trim()
+           
+            
+            if (pinCode=="") {
+                pinCodeError.style.display = "block";
+                pinCodeError.innerHTML = "Please Enter a valid pinCode.";
+            }else if(pinCode.length>7){
+                pinCodeError.style.display = "block";
+                pinCodeError.innerHTML = "Please Enter a valid pinCode.";
+            }
+             else {
+                pinCodeError.style.display = "none";
+                pinCodeError.innerHTML = "";
+            }
+        }
+
+        function validateLocality() {
+            const locality=document.getElementById("locality").value.trim()
+            if (locality=="") {
+                localityError.style.display = "block";
+                localityError.innerHTML = "Please Enter a locality";
+            }else if(pinCode.length>40){
+                localityError.style.display = "block";
+                localityError.innerHTML = "Please Enter a valid locality";
+            }
+             else {
+                localityError.style.display = "none";
+                localityError.innerHTML = "";
+            }
+        }
+        function validateState() {
+            const state=document.getElementById("state").value.trim()
+            if (state=="") {
+                stateError.style.display = "block";
+                stateError.innerHTML = "Please Enter a  state";
+            }else if(pinCode.length>25){
+                stateError.style.display = "block";
+                stateError.innerHTML = "Please Enter a valid state";
+            }
+             else {
+                stateError.style.display = "none";
+                stateError.innerHTML = "";
+            }
+        }
+
+        function validateMobile() {
+            const mobile=document.getElementById("mobile").value.trim()
+            if (mobile=="") {
+                mobileError.style.display = "block";
+                mobileError.innerHTML = "Please Enter a valid pinCode.";
+            }else if(mobile.length>11){
+                mobileError.style.display = "block";
+                mobileError.innerHTML = "Please Enter a mobile number.";
+            }
+             else {
+                mobileError.style.display = "none";
+                mobileError.innerHTML = "";
+            }
+        }
+        
+        function validateAddress() {
+            const address=document.getElementById("address").value.trim()
+            if (address=="") {
+                addressAreaError.style.display = "block";
+                addressAreaError.innerHTML = "Please Enter a address";
+            }else if(mobile.length>30){
+                addressAreaError.style.display = "block";
+                addressAreaError.innerHTML = "Please Enter a valid address";
+            }
+             else {
+                addressAreaError.style.display = "none";
+                addressAreaError.innerHTML = "";
+            }
+        }
+        function validateLandmark() {
+            const landmark=document.getElementById("landmark").value.trim()
+            if(landmark){
+             
+             if(mobile.length>50){
+                LandmarkError.style.display = "block";
+                LandmarkError.innerHTML = "Please Enter a valid landmark";
+            }
+             else {
+                LandmarkError.style.display = "none";
+                LandmarkError.innerHTML = "";
+            }
+            }else{
+                LandmarkError.style.display = "none";
+                LandmarkError.innerHTML = "";
+            }
+            
+        }
+
+
+        document.getElementById("addressForm").addEventListener("submit",(e)=>{
+
+            validateName()
+            validateDistrict()
+            validatePinCode()
+            validateLocality()
+            validateState()
+            validateMobile()
+            validateLandmark()
+            validateAddress()
+            if(nameError.innerHTML||districtError.innerHTML||pinCodeError.innerHTML||localityError.innerHTML||stateError.innerHTML||mobileError.innerHTML||addressAreaError.innerHTML){
+                e.preventDefault()
+            }else{
+
+            }
+        })
+     
+</script>

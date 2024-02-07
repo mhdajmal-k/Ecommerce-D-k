@@ -1,6 +1,7 @@
 const express = require("express");
 const user_router = express();
 const userController = require("../controler/usercontroler");
+const profileController=require("../controler/userprofilecontrler")
 const path = require("path");
 const { isLogin, isLogout } = require("../middleware/userAuth");
 
@@ -24,10 +25,14 @@ const {
   forgotPassword,
   verify_forgotPassword,
   resetPassword,
-  load_profile
+
 } = userController;
 
 //=============================
+
+
+const {load_profile,load_addAddress}=profileController
+
 
 
 
@@ -51,6 +56,19 @@ user_router.get("/forgotPassword", load_forgotPassword);
 user_router.post("/forgotPassword", forgotPassword);
 user_router.get("/forgotPassword_verify", verify_forgotPassword);
 user_router.post("/forgotPassword_verify", resetPassword);
-user_router.get("/profile",load_profile);
+
+
+
+
+user_router.get("/profile",isLogin,load_profile)
+user_router.get("/addAddress",isLogin,load_addAddress)
+
+
+
+
+
+
+
+;
 
 module.exports = user_router;

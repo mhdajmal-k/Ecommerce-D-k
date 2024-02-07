@@ -31,6 +31,7 @@ const generateOTP = (length) => {
 
 const landing_page = async (req, res) => {
   try {
+    console.log(  req.session.userId,'from the session in loginlllllllllllllll');
     const user=req.session.user || false
     console.log(user+"1");
     
@@ -166,7 +167,9 @@ const verify_login = async (req, res) => {
       if (passwordMatch) {
         if (user_email.is_verified == 1) {
           if (!user_email.is_block) {
-            req.session.id = user_email._id;
+            console.log(user_email._id,"from the ueremail id");
+            req.session.userId= user_email._id;
+            console.log(  req.session.userId,'from the session in login');
             req.session.user=true
             req.session.save()
             res.redirect("/");
@@ -208,7 +211,10 @@ const shopProduct = async (req, res) => {
     const { id } = req.query;
     const products = await product.findOne({ _id: id }).populate("categoryId");
     if(products ){
-      const relatedProducts = await product.find({ _id: { $ne: id } }).populate("categoryId").limit(4);
+      const relatedProducts = await product.find({ _id: { $ne: id } }).populate({
+        path: 'categoryId',
+        match: { categoryTitle: 'categoryId' } 
+    }).limit(4);
       res.render("viewOneproduct", { products,relatedProducts});
     } 
     else{
@@ -225,7 +231,7 @@ const shopProduct = async (req, res) => {
 
 const logout=async(req,res)=>{
   try {
-   req.session.id=null
+   req.session.userId=null
    req.session.user=false
 
 
@@ -319,13 +325,13 @@ if(updatePassword){
 }
 
   
-const load_profile=async (req,res)=>{
-  try {
-    res.render("profile")
-  } catch (error) {
-    console.log(error.message)
-  }
-}
+// const load_profile=async (req,res)=>{
+//   try {
+//     res.render("profile")
+//   } catch (error) {
+//     console.log(error.message)
+//   }
+// }
 
 
 
@@ -346,5 +352,5 @@ module.exports = {
   forgotPassword, 
   verify_forgotPassword,
   resetPassword,
-  load_profile
+  
 };
