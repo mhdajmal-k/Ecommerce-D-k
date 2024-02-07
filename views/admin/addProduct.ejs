@@ -42,33 +42,37 @@
                                         <!-- <  CHECK BOX -->
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeS" class="form-label">Size S:</label>
-                                            <input type="number" id="sizeS" name="sizeS" class="form-control" required placeholder="Enter the quantity">
+                                            <input type="number" id="sizeS" name="sizeS" required class="form-control"
+                                                placeholder="Enter the quantity">
                                         </div>
-                                        
+
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeM" class="form-label">Size M:</label>
-                                            <input type="number" id="sizeM" name="sizeM" class="form-control" required placeholder="Enter the quantity">
+                                            <input type="number" id="sizeM" name="sizeM" required class="form-control"
+                                                placeholder="Enter the quantity">
                                         </div>
-                                        
+
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeL" class="form-label">Size L:</label>
-                                            <input type="number" id="sizeL" name="sizeL" class="form-control" required placeholder="Enter the quantity">
+                                            <input type="number" id="sizeL" name="sizeL" required class="form-control"
+                                                placeholder="Enter the quantity">
                                         </div>
-                                        
+
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeXL" class="form-label">Size XL:</label>
-                                            <input type="number" id="sizeXL" name="sizeXL" class="form-control" required placeholder="Enter the quantity">
+                                            <input type="number" id="sizeXL" name="sizeXL" required class="form-control"
+                                                placeholder="Enter the quantity">
                                         </div>
-                                        
+
                                         <div class="mb-4" style="width:20%;">
                                             <label class="form-label">Price</label>
                                             <input type="number" name="price" placeholder="Type here"
-                                               onblur="validatePrice()" class="form-control" id="product_price">
+                                                onblur="validatePrice()" class="form-control" id="product_price">
                                             <p id="productPriceError" class="text-danger "></p>
                                         </div>
                                         <div class="mb-4" style="width:20%;">
                                             <label class="form-label">Selling price</label>
-                                            <input type="number" name="sellingPrice" onblur="validateSellingPrice()"
+                                            <input type="number" name="sellingPrice" onchange="validateSellingPrice()"
                                                 placeholder="Type here" class="form-control" id="sellingPrice">
                                             <p id="sellingPriceError" class="text-danger "></p>
                                         </div>
@@ -107,7 +111,8 @@
                                 <div class="card-body">
                                     <div>
                                         <label class="form-label">Images</label>
-                                        <input class="form-control" name="images" type="file" id="Images"  required multiple>
+                                        <input class="form-control" name="images" type="file" id="Images"
+                                            required="image should be required" multiple>
                                         <p id="productImageError" class="text-danger "></p>
 
                                     </div>
@@ -128,21 +133,21 @@
         const productId = document.getElementById("product_id")
         const product_title = document.getElementById("product_title")
         const product_color = document.getElementById("product_color")
-        const product_size = document.getElementById("product_small")
-        const product_quantity = document.getElementById("product_quantity")
+        const size = document.getElementsByClassName("size")
+
+
         const product_Description = document.getElementById("product_Description")
         const productPrice = document.getElementById("product_price")
         const sellingPrice = document.getElementById("sellingPrice")
         const productError = document.getElementById("productError")
         const productTitleError = document.getElementById("productTitleError")
         const productColorError = document.getElementById("productColorError")
-        const productSizeSmallError = document.getElementById("productSizeSmallError")
-        const productQuantityError = document.getElementById("productQuantityError")
+        const sizeError = document.getElementsByClassName("sizeError")
         const productDescriptionError = document.getElementById("productDescriptionError")
         const productPriceError = document.getElementById("productPriceError")
         const sellingPriceError = document.getElementById("sellingPriceError")
 
-
+        console.log("entered")
         function validateId() {
             productvalue = productId.value.trim()
             if (productvalue == "") {
@@ -185,27 +190,6 @@
             }
         }
 
-
-
-
-        // function validateQuantity() {
-        //     const int = /^[1-9][0-9]*$/
-        //     const quantity = product_quantity.value.trim()
-        //     if (quantity === "") {
-        //         productQuantityError.style.display = "block"
-        //         productQuantityError.innerHTML = "This filed must be required"
-               
-        //     } else if (!int.test(quantity)) {
-        //         productQuantityError.style.display = "block"
-        //         productQuantityError.innerHTML = "invalid quantity"
-               
-
-        //     }
-        //     else {
-        //         productQuantityError.style.display = "none"
-        //         productQuantityError.innerHTML = ""
-        //     }
-        // }
         function validateDescription() {
             const description = product_Description.value.trim()
             if (description == "") {
@@ -222,21 +206,16 @@
         function validatePrice() {
             const price = productPrice.value.trim();
             if (price === "") {
-              
                 productPriceError.style.display = "block";
                 productPriceError.innerHTML = "Invalid price 1";
-             
             } else if (price < 0) {
-             
                 productPriceError.style.display = "block";
 
                 productPriceError.innerHTML = "Invalid price 2";
-               
-            
             } else {
                 productPriceError.style.display = "none";
                 productPriceError.innerHTML = "";
-             
+
 
             }
         }
@@ -245,45 +224,53 @@
 
 
         function validateSellingPrice() {
-            price = productPrice.value
-           selling = sellingPrice.value
-            
-            if (selling > price) {
+
+            const price = productPrice.value.trim();
+            selling = sellingPrice.value.trim()
+
+
+            if (selling == "") {
+                sellingPriceError.style.display = "block"
+                sellingPriceError.innerHTML = "its must be required!"
+            }
+            else if (selling > price) {
+
                 sellingPriceError.style.display = "block"
                 sellingPriceError.innerHTML = "INvalid price1!"
             } else if (selling < 0) {
+
                 sellingPriceError.style.display = "block"
                 sellingPriceError.innerHTML = "INvalid price3!"
             }
             else {
+
                 sellingPriceError.style.display = "none"
                 sellingPriceError.innerHTML = ""
             }
         }
 
 
-
         document.getElementById("form").addEventListener("submit", (e) => {
-         
-            validateId()
-        
-            validateTittle()
-          
-            validateColor()
-     
-            // validateQuantity()
-          
-            validatePrice()
-           
-            
-            validateDescription()
-            validateSellingPrice()
-            
+            console.log("val")
 
-          
-       
-            if (productError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML ) {
-    
+            validateId()
+
+            validateTittle()
+
+            validateColor()
+
+            validatePrice()
+
+
+            validateDescription()
+
+            validateSellingPrice()
+
+
+
+
+            if (productError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML) {
+
                 e.preventDefault();
             } else {
                 alert("form else")

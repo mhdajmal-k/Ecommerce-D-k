@@ -41,7 +41,10 @@
                                         <%= products[i].categoryId?.categoryTitle %>
                                     </td>
                                     <td>
-                                        <%= products[i].quantity %>
+                                        S:<%= products[i].size[0].quantity %>
+                                        M:<%= products[i].size[1].quantity %>
+                                        L:<%= products[i].size[2].quantity %>
+                                        XL:<%= products[i].size[3].quantity %>
                                     </td>
                                     <td>₹<%= products[i].price %>
                                     </td>

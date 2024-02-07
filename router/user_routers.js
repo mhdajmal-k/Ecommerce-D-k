@@ -23,7 +23,8 @@ const {
   load_forgotPassword,
   forgotPassword,
   verify_forgotPassword,
-  resetPassword
+  resetPassword,
+  load_profile
 } = userController;
 
 //=============================
@@ -50,5 +51,6 @@ user_router.get("/forgotPassword", load_forgotPassword);
 user_router.post("/forgotPassword", forgotPassword);
 user_router.get("/forgotPassword_verify", verify_forgotPassword);
 user_router.post("/forgotPassword_verify", resetPassword);
+user_router.get("/profile",load_profile);
 
 module.exports = user_router;

@@ -59,19 +59,16 @@ const add_Product=async(req,res)=>{
         },  {
           size:"M",quantity:sizeM
         },  {
-          size:"S",quantity:sizeL
+          size:"L",quantity:sizeL
         },  {
-          size:"S",quantity:sizeXL
+          size:"XL",quantity:sizeXL
         },
       ]
     })
       if(productNameExist){
-        if(productNameExist.size==size){
            res.render("addProduct",{message:"product Id already exists1!"})
-        }else{
-        await newProduct.save()
-        res.redirect('/admin/addProduct')
-      }
+        
+      
     }else{
       await newProduct.save()
       res.redirect('/admin/addProduct')
@@ -133,9 +130,9 @@ const updateProduct=await product.findByIdAndUpdate({_id:id},{$set:{
   },  {
     size:"M",quantity:sizeM
   },  {
-    size:"S",quantity:sizeL
+    size:"L",quantity:sizeL
   },  {
-    size:"S",quantity:sizeXL
+    size:"XL",quantity:sizeXL
   },
 ]
 

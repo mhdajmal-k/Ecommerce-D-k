@@ -227,7 +227,8 @@ const logout=async(req,res)=>{
   try {
    req.session.id=null
    req.session.user=false
-   req.session.save()
+
+
     res.redirect("/")
 
   } catch (error) {
@@ -317,6 +318,17 @@ if(updatePassword){
   }
 }
 
+  
+const load_profile=async (req,res)=>{
+  try {
+    res.render("profile")
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+
+
 
 module.exports = {
   landing_page,
@@ -333,5 +345,6 @@ module.exports = {
   load_forgotPassword,
   forgotPassword, 
   verify_forgotPassword,
-  resetPassword
+  resetPassword,
+  load_profile
 };

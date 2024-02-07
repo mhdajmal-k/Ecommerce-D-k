@@ -86,7 +86,7 @@
                                 <div class="mb-4" style="width:20%;">
                                     <label class="form-label">Selling price</label>
                                     <input type="number" value="<%= products.sellingPrice %>" name="sellingPrice"
-                                        onblur="validateSellingPrice()" placeholder="Type here" class="form-control"
+                                        onchange="validateSellingPrice()" placeholder="Type here" class="form-control"
                                         id="sellingPrice">
                                     <p id="sellingPriceError" class="text-danger "></p>
                                 </div>
@@ -166,25 +166,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
    <script>
-
-        const productId = document.getElementById("product_id")
+  const productId = document.getElementById("product_id")
         const product_title = document.getElementById("product_title")
         const product_color = document.getElementById("product_color")
-        const product_size = document.getElementById("product_small")
-        const product_quantity = document.getElementById("product_quantity")
+        const size = document.getElementsByClassName("size")
+
+
         const product_Description = document.getElementById("product_Description")
         const productPrice = document.getElementById("product_price")
         const sellingPrice = document.getElementById("sellingPrice")
         const productError = document.getElementById("productError")
         const productTitleError = document.getElementById("productTitleError")
         const productColorError = document.getElementById("productColorError")
-        const productSizeSmallError = document.getElementById("productSizeSmallError")
-        const productQuantityError = document.getElementById("productQuantityError")
+        const sizeError = document.getElementsByClassName("sizeError")
         const productDescriptionError = document.getElementById("productDescriptionError")
         const productPriceError = document.getElementById("productPriceError")
         const sellingPriceError = document.getElementById("sellingPriceError")
 
-
+        console.log("entered")
         function validateId() {
             productvalue = productId.value.trim()
             if (productvalue == "") {
@@ -227,27 +226,6 @@
             }
         }
 
-
-
-
-        function validateQuantity() {
-            const int = /^[1-9][0-9]*$/
-            const quantity = product_quantity.value.trim()
-            if (quantity === "") {
-                productQuantityError.style.display = "block"
-                productQuantityError.innerHTML = "This filed must be required"
-
-            } else if (!int.test(quantity)) {
-                productQuantityError.style.display = "block"
-                productQuantityError.innerHTML = "invalid quantity"
-
-
-            }
-            else {
-                productQuantityError.style.display = "none"
-                productQuantityError.innerHTML = ""
-            }
-        }
         function validateDescription() {
             const description = product_Description.value.trim()
             if (description == "") {
@@ -256,27 +234,20 @@
             } else if (description.length < 10) {
                 productDescriptionError.style.display = "block"
                 productDescriptionError.innerHTML = "Product Description is short"
-            }
-            else {
+            } else {
                 productDescriptionError.style.display = "none"
                 productDescriptionError.innerHTML = ""
             }
         }
         function validatePrice() {
             const price = productPrice.value.trim();
-            
             if (price === "") {
-
                 productPriceError.style.display = "block";
                 productPriceError.innerHTML = "Invalid price 1";
-
             } else if (price < 0) {
-
                 productPriceError.style.display = "block";
 
                 productPriceError.innerHTML = "Invalid price 2";
-
-
             } else {
                 productPriceError.style.display = "none";
                 productPriceError.innerHTML = "";
@@ -289,27 +260,34 @@
 
 
         function validateSellingPrice() {
-            const selling = parseFloat(sellingPrice.value.trim());
-            const price = parseFloat(productPrice.value.trim());
-            if (selling > price) {
+
+            const price = productPrice.value.trim();
+            selling = sellingPrice.value.trim()
+
+
+            if (selling == "") {
+                sellingPriceError.style.display = "block"
+                sellingPriceError.innerHTML = "its must be required!"
+            }
+            else if (selling > price) {
+
                 sellingPriceError.style.display = "block"
                 sellingPriceError.innerHTML = "INvalid price1!"
-            } else if (isNaN(selling)) {
-                sellingPriceError.style.display = "block"
-                sellingPriceError.innerHTML = "INvalid price2!"
             } else if (selling < 0) {
+
                 sellingPriceError.style.display = "block"
                 sellingPriceError.innerHTML = "INvalid price3!"
             }
             else {
+
                 sellingPriceError.style.display = "none"
                 sellingPriceError.innerHTML = ""
             }
         }
 
 
-
         document.getElementById("form").addEventListener("submit", (e) => {
+            console.log("val")
 
             validateId()
 
@@ -317,19 +295,18 @@
 
             validateColor()
 
-            validateQuantity()
-
             validatePrice()
 
 
             validateDescription()
+
             validateSellingPrice()
 
 
 
 
-            if (productError.innerHTML || productQuantityError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML) {
-alert("form default")
+            if (productError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML) {
+
                 e.preventDefault();
             } else {
                 alert("form else")
@@ -338,6 +315,7 @@ alert("form default")
             }
         });
 
+       
 
         function deleteProduct(productID) {
             console.log(productID)

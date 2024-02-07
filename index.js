@@ -4,7 +4,7 @@ const app=express()
 const path=require("path")
 const dbConnect=require('./configure/dbconnect')
 const session=require("express-session")
-const flash=require("flash")
+const flash=require("express-flash")
 const nocache = require('nocache');
 dbConnect()
 
