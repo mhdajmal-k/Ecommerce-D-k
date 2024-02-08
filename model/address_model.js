@@ -25,7 +25,7 @@ const address_model = new Schema({
     type: String,
     required: true,
   },
-  cityDistrictTown: {
+ district: {
     type: String,
     required: true,
   },
@@ -49,6 +49,6 @@ const address_model = new Schema({
 });
 
 
-const UserAddress=mongoose.model("address",address_model)
+const Address=mongoose.model("address",address_model)
 
-module.exports=UserAddress
+module.exports=Address

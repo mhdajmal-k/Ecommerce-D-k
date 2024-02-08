@@ -6,6 +6,7 @@ const dbConnect=require('./configure/dbconnect')
 const session=require("express-session")
 const flash=require("express-flash")
 const nocache = require('nocache');
+const morgan=require('morgan')
 dbConnect()
 
 //session
@@ -24,13 +25,14 @@ app.use(express.urlencoded({extended:true}))
 //static files
 app.use(express.static(path.join(__dirname,'public')));
 app.use("/uploads",express.static(path.join(__dirname,'/uploads')));
-
+app.use(morgan("dev"))
 
 //routers
-const user_router=require('./router/user_routers')
-app.use('/',user_router)
 const admin_router=require('./router/admin_routers')
 app.use('/admin',admin_router)
+const user_router=require('./router/user_routers')
+app.use('/',user_router)
+
 
 
 //404 page

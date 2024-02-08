@@ -31,7 +31,7 @@ const {
 //=============================
 
 
-const {load_profile,load_addAddress}=profileController
+const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress}=profileController
 
 
 
@@ -52,17 +52,21 @@ user_router.post("/login",verify_login);
 user_router.get("/shop",load_shop);
 user_router.get("/shopProduct",shopProduct);
 user_router.get("/logout", logout);
-user_router.get("/forgotPassword", load_forgotPassword);
-user_router.post("/forgotPassword", forgotPassword);
-user_router.get("/forgotPassword_verify", verify_forgotPassword);
-user_router.post("/forgotPassword_verify", resetPassword);
+user_router.get("/forgotPassword", isLogout, load_forgotPassword);
+user_router.post("/forgotPassword", isLogout, forgotPassword);
+user_router.get("/forgotPassword_verify", isLogout, verify_forgotPassword);
+user_router.post("/forgotPassword_verify", isLogout, resetPassword);
 
 
+
+//////////////user profile///////////////////
 
 
 user_router.get("/profile",isLogin,load_profile)
 user_router.get("/addAddress",isLogin,load_addAddress)
-
+user_router.post("/addAddress",isLogin,addAddress)
+user_router.get("/addressEdit",isLogin,load_editAddress)
+user_router.post("/addressEdit",isLogin,editAddress)
 
 
 

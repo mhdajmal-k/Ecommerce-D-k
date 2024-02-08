@@ -1,33 +1,141 @@
-const { session } = require("passport");
+const address = require("../model/address_model");
 const user = require("../model/user_model");
+const { session } = require("passport");
+const { json } = require("express");
 
+const load_profile = async (req, res) => {
+  try {
+    console.log(
+      req.session.userId,
+      "from the session in loginTTTTTTTTTTTTTTTTT"
+    );
 
+    const userData = await user.findById(req.session.userId);
+    console.log(userData.username, "goted name form the session");
+    console.log(typeof req.session.userId)
+    const userAddress=await address.findOne({user:req.session.userId})
+    console.log(userAddress,"in just got userAddress")
+    res.render("profile", { user: userData,userAddress:userAddress });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
+const load_addAddress = async (req, res) => {
+  try {
+    res.render("addAddress");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
-const load_profile=async (req,res)=>{
-    try {
-        console.log(  req.session.userId,'from the session in loginTTTTTTTTTTTTTTTTT');
+const addAddress = async (req, res) => {
+  try {
+    console.log(req.body);
+    console.log("helolllllllllllllllllllll");
+    
+    const {
+      name,
+      pinCode,
+      locality,
+      addressArea,
+      district,
+      state,
+      landmark,
+      mobile,
+      locationType,
+    } = req.body;
 
-    const userData=await user.findById(req.session.userId)
-    console.log(userData.username,"goted name form the session");
-      res.render("profile",{user:userData})
-    } catch (error) {
-      console.log(error.message)
+    console.log(req.session.userId, "it form session id");
+
+    // Check if the mobile number already exists in the database
+    const existingUser = await user.findOne({ mobile: mobile });
+
+    console.log(existingUser, "existing user.................");
+
+    if (existingUser) {
+      return res.render("addAddress", { message: "Please enter another mobile number" });
+    } else {
+      const newAddress = new address({
+        user: req.session.userId,
+        name: name,
+        pinCode: pinCode,
+        locality: locality,
+        address: addressArea,
+        district: district,
+        state: state,
+        landmark: landmark,
+        alternatePhone: mobile,
+        addressType: locationType,
+        alternativePhone: mobile,
+      });
+
+      if (newAddress) {
+        console.log(newAddress, "hhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+        const savedAddress = await newAddress.save();
+        console.log("Address added successfully");
+        return res.redirect("/profile");
+      }
     }
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
+};
 
-
-  const load_addAddress=async(req,res)=>{
-    try {
-      res.render("addAddress")
-    } catch (error) {
-      console.log(error.message)
+const load_editAddress=async (req,res)=>{
+  try {
+    
+ 
+    const {addressId}=req.query
+    console.log(addressId,"jsut gotted address form params") 
+    const userAddress=await address.findById({_id:addressId})
+    console.log(userAddress);
+    if(userAddress){
+      res.render("AdressEdit",{userAddress:userAddress})
+      
+    }else{
+      res.status(500),json("error happen")
     }
-
+  } catch (error) {
+    console.log(error.message)
   }
+}
 
 
-  module.exports={
-    load_profile,
-    load_addAddress
+const editAddress=async(req,res)=>{
+  try {
+    console.log("pppppppppppppppppppppppppppppppppppppppp");
+    console.log(req.body)
+    const {name,pinCode,locality,addressArea,district,state,landmark,mobile,addressId}=req.body
+    const updateAddress=await address.findByIdAndUpdate({_id:addressId},{$set:{
+      name:name,
+      pinCode:pinCode,
+      locality:locality,
+      address:addressArea,
+      district:district,
+      state:state,
+      landmark:landmark,
+      alternatePhone:mobile
+    }},{new:true}
+    )
+    if(updateAddress){
+      res.redirect('/profile')
+    }else{
+      res.render("addressEdit",{message:"error happened"})
+    }
+  } catch (error) {
+    console.log(error)
   }
+}
+
+
+
+
+module.exports = {
+  load_profile,
+  load_addAddress,
+  addAddress,
+  load_editAddress,
+  editAddress
+};

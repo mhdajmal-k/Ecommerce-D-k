@@ -16,52 +16,63 @@
                                 <div class="heading_s1">
                                     <h3 class="mb-30 text-center">ADD New Address</h3>
                                 </div>
-                                <form method="post" action="/addAddress" id="addressForm">
+                                <form method="post" action="/addressEdit" id="addressForm">
                                     <div class="row">
                                         <div class="form-group col-md-6">
                                             <label>Name <span class="required">*</span></label>
-                                            <input  class="form-control square" name="name" type="text"  placeholder="Enterv Name" id="name" onblur="validateName()">
+                                            <input  class="form-control square" name="name" type="text"  placeholder="Enter Name" id="name" value="<%= userAddress.name %>" onblur="validateName()">
                                             <p id="nameError" class="alert text-danger"></p>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label>Pin code<span class="required">*</span></label>
-                                            <input  type="number" class="form-control square" name="pinCode" placeholder="Enter pinCode" id="pinCode" onblur="validatePinCode() " >
+                                            <input  type="number" class="form-control square" name="pinCode" placeholder="Enter pinCode" id="pinCode"  value="<%= userAddress.pinCode %>" onblur="validatePinCode() " >
                                             <p id="pinCodeError" class="alert text-danger"></p>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label>locality <span class="required">*</span></label>
-                                            <input class="form-control square" name="locality" type="text"  placeholder="Enter locality" id="locality"  onblur="validateLocality()">
+                                            <input class="form-control square" name="locality" type="text"  placeholder="Enter locality" id="locality" value="<%= userAddress.locality %>"  onblur="validateLocality()">
                                             <p id="localityError" class="alert text-danger"></p>
                                         </div>
                                         <div class="form-group col-md-12">
                                             <label>Address(area and Street) <span class="required">*</span></label>
-                                            <input class="form-control square" name="addressArea" type="address" placeholder="Enter address (area /street)" id="address"  onblur="validateAddress()">
+                                            <input class="form-control square" name="addressArea" type="address" placeholder="Enter address (area /street)" id="address"  value="<%= userAddress.address %>" onblur="validateAddress()">
                                             <p id="addressAreaError" class="alert text-danger"></p>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label>City/District <span class="required">*</span></label>
-                                            <input id="district" class="form-control square" name="district" type="text" placeholder="Enter City"  onblur="validateDistrict()">
+                                            <input id="district" class="form-control square" name="district" type="text" placeholder="Enter City"   value="<%= userAddress.district %>" onblur="validateDistrict()">
                                             <p id="districtError" class="alert text-danger"></p>
                                         </div>
                                         <div class="form-group col-md-12">
                                             <label>State <span class="required">*</span></label>
-                                            <input id="state" class="form-control square" name="state" type="text" placeholder="Enter the State"  onblur="validateState()">
+                                            <input id="state" class="form-control square" name="state" type="text" placeholder="Enter the State"   value="<%= userAddress.state %>" onblur="validateState()">
                                             <p id="stateError" class="alert text-danger"></p>
                                         </div>
+                                        <% if (userAddress.landmark) { %>
+                                            <div class="form-group col-md-12">
+                                                <label>Landmark(optional) </label>
+                                                <input class="form-control square" id="landmark" name="landmark" type="text"  placeholder="Enter the Landmark"  value="<%= userAddress.landmark %>"  onblur="validateLandmark()">
+                                                <p id="LandmarkError" class="alert text-danger"></p>
+                                            </div>
+                                        <% } %>
                                         <div class="form-group col-md-12">
                                             <label>Landmark(optional) </label>
-                                            <input class="form-control square" id="landmark" name="landmark" type="text"  placeholder="Enter the Landmark"  onblur="validateLandmark()">
+                                            <input class="form-control square" id="landmark" name="landmark" type="text"  placeholder="Enter the Landmark"   onblur="validateLandmark()">
                                             <p id="LandmarkError" class="alert text-danger"></p>
                                         </div>
                                         <div class="form-group col-md-12">
                                             <label>Alternative Number <span class="required">*</span></label>
-                                            <input class="form-control square" name="mobile" id="mobile" type="number"  placeholder="Alternative Number" onblur="validateMobile()">
+                                            <input class="form-control square" name="mobile" id="mobile" type="number"  placeholder="Alternative Number" value="<%= userAddress.alternatePhone%>"   onblur="validateMobile()">
                                             <p id="mobileError" class="alert text-danger"></p>
+                                        </div>
+                                        <div class="form-group col-md-12">
+                                            
+                                            <input type="hidden" value="<%=userAddress._id  %>" name="addressId">
                                         </div>
                                         <DIV style="width: 20PX;">
                                             <div class="form-group col-md-3" >
                                                 <label>
-                                                    <input type="radio" name="locationType" value="home"> Home 
+                                                    <input type="radio" name="locationType" default="home" value="home"> Home 
                                                 </label>
                                             </div>
                                             <div class="form-group col-md-3">

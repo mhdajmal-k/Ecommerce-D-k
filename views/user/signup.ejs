@@ -275,10 +275,20 @@
 
         function validateName() {
             const name_value = username.value;
+            const nameRegex = /^[a-zA-Z\s\-',.]+$/;
+    const isValidName = nameRegex.test(name_value );
+
             if (name_value.trim() === "") {
                 user_name_error.style.display = "block";
                 user_name_error.innerHTML = "Please Enter a valid Name.";
-            } else {
+            }else if(!isValidName){
+                user_name_error.style.display = "block";
+                user_name_error.innerHTML = "Please Enter a valid Name.";
+            }else if(name_value>30){
+                user_name_error.style.display = "block";
+                user_name_error.innerHTML = "Please Enter a valid Name.";
+            }
+             else {
                 user_name_error.style.display = "none";
                 user_name_error.innerHTML = "";
             }

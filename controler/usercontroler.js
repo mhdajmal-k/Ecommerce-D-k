@@ -131,8 +131,6 @@ const otp_submit = async (req, res) => {
     const { otp } = req.body;
     console.log(`otp ${otp}`);
     console.log(`session ${req.session.OTP}`);
-
-
     if(otp==req.session.OTP){
       const { email, securedPassword, mobile, username } = req.session.userTemp ;
       const saving_data = new user({
@@ -233,10 +231,7 @@ const logout=async(req,res)=>{
   try {
    req.session.userId=null
    req.session.user=false
-
-
     res.redirect("/")
-
   } catch (error) {
     console.log(error.message)
   }
@@ -254,7 +249,6 @@ const load_forgotPassword=async(req,res)=>{
     console.log(error.message)
   }
 }
-
 const forgotPassword=async(req,res)=>{
   try {
     const {email}=req.body
@@ -271,10 +265,8 @@ const forgotPassword=async(req,res)=>{
       res.redirect("/forgotPassword_verify")
     }else{
       res.render("forgotPassword",{message:"invalid email please sign up"})
-    }
-  
-    // render('verifyForgotPassword')
-
+    }  
+   // render('verifyForgotPassword')
   } catch (error) {
     console.log(error.message)
   }
@@ -311,14 +303,9 @@ if(updatePassword){
       }else{
         res.render("verifyForgotPassword",{message:"Password is not Match"})
       }
-
     }else{
       res.render("verifyForgotPassword",{message:"invalid OTP"})
     }
-   
-
-
-
   } catch (error) {
     console.log(error.message);
   }
@@ -351,6 +338,5 @@ module.exports = {
   load_forgotPassword,
   forgotPassword, 
   verify_forgotPassword,
-  resetPassword,
-  
+  resetPassword,  
 };
