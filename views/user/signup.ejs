@@ -235,7 +235,7 @@
                                                     name="login">Submit &amp; Register</button>
 
                                                 <% if (locals.message) { %>
-                                                    <p>
+                                                    <p id="localsmessa" class="error text-danger">
                                                         <%=message %>
                                                     </p>
                                                     <% } %>
@@ -272,6 +272,7 @@
         const mobile_error = document.getElementById("mobile_error");
         const password_error = document.getElementById("password_error");
         const password_conform_error = document.getElementById("password_conform_error");
+        const localsmessa = document.getElementById("localsmessa");
 
         function validateName() {
             const name_value = username.value;
@@ -344,7 +345,12 @@
 
                 password_conform_error.innerHTML = "Passwords must match";
                 password_conform_error.style.display = "block";
-            } else {
+            }else if(passwordValue.trim()==""){
+                password_conform_error.innerHTML = "Passwords must required";
+                password_conform_error.style.display = "block";
+            }
+            
+            else {
                 password_conform_error.style.display = "none";
                 password_conform_error.innerHTML = "";
             }
@@ -355,6 +361,7 @@
             validate_password()
             validatemobile()
             validateName()
+            conformPassword()
             if (password_conform_error.innerHTML || password_error.innerHTML || email_error.innerHTML || user_name_error.innerHTML) {
                 e.preventDefault()
             } else {
@@ -365,7 +372,11 @@
         }
 
 
-
+setTimeout(() => {
+    localsmessa.innerHTML=""
+    localsmessa.style.display="none"
+},3000);
+     
 
 
     </script>

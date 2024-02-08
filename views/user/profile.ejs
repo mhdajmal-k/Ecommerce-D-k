@@ -212,10 +212,18 @@
                                                 <p>UserName:<%= user.username %></p>
                                                 <p>MobileNumber:<%= user.mobile %></p>
                                                 <p>Email:<%= user.email %></p>
-                                                <a href="/editProfile" class="btn btn-warning"
-                                                style="width: auto; margin: 10px;" > Edit</a>
-                                                <a href="#">shipping and billing addresses</a> 
-                                                <a href="#">recent orders</a>
+                                                <!-- <form intaction="/editProfile?userId=" ></a>
+                                                <button type="submit">
+                                                 edit
+                                                </button> -->
+
+                                             <a href="/addressEdit?addressId=<%= userAddress._id %>" class="btn-small">Edit</a>
+
+                                              <a href="/editProfile?userId=<%= user._id  %>"  class="btn-small">edit</a>
+                                                <!-- <a class="btn" href="/editProfile?userId="
+                                                style="width: auto; margin: 10px;" > Edit</a> -->
+                                                <!-- <a href="#">shipping and billing addresses</a> 
+                                                <a href="#">recent orders</a> -->
                                             </div>
                                         </div>
                                     </div>
@@ -291,44 +299,59 @@
                                     </div>
                                     <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
                                         <div class="row">
-                                            <%  if (userAddress.addressType=="home") { %>
-                                               
+                                            <% if (userAddress.addressType=="home") { %>
                                             <div class="col-lg-6">
                                                 <div class="card mb-3 mb-lg-0">
                                                     <div class="card-header">
                                                         <h5 class="mb-0">
                                                             <%=userAddress.addressType  %> Address
-                                                            <div class="card-body">
-                                                                <p  class="text-center" style="font-weight: bold;"><%=userAddress.name%></p>
-                                                                <address> <%=userAddress.address%>, <br><%=userAddress.locality %>,<br> <%=userAddress.district%>,  <br> <%=userAddress.state%>,  <br> <%=userAddress. alternatePhone%>, <br> <%=userAddress.pinCode %></address>
-                                                                <p><%=userAddress.state%></p>
-                                                                <a href="/addressEdit?addressId=<%= userAddress._id %>" class="btn-small">Edit</a>
-                                                            </div>
-                                                        </div>
-                                                      
+                                                        </h5>
                                                     </div>
-                                                    <% } %></h5>
+                                                    <div class="card-body">
+                                                        <p style="font-weight: bold;"><%=userAddress.name%></p>
+                                                        <address>
+                                                            <%=userAddress.address%>, <br>
+                                                            <%=userAddress.locality %>,<br>
+                                                            <%=userAddress.district%>, <br>
+                                                            <%=userAddress.state%>, <br>
+                                                            <%=userAddress.alternatePhone%>, <br>
+                                                            <%=userAddress.pinCode %>
+                                                        </address>
+                                                        <p><%=userAddress.state%></p>
+                                                        <a href="/addressEdit?addressId=<%= userAddress._id %>" class="btn-small">Edit</a>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <%  if (userAddress.addressType=="work") { %>
-                                                <div class="col-lg-6">
-                                                    <div class="card mb-3 mb-lg-0">
-                                                        <div class="card-header">
-                                                            <h5 class="mb-0">
-                                                                <%=userAddress.addressType  %> Address
-                                                                <div class="card-body">
-                                                                    <address> <%=userAddress.address%>, <br><%=userAddress.locality %>,<br> <%=userAddress.district%>,  <br> <%=userAddress.state%>,  <br> <%=userAddress. alternatePhone%>, <br> <%=userAddress.pinCode %></address>
-                                                                    <p><%=userAddress.state%></p>
-                                                                    <a href="" class="btn-small">Edit</a>
-                                                                </div>
-                                                            </div>
-                                                          
-                                                        </div>
-                                                        <% } %></h5>
+                                            <% } %>
+                                            <% if (userAddress.addressType=="work") { %>
+                                            <div class="col-lg-6">
+                                                <div class="card mb-3 mb-lg-0">
+                                                    <div class="card-header">
+                                                        <h5 class="mb-0">
+                                                            <%=userAddress.addressType  %> Address
+                                                        </h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <address>
+                                                            <%=userAddress.address%>, <br>
+                                                            <%=userAddress.locality %>,<br>
+                                                            <%=userAddress.district%>, <br>
+                                                            <%=userAddress.state%>, <br>
+                                                            <%=userAddress.alternatePhone%>, <br>
+                                                            <%=userAddress.pinCode %>
+                                                        </address>
+                                                        <p><%=userAddress.state%></p>
+                                                        <a href="" class="btn-small">Edit</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <% } %>
                                         </div>
                                         <div>
-                                            <a href="/addAddress" class="btn mt-10"> ADD Address</a>
+                                            <a href="/addAddress" class="btn mt-10">ADD Address</a>
                                         </div>
                                     </div>
+                                    
                                     <div class="tab-pane fade" id="account-detail" role="tabpanel" aria-labelledby="account-detail-tab">
                                         <div class="card">
                                             <div class="card-header">

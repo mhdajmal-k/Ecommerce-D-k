@@ -31,6 +31,8 @@ const verify_login=async(req,res)=>{
         const adminPassword=await admin_model.findOne({password:password})
         if (adminPassword) {
           req.session.admin=adminEmail._id
+          req.session.adminOn=true
+
           res.redirect('/admin/dashboard')
         } else {
           res.render('adminLogin',{message:"password is incorrect!"}) 
@@ -99,6 +101,7 @@ const Dashboard_load=async (req,res)=>{
     
   
       req.session.admin=null
+      req.session.adminOn=false
    
       res.redirect("/admin")
       

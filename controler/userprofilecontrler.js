@@ -11,10 +11,7 @@ const load_profile = async (req, res) => {
     );
 
     const userData = await user.findById(req.session.userId);
-    console.log(userData.username, "goted name form the session");
-    console.log(typeof req.session.userId)
     const userAddress=await address.findOne({user:req.session.userId})
-    console.log(userAddress,"in just got userAddress")
     res.render("profile", { user: userData,userAddress:userAddress });
   } catch (error) {
     console.log(error.message);
@@ -32,8 +29,6 @@ const load_addAddress = async (req, res) => {
 const addAddress = async (req, res) => {
   try {
     console.log(req.body);
-    console.log("helolllllllllllllllllllll");
-    
     const {
       name,
       pinCode,
@@ -47,12 +42,9 @@ const addAddress = async (req, res) => {
     } = req.body;
 
     console.log(req.session.userId, "it form session id");
-
     // Check if the mobile number already exists in the database
     const existingUser = await user.findOne({ mobile: mobile });
-
     console.log(existingUser, "existing user.................");
-
     if (existingUser) {
       return res.render("addAddress", { message: "Please enter another mobile number" });
     } else {
@@ -69,7 +61,6 @@ const addAddress = async (req, res) => {
         addressType: locationType,
         alternativePhone: mobile,
       });
-
       if (newAddress) {
         console.log(newAddress, "hhhhhhhhhhhhhhhhhhhhhhhhhhhh");
         const savedAddress = await newAddress.save();
@@ -86,14 +77,11 @@ const addAddress = async (req, res) => {
 const load_editAddress=async (req,res)=>{
   try {
     
- 
     const {addressId}=req.query
-    console.log(addressId,"jsut gotted address form params") 
     const userAddress=await address.findById({_id:addressId})
     console.log(userAddress);
     if(userAddress){
-      res.render("AdressEdit",{userAddress:userAddress})
-      
+      res.render("AdressEdit",{userAddress:userAddress})  
     }else{
       res.status(500),json("error happen")
     }
@@ -129,7 +117,22 @@ const editAddress=async(req,res)=>{
   }
 }
 
+ const load_editProfile=async(req,res)=>{
+  try {
+    console.log("hello");
+    res.send("helo")
 
+const {userId}=req.query
+console.log(userId,"ffffffffffffffffffffffff");
+// const userData=await user.findOne({_id:userId})
+// if(userData){
+//   res.render("editProfile",{userData})
+// }
+  } catch (error) {
+    
+  }
+
+}
 
 
 module.exports = {
@@ -137,5 +140,6 @@ module.exports = {
   load_addAddress,
   addAddress,
   load_editAddress,
-  editAddress
+  editAddress,
+  load_editProfile
 };

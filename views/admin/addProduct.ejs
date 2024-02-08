@@ -204,7 +204,7 @@
             }
         }
         function validatePrice() {
-            const price = productPrice.value.trim();
+            const price = productPrice.value
             if (price === "") {
                 productPriceError.style.display = "block";
                 productPriceError.innerHTML = "Invalid price 1";
@@ -225,11 +225,11 @@
 
         function validateSellingPrice() {
 
-            const price = productPrice.value.trim();
-            selling = sellingPrice.value.trim()
+            const price = productPrice.value;
+          const selling = sellingPrice.value
 
 
-            if (selling == "") {
+            if (selling === "") {
                 sellingPriceError.style.display = "block"
                 sellingPriceError.innerHTML = "its must be required!"
             }

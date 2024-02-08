@@ -2,7 +2,7 @@
 // adminAuth.js
 const sessionChecker = (req, res, next) => {
     
-        if (req.session.admin) {
+        if (req.session.adminOn==true) {
      
       
             next();

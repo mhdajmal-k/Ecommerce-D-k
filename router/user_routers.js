@@ -31,7 +31,7 @@ const {
 //=============================
 
 
-const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress}=profileController
+const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress,load_editProfile}=profileController
 
 
 
@@ -67,6 +67,7 @@ user_router.get("/addAddress",isLogin,load_addAddress)
 user_router.post("/addAddress",isLogin,addAddress)
 user_router.get("/addressEdit",isLogin,load_editAddress)
 user_router.post("/addressEdit",isLogin,editAddress)
+user_router.get("/editProfile",isLogin,load_editProfile)
 
 
 

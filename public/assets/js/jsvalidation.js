@@ -18,7 +18,7 @@ function validateForm(e) {
         categoryDescriptionError.innerHTML = "Description is required2";
         e.preventDefault();
     }
-    else if(productTitle.length>20){
+    else if(productTitle.length>30){
         errorMessageElement.style.display = "block";
         errorMessageElement.innerHTML = "product tittle must be short3";
         e.preventDefault();

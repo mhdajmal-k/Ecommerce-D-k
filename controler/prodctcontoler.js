@@ -66,7 +66,8 @@ const add_Product=async(req,res)=>{
       ]
     })
       if(productNameExist){
-           res.render("addProduct",{message:"product Id already exists1!"})
+        const categories=await category.find({isList:true})
+           res.render("addProduct",{message:"product Id already exists1!",category:categories})
         
       
     }else{
