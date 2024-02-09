@@ -202,7 +202,7 @@
                                                 <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login">Log in</button>
                                                 <% if (locals.message) { %>
                                                     
-                                                   <p class=" mt-10 alert-danger alert-dismissible fade show"  id="SingUpError" >
+                                                   <p  id="errormessage" class=" mt-10 alert-danger alert-dismissible fade show"  id="SingUpError" >
                                                     <%= message %>
                                                    </p> 
                                                  
@@ -211,9 +211,12 @@
                                         </form>
                                     </div>
                                 </div>
+                                <!-- <button class="btn "><a href="/auth/google" style="font-weight: bold;">Google</a></button> -->
                             </div>
                         
                                         <div class="text-muted text-center">Create account? <a href="signup">Sign in now</a></div>
+
+                                      
                                     </div>
                                 </div>
                             </div>
@@ -228,6 +231,13 @@
         // const password=document.getElementById("password").value
         // const email_error = document.getElementById("email_error");
         // const password_error = document.getElementById("password_error");
+        const errormessage=document.getElementById("errormessage")
+        if(errormessage){
+            setTimeout(() => {
+            errormessage.style.display="none"
+        },4000 );
+        }
+      
 
     </script>
     <%- include ("../partilas/userfooter") -%>

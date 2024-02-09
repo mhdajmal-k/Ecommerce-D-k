@@ -7,20 +7,26 @@ const session=require("express-session")
 const flash=require("express-flash")
 const nocache = require('nocache');
 const morgan=require('morgan')
+// const passport=require("passport")
+
 dbConnect()
 
 //session
 app.use(session({
    secret:process.env.session,
     resave:false,
-    saveUninitialized:false,
+    saveUninitialized:true,
 }))
 
 
+
+// app.use(passport.initialize())  
+// app.use(passport.session())  
 app.use(nocache())
 app.use(express.json())
 app.use(flash())
 app.use(express.urlencoded({extended:true}))
+
 
 //static files
 app.use(express.static(path.join(__dirname,'public')));

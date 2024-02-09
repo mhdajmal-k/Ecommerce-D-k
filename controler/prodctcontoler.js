@@ -44,6 +44,7 @@ const add_Product=async(req,res)=>{
     const { productId, productName, color,sizeS,sizeM,sizeL,sizeXL, price, sellingPrice,description,categories}=req.body
  
       const productNameExist=await product.findOne({productName:{$regex:new RegExp('^'+productName+"$","i")}})
+      // const exitingColor=await product.findOne({productName:productName,color:color})
       const newProduct= new product({
         productId:productId,
         productName:productName,

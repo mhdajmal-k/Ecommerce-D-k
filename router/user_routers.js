@@ -1,13 +1,13 @@
 const express = require("express");
+const  passport=require("../passport")
 const user_router = express();
 const userController = require("../controler/usercontroler");
 const profileController=require("../controler/userprofilecontrler")
 const path = require("path");
-const { isLogin, isLogout } = require("../middleware/userAuth");
+const { isLogin, isLogout,isBlocked} = require("../middleware/userAuth");
 
 
-
-
+// isBlocked()
 //=============================user controller
 const {
   load_login,
@@ -37,11 +37,10 @@ const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress,load
 
 
 
-
 user_router.set("view engine", "ejs");
 user_router.set("views", "./views/user");
 
-user_router.get("/",landing_page);
+user_router.get("/",isBlocked,landing_page);
 user_router.get("/login", isLogout, load_login);
 user_router.get("/signup", isLogout,load_signup);
 user_router.post("/signup", isLogout, submit_signup);
@@ -58,16 +57,26 @@ user_router.get("/forgotPassword_verify", isLogout, verify_forgotPassword);
 user_router.post("/forgotPassword_verify", isLogout, resetPassword);
 
 
+// user_router.get('/auth/google', 
+//   passport.authenticate("google", { scope : ['profile', 'email'] }))
+   
+// user_router.get('/auth/google/callback', 
+// passport.authenticate('google', { failureRedirect: '/login' }),
+// function(req, res) {
+//   res.redirect('/');
+// });
+
+
 
 //////////////user profile///////////////////
 
 
 user_router.get("/profile",isLogin,load_profile)
-user_router.get("/addAddress",isLogin,load_addAddress)
-user_router.post("/addAddress",isLogin,addAddress)
-user_router.get("/addressEdit",isLogin,load_editAddress)
-user_router.post("/addressEdit",isLogin,editAddress)
-user_router.get("/editProfile",isLogin,load_editProfile)
+user_router.get("/addAddress",isBlocked,isLogin,load_addAddress)
+user_router.post("/addAddress",isBlocked,isLogin,addAddress)
+user_router.get("/addressEdit",isBlocked,isLogin,load_editAddress)
+user_router.post("/addressEdit",isBlocked,isLogin,editAddress)
+user_router.get("/editProfile",isBlocked,isLogin,load_editProfile)
 
 
 

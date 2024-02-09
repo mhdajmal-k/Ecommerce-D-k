@@ -31,6 +31,12 @@ const generateOTP = (length) => {
 
 const landing_page = async (req, res) => {
   try {
+  //   const email=req.user.displayName
+  //   const name=req.user.emails
+  // //  const i= req.user.username
+  // //  const f=req.user.email
+    // console.log(email,"form google");
+    // console.log(name,"form google");
     console.log(  req.session.userId,'from the session in loginlllllllllllllll');
     const user=req.session.user || false
     console.log(user+"1");
@@ -38,10 +44,10 @@ const landing_page = async (req, res) => {
   
     const products = await product
       .find({ isBlocked: false })
-      .limit(7)
+      .limit(8)
       .populate("categoryId");
 if(user){
-  res.render("landing_page", { products: products,user:user });
+  res.render("landing_page", { products: products,user:user});
 
 }else{
   res.render("landing_page", { products: products });
@@ -52,6 +58,8 @@ if(user){
     console.log(error.message);
   }
 };
+
+
 
 //Login page
 const load_login = async (req, res) => {
@@ -65,6 +73,8 @@ const load_login = async (req, res) => {
   }
 };
 
+
+
 //signup page
 const load_signup = async (req, res) => {
   try {
@@ -73,6 +83,8 @@ const load_signup = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
 
 //submit_signup
 const submit_signup = async (req, res) => {
@@ -98,6 +110,8 @@ const submit_signup = async (req, res) => {
   }
 };
 
+
+
 //load otp
 const otp_verification = async (req, res) => {
   try {
@@ -107,8 +121,9 @@ const otp_verification = async (req, res) => {
   }
 };
 
-//resend otp
 
+
+//resend otp
 const resendOtp=async (req,res)=>{
   try {
     const newOtp = await generateOTP(6);
@@ -128,11 +143,14 @@ const resendOtp=async (req,res)=>{
 //otp checking...
 const otp_submit = async (req, res) => {
   try {
+    console.log("hellooooooooooooooooooo");
     const { otp } = req.body;
-    console.log(`otp ${otp}`);
+
+    console.log(otp, "from the ajax call");
     console.log(`session ${req.session.OTP}`);
-    if(otp==req.session.OTP){
-      const { email, securedPassword, mobile, username } = req.session.userTemp ;
+  
+    if (otp== req.session.OTP) {
+      const { email, securedPassword, mobile, username } = req.session.userTemp;
       const saving_data = new user({
         username: username,
         email: email,
@@ -141,21 +159,22 @@ const otp_submit = async (req, res) => {
         is_verified: 1,
       });
       const userData = await saving_data.save();
-      delete req.session.OTP;
-       if( userData){
-        res.redirect("/login");
-    }
-    }
-    else{
-      res.render("otp_page", { message: "Entered OTP is INVALID!" });
+       req.session.OTP=null
+      if (userData) {
+        res.json({ status: true });
+      } 
+    }else {
+      res.json({ status: false });
     }
   } catch (error) {
     console.log(error.message);
   }
 };
 
-//user login
 
+
+
+//user login
 const verify_login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -165,9 +184,10 @@ const verify_login = async (req, res) => {
       if (passwordMatch) {
         if (user_email.is_verified == 1) {
           if (!user_email.is_block) {
-            console.log(user_email._id,"from the ueremail id");
+            console.log(user_email._id,"from the ueremail idssssssssssssssss");
+
             req.session.userId= user_email._id;
-            console.log(  req.session.userId,'from the session in login');
+            console.log(  req.session.userId,'from the session in loginddddddddddddddddd');
             req.session.user=true
             req.session.save()
             res.redirect("/");
@@ -188,8 +208,9 @@ const verify_login = async (req, res) => {
   }
 };
 
-//get log page
 
+
+//get log page
 const load_shop = async (req, res) => {
   console.log("heloo");
   try {
@@ -201,8 +222,10 @@ const load_shop = async (req, res) => {
   }
 };
 
-//one product details
 
+
+
+//one product details
 const shopProduct = async (req, res) => {
   try {
    
@@ -225,8 +248,9 @@ const shopProduct = async (req, res) => {
 };
 
 
-//logout
 
+
+//logout
 const logout=async(req,res)=>{
   try {
    req.session.userId=null
@@ -238,9 +262,9 @@ const logout=async(req,res)=>{
 }
 
 
+
+
 ///FORGOT PASSWORD
-
-
 const load_forgotPassword=async(req,res)=>{
   try {
     res.render("forgotPassword")
@@ -249,6 +273,8 @@ const load_forgotPassword=async(req,res)=>{
     console.log(error.message)
   }
 }
+
+
 const forgotPassword=async(req,res)=>{
   try {
     const {email}=req.body
@@ -272,6 +298,9 @@ const forgotPassword=async(req,res)=>{
   }
 }
 
+
+
+//verifying forgot password
 const  verify_forgotPassword=async(req,res)=>{
   try {
     console.log("Hello")
@@ -280,6 +309,8 @@ const  verify_forgotPassword=async(req,res)=>{
     console.log(error.message);
   }
 }
+
+
 
 const resetPassword=async (req,res)=>{
   try {
@@ -312,13 +343,7 @@ if(updatePassword){
 }
 
   
-// const load_profile=async (req,res)=>{
-//   try {
-//     res.render("profile")
-//   } catch (error) {
-//     console.log(error.message)
-//   }
-// }
+
 
 
 

@@ -43,24 +43,24 @@
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeS" class="form-label">Size S:</label>
                                             <input type="number" id="sizeS" name="sizeS" required class="form-control"
-                                                placeholder="Enter the quantity">
+                                            min="1" max="500" placeholder="Enter the quantity"  >
                                         </div>
 
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeM" class="form-label">Size M:</label>
-                                            <input type="number" id="sizeM" name="sizeM" required class="form-control"
+                                            <input type="number" id="sizeM" name="sizeM" required class="form-control" min="1" max="500"
                                                 placeholder="Enter the quantity">
                                         </div>
 
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeL" class="form-label">Size L:</label>
-                                            <input type="number" id="sizeL" name="sizeL" required class="form-control"
+                                            <input type="number" id="sizeL" name="sizeL" required class="form-control" min="1" max="500"
                                                 placeholder="Enter the quantity">
                                         </div>
 
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeXL" class="form-label">Size XL:</label>
-                                            <input type="number" id="sizeXL" name="sizeXL" required class="form-control"
+                                            <input type="number" id="sizeXL" name="sizeXL" required class="form-control" min="1" max="500"
                                                 placeholder="Enter the quantity">
                                         </div>
 
@@ -167,7 +167,7 @@
             if (productName == "") {
                 productTitleError.style.display = "block"
                 productTitleError.innerHTML = "product Name must be required"
-            } else if (productName.length > 30) {
+            } else if (productName.length > 50) {
                 productTitleError.style.display = "block"
                 productTitleError.innerHTML = "product Name must be short"
             } else {
@@ -251,9 +251,10 @@
 
 
         document.getElementById("form").addEventListener("submit", (e) => {
-            console.log("val")
+        
 
             validateId()
+
 
             validateTittle()
 
