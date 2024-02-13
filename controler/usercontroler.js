@@ -214,8 +214,7 @@ const verify_login = async (req, res) => {
 const load_shop = async (req, res) => {
   console.log("heloo");
   try {
-    const products = await product.find({ isBlocked: false })
-    // .populate("categoryId")
+    const products = await product.find({ isBlocked: false }).populate("categoryId")
     res.render("shop", { product: products });
   } catch (error) {
     console.log(error.message);

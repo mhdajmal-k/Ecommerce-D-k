@@ -43,25 +43,25 @@
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeS" class="form-label">Size S:</label>
                                             <input type="number" id="sizeS" name="sizeS" required class="form-control"
-                                            min="1" max="500" placeholder="Enter the quantity"  >
+                                                min="1" max="500" placeholder="Enter the quantity">
                                         </div>
 
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeM" class="form-label">Size M:</label>
-                                            <input type="number" id="sizeM" name="sizeM" required class="form-control" min="1" max="500"
-                                                placeholder="Enter the quantity">
+                                            <input type="number" id="sizeM" name="sizeM" required class="form-control"
+                                                min="1" max="500" placeholder="Enter the quantity">
                                         </div>
 
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeL" class="form-label">Size L:</label>
-                                            <input type="number" id="sizeL" name="sizeL" required class="form-control" min="1" max="500"
-                                                placeholder="Enter the quantity">
+                                            <input type="number" id="sizeL" name="sizeL" required class="form-control"
+                                                min="1" max="500" placeholder="Enter the quantity">
                                         </div>
 
                                         <div class="col-md-4 mb-3">
                                             <label for="sizeXL" class="form-label">Size XL:</label>
-                                            <input type="number" id="sizeXL" name="sizeXL" required class="form-control" min="1" max="500"
-                                                placeholder="Enter the quantity">
+                                            <input type="number" id="sizeXL" name="sizeXL" required class="form-control"
+                                                min="1" max="500" placeholder="Enter the quantity">
                                         </div>
 
                                         <div class="mb-4" style="width:20%;">
@@ -111,9 +111,15 @@
                                 <div class="card-body">
                                     <div>
                                         <label class="form-label">Images</label>
-                                        <input class="form-control" name="images" type="file" id="Images"
+                                        <input class="form-control" name="images" type="file"  id="imageInput"
                                             required="image should be required" multiple>
-                                        <p id="productImageError" class="text-danger "></p>
+                                            <div id="imagePreviewContainer" style="display: none;">
+                                                <div id="imagePreviews" style="width: 100px;"></div>
+                                                <button id="deselectButton">Deselect All</button>
+                        
+                                           
+                                        </div>
+
 
                                     </div>
                                 </div>
@@ -129,6 +135,8 @@
     </section>
 
     <script>
+
+FileReader.
 
         const productId = document.getElementById("product_id")
         const product_title = document.getElementById("product_title")
@@ -226,7 +234,7 @@
         function validateSellingPrice() {
 
             const price = productPrice.value;
-          const selling = sellingPrice.value
+            const selling = sellingPrice.value
 
 
             if (selling === "") {
@@ -251,7 +259,7 @@
 
 
         document.getElementById("form").addEventListener("submit", (e) => {
-        
+
 
             validateId()
 
@@ -280,5 +288,39 @@
             }
         });
 
+
+ const imageInput = document.getElementById('imageInput');
+const imagePreviews = document.getElementById('imagePreviews');
+const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+const deselectButton = document.getElementById('deselectButton');
+
+
+imageInput.addEventListener('change', function(event) {
+    const files = event.target.files;
+    
+    if (files) {
+        imagePreviews.innerHTML = '';
+
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+                imgElement.classList.add('previewImage');
+                imagePreviews.appendChild(imgElement);
+            };
+            reader.readAsDataURL(file);
+        });
+        imagePreviewContainer.style.display = 'block';
+    }
+});
+
+
+deselectButton.addEventListener('click', function() {
+    imageInput.value = '';
+    imagePreviews.innerHTML = '';
+    imagePreviewContainer.style.display = 'none';
+});
 
     </script>
