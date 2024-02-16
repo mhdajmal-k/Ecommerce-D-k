@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 const { render } = require("../router/user_routers");
 const { sendMail } = require("./helper/nodemailer");
 
+
 //secure Password
 
 const securePassword = async (password) => {
@@ -30,6 +31,7 @@ const generateOTP = (length) => {
 //Home page
 
 const landing_page = async (req, res) => {
+  'use strict';
   try {
   //   const email=req.user.displayName
   //   const name=req.user.emails
@@ -221,6 +223,39 @@ const load_shop = async (req, res) => {
   }
 };
 
+const lowtohigh=async (req,res)=>{
+  try {
+    console.log("hi");
+const lowToHighProduct=await product.find().sort({sellingPrice:1})
+res.render("shop",{product:lowToHighProduct})
+    
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+const highToLow=async (req,res)=>{
+  try {
+    console.log("hi");
+const lowToHighProduct=await product.find().sort({sellingPrice:-1})
+res.render("shop",{product:lowToHighProduct})
+    
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const newArrival=async(req,res)=>{
+  try {
+    console.log("hi");
+const lowToHighProduct=await product.find().sort({
+  createdAt:-1})
+res.render("shop",{product:lowToHighProduct})
+    
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
 
 
 
@@ -356,6 +391,9 @@ module.exports = {
   otp_submit,
   verify_login,
   load_shop,
+  lowtohigh,
+  highToLow,
+  newArrival,
   shopProduct,
   resendOtp,
   logout,

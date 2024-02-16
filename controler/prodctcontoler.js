@@ -21,10 +21,8 @@ const load_products=async(req,res)=>{
 //============================== addProduct page+===========================
 
 const add_ProductLoad=async(req,res)=>{
-    try {
-      
+    try {  
       const categories=await category.find({isList:true})
-
       res.render('addProduct',{category:categories})
     } catch (error) {
       console.log(error.message) 

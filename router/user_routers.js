@@ -5,6 +5,7 @@ const userController = require("../controler/usercontroler");
 const profileController=require("../controler/userprofilecontrler")
 const path = require("path");
 const { isLogin, isLogout,isBlocked} = require("../middleware/userAuth");
+const cartController=require("../controler/cartcontroler")
 
 
 // isBlocked()
@@ -19,6 +20,9 @@ const {
   resendOtp,
   verify_login,
   load_shop,
+  lowtohigh,
+  highToLow,
+  newArrival,
   shopProduct,
   logout,
   load_forgotPassword,
@@ -32,6 +36,7 @@ const {
 
 
 const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress,load_editProfile}=profileController
+const {load_cart,addCart,removeItem,decrementQuantity}=cartController
 
 
 
@@ -49,6 +54,9 @@ user_router.post("/otp_verification", isLogout, otp_submit);
 user_router.get("/resendOtp", isLogout,resendOtp);
 user_router.post("/login",verify_login);
 user_router.get("/shop",load_shop);
+user_router.get("/lowtohigh",lowtohigh);
+user_router.get("/highToLow",highToLow);
+user_router.get("/newArrival",newArrival);
 user_router.get("/shopProduct",shopProduct);
 user_router.get("/logout", logout);
 user_router.get("/forgotPassword", isLogout, load_forgotPassword);
@@ -79,10 +87,16 @@ user_router.post("/addressEdit",isBlocked,isLogin,editAddress)
 user_router.get("/editProfile",isBlocked,isLogin,load_editProfile)
 
 
+//////////////////// cart ///////////////
+
+
+user_router.get("/cart",isLogin,load_cart)
+user_router.post("/cart",addCart)
+user_router.get("/removeItem",removeItem)
+user_router.post("/decrementQuantity",decrementQuantity)
 
 
 
 
-;
 
 module.exports = user_router;

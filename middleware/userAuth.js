@@ -12,6 +12,7 @@ if(req.session.user==true){
 
     next()
 }else{
+    console.log("login")
     res.redirect("/login")
 }
 }

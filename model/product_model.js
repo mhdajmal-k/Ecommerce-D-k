@@ -48,7 +48,9 @@ type:String
     require: true,
     default:false
   },
-});
+},{
+  timestamps:true
+})
 
 const Product=mongoose.model('product',Product_model)
 module.exports=Product
