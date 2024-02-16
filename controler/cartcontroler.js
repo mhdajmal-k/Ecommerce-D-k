@@ -14,10 +14,10 @@ const load_cart = async (req, res) => {
 
 const addCart = async (req, res) => {
   try {
-    const maximumQuantityToBuy=5
+    const maximumQuantityToBuy = 5;
     const { productID, size, quantity } = req.body;
     const productData = await product.findById({ _id: productID });
-    
+
     if (!productData) {
       return res.status(404).json({ error: "Product not found" });
     }
@@ -42,7 +42,6 @@ const addCart = async (req, res) => {
       await newCart.save();
       userCart = newCart;
     }
-    
 
     const productIndex = userCart.items.findIndex(
       (product) => product.productId == productID && product.size === size
@@ -50,7 +49,6 @@ const addCart = async (req, res) => {
 
     const qty = parseInt(quantity);
 
-   
     if (productIndex === -1) {
       userCart.items.push({
         productId: productID,
@@ -59,13 +57,12 @@ const addCart = async (req, res) => {
         subTotal: qty * productData.sellingPrice,
       });
     } else {
-      
-  console.log(selectedSize.quantity, "   -------  " , qty);
-      if(selectedSize.quantity< userCart.items[productIndex].quantity + qty){
+      console.log(selectedSize.quantity, "   -------  ", qty);
+      if (selectedSize.quantity < userCart.items[productIndex].quantity + qty) {
         console.log("fuckkkkkkkkkkkkkkkkkkkkkkkk");
-       return res.json({status:"out of stock"})
+        return res.json({ status: "out of stock" });
       }
-      if( userCart.items[productIndex].quantity+ qty >  maximumQuantityToBuy){
+      if (userCart.items[productIndex].quantity + qty > maximumQuantityToBuy) {
         return res.json({ status: "maximumQuantity" });
       }
       userCart.items[productIndex].quantity += qty;
@@ -80,90 +77,98 @@ const addCart = async (req, res) => {
 
     await userCart.save();
     res.json({ status: true });
-
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-
-const removeItem=async (req,res)=>{
+const removeItem = async (req, res) => {
   try {
-    
     console.log("Hello");
     console.log(req.query);
-    const user=req.session.userId
+    const user = req.session.userId;
     console.log(user);
-    const removeItem = await cart.findOneAndUpdate(
-      { userId: user }, 
+    const userCart=await cart.findOne({userId:user})
+    console.log(userCart,"form the user");
+    const toRemove= userCart.items.find(item=>item._id==req.query.itemId)
+    console.log(toRemove);
+    const subTotal=toRemove.subTotal
+    console.log("gotted subtotal",subTotal);
+    const updatedCart= await cart.findOneAndUpdate(
+      { userId: user },
       { $pull: { items: { _id: req.query.itemId } } }, // Remove the item with the specified _id
-      { new: true } )
-    console.log(removeItem,"from remove Item");
-res.redirect("/cart")
-
+      { new: true }
+    );
+    updatedCart.total-=subTotal
+    await updatedCart.save()
+  console.log(updatedCart,"success");
+    res.redirect("/cart");
   } catch (error) {
-    console.error(error.message)
+    console.error(error.message);
   }
-}
+};
 
 const decrementQuantity = async (req, res) => {
   try {
     console.log(req.body);
-      const { userId, itemid, quantity,  updatingQuantity, productId, size, index } = req.body;
-    
-      const userCart = await cart.findOne({ userId: userId });
+    const {
+      userId,
+      itemid,
+      quantity,
+      updatingQuantity,
+      productId,
+      size,
+      index,
+    } = req.body;
 
+    const userCart = await cart.findOne({ userId: userId });
 
+    const productData = await product.findById(productId);
 
-      const productData = await product.findById(productId);
-     
+    const selectedSize = productData.size.find((item) => item.size === size);
+    console.log(selectedSize, "size");
+    if (!selectedSize || selectedSize.quantity < parseInt(updatingQuantity)) {
+      return res.json({ status: "out of stock" });
+    }
 
-      const selectedSize = productData.size.find((item) => item.size === size);
-      console.log(selectedSize,"size");
-      if (!selectedSize || selectedSize.quantity < parseInt(updatingQuantity)) {
-          return res.json({ status: "out of stock" });
-      }
+    const maximumQuantityToBuy = 5;
+    if (parseInt(updatingQuantity) > maximumQuantityToBuy) {
+      return res.json({ status: "maximumQuantity" });
+    }
 
-    
-      const maximumQuantityToBuy = 5;
-      if (parseInt(updatingQuantity) > maximumQuantityToBuy) {
-          return res.json({ status: "maximumQuantity" });
-      }
+    userCart.items[index].quantity = parseInt(updatingQuantity);
+    userCart.items[index].subTotal =
+      parseInt(updatingQuantity) * productData.sellingPrice;
 
-      
-      userCart.items[index].quantity = parseInt( updatingQuantity);
-      userCart.items[index].subTotal = parseInt( updatingQuantity) * productData.sellingPrice;
+    // Recalculate total
+    let total = 0;
+    userCart.items.forEach((item) => {
+      total += item.subTotal;
+    });
+    userCart.total = total;
+    console.log(total, "kkkkkkkkkkkkkkkkkkkkkkk");
 
-      // Recalculate total
-      let total = 0;
-      userCart.items.forEach((item) => {
-          total += item.subTotal;
-      });
-      userCart.total = total;
-      console.log(total,"kkkkkkkkkkkkkkkkkkkkkkk");
+    // Save the updated cart
+    await userCart.save();
 
-      // Save the updated cart
-      await userCart.save();
+    // Send response
+    res.json({
+      status: "success",
+      total: parseInt(total),
+      quantity: updatingQuantity,
 
-      // Send response
-      res.json({
-          status: "success",
-          total: parseInt( total),
-          quantity:updatingQuantity
-
-          // updatedSubtotal: parseInt( updatingQuantity) * productData.sellingPrice
-      });
+      // updatedSubtotal: parseInt( updatingQuantity) * productData.sellingPrice
+    });
   } catch (error) {
-      console.log(error.message);
-      res.status(500).json({ status: "error", message: error.message });
+    console.log(error.message);
+    res.status(500).json({ status: "error", message: error.message });
   }
-}
-
-
+};
 
 module.exports = {
   load_cart,
   addCart,
-  removeItem,decrementQuantity
+  removeItem,
+  decrementQuantity,
 };
