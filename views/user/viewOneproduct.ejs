@@ -278,6 +278,13 @@
                                             <strong class="mr-10">Color: <%= products.color %></strong>
 
                                         </div>
+                                        <div class="product-price">
+                                            <strong style="font-size: xx-large;"> RS-<%= products.sellingPrice %>
+                                            </strong>
+                                            <span class="old-price " style="text-decoration: line-through">
+                                                <%= products.price %>
+                                            </span>
+                                        </div>
 
                                         <div class="attr-detail attr-color mb-15">
                                             <label for="size-dropdown">Size:</label>
@@ -557,13 +564,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+
     <script>
 
         function addToCart(productID) {
             const size = document.getElementById("size").value
             const quantity = document.getElementById("quantity").innerHTML
-           
+
 
             // alert(productID)
             // alert(quantity)
@@ -578,34 +586,38 @@
                     quantity
                 }, success: (response) => {
                     if (response) {
-                        if (response.status==true) {
-                            swal({
-                  title: "ADD TO CART",
-                  text: "Product Added to cart",
-                  icon: "success",
-                  timer: 1000,
-                  
-                });
+                        if (response.status == true) {
+
+                            Swal.fire({
+                                title: "<span style='color: black;'>ADD TO CART</span>",
+                                html: "<span style='color: green;'>Product Added to cart</span>",
+                                icon: "success",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
                         } else if (response.status == "invalidQuantity") {
-                            swal({
-                                title: "OOPS item has been our of Stock aaaaaaaa!",
-                                text: "Keep touch with us!",
+                            Swal.fire({
+                                title: "<span style='color: red;'>OOPS! Item is out of Stock</span>",
+                                html: "<span style='color: brown;'>Stay connected with us!</span>",
                                 icon: "warning",
-                                timer: 2000,
-                            });
-                        }else if (response.status == "maximumQuantity") {
-                            swal({
-                               text: "OOPS you have reached your maximum buying quantity!",
+                                timer: 1500,
+                                showConfirmButton: false 
+                            }); 
+                        } else if (response.status == "maximumQuantity") {
+                            Swal.fire({
+                                title: "<span style='color: red; text-size:10px;'>OOPS you have reached your maximum buying quantity!</span>",
                                 // text: "keep !",
+                                // html: "<span style='color: yellow;'>warning</span>",
                                 icon: "warning",
-                                timer: 2000,
+                                timer: 1300,
                             });
-                        }else if(response.status=="out of stock"){
-                            swal({
-                                title: "OOPS item has been out of Stock ffffff from here!",
-                                text: "Keep touch with us!",
+                        } else if (response.status == "out of stock") {
+                            Swal.fire({
+                                title: "<span style='color: red;'>OOPS! Item is out of Stock</span>",
+                                html: "<span style='color: brown;'>Stay connected with us!</span>",
                                 icon: "warning",
-                                timer: 2000,
+                                timer: 1500,
+                                showConfirmButton: false // Hide the default "OK" button
                             });
                         }
 

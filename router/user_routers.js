@@ -35,7 +35,7 @@ const {
 //=============================
 
 
-const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress,load_editProfile}=profileController
+const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress,load_editProfile,editProfile}=profileController
 const {load_cart,addCart,removeItem,decrementQuantity}=cartController
 
 
@@ -45,24 +45,24 @@ const {load_cart,addCart,removeItem,decrementQuantity}=cartController
 user_router.set("view engine", "ejs");
 user_router.set("views", "./views/user");
 
-user_router.get("/",isBlocked,landing_page);
-user_router.get("/login", isLogout, load_login);
-user_router.get("/signup", isLogout,load_signup);
-user_router.post("/signup", isLogout, submit_signup);
-user_router.get("/otp_verification", isLogout,otp_verification);
-user_router.post("/otp_verification", isLogout, otp_submit);
-user_router.get("/resendOtp", isLogout,resendOtp);
-user_router.post("/login",verify_login);
-user_router.get("/shop",load_shop);
-user_router.get("/lowtohigh",lowtohigh);
-user_router.get("/highToLow",highToLow);
-user_router.get("/newArrival",newArrival);
-user_router.get("/shopProduct",shopProduct);
-user_router.get("/logout", logout);
-user_router.get("/forgotPassword", isLogout, load_forgotPassword);
-user_router.post("/forgotPassword", isLogout, forgotPassword);
-user_router.get("/forgotPassword_verify", isLogout, verify_forgotPassword);
-user_router.post("/forgotPassword_verify", isLogout, resetPassword);
+user_router.get("/",isBlocked,landing_page)
+.get("/login", isLogout, load_login)
+.get("/signup", isLogout,load_signup)
+.post("/signup", isLogout, submit_signup)
+.get("/otp_verification", isLogout,otp_verification)
+.post("/otp_verification", isLogout, otp_submit)
+.get("/resendOtp", isLogout,resendOtp)
+.post("/login",verify_login)
+.get("/shop",load_shop)
+.get("/lowtohigh",lowtohigh)
+.get("/highToLow",highToLow)
+.get("/newArrival",newArrival)
+.get("/shopProduct",shopProduct)
+.get("/logout", logout)
+.get("/forgotPassword", isLogout, load_forgotPassword)
+.post("/forgotPassword", isLogout, forgotPassword)
+.get("/forgotPassword_verify", isLogout, verify_forgotPassword)
+.post("/forgotPassword_verify", isLogout, resetPassword)
 
 
 // user_router.get('/auth/google', 
@@ -79,21 +79,28 @@ user_router.post("/forgotPassword_verify", isLogout, resetPassword);
 //////////////user profile///////////////////
 
 
-user_router.get("/profile",isLogin,load_profile)
-user_router.get("/addAddress",isBlocked,isLogin,load_addAddress)
-user_router.post("/addAddress",isBlocked,isLogin,addAddress)
-user_router.get("/addressEdit",isBlocked,isLogin,load_editAddress)
-user_router.post("/addressEdit",isBlocked,isLogin,editAddress)
-user_router.get("/editProfile",isBlocked,isLogin,load_editProfile)
+
+
+
+user_router
+.get("/profile",isLogin,load_profile)
+.get("/addAddress", isBlocked, isLogin, load_addAddress)
+.post("/addAddress", isBlocked, isLogin, addAddress)
+.get("/addressEdit", isBlocked, isLogin, load_editAddress)
+.post("/addressEdit", isBlocked, isLogin, editAddress)
+.get("/editProfile", isBlocked, isLogin, load_editProfile)
+.post("/editProfile", isLogin, editProfile);
+// user_router.get("/editProfile",isBlocked,isLogin,load_editProfile)
 
 
 //////////////////// cart ///////////////
 
 
-user_router.get("/cart",isLogin,load_cart)
-user_router.post("/cart",addCart)
-user_router.get("/removeItem",removeItem)
-user_router.post("/decrementQuantity",decrementQuantity)
+user_router
+.get("/cart",isLogin,load_cart)
+.post("/cart",addCart)
+.get("/removeItem",removeItem)
+.post("/decrementQuantity",decrementQuantity)
 
 
 

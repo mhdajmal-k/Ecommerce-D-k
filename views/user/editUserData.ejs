@@ -1,0 +1,111 @@
+<%- include ("../partilas/userheader") -%>
+
+<div class="container" style="display: flex;
+justify-content: center;
+align-items: center;
+height: 80vh;">
+    <div class="card-body" style=" width: 100px; 
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px; ">   
+    
+    
+
+
+        <form method="post" id="form" action="/editProfile">
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label>user Name <span class="required">*</span></label>
+                    <input  class="form-control square" id="username" name="username" type="text" value="<%= userData.username %>" onblur="validateName()">
+                    <p class="text-danger" id="username_error"></p>
+                </div>
+                <div class="form-group col-md-12">
+                    <label>Email Address <span class="required">*</span></label>
+                    <input  class="form-control square" name="email" id="email" type="email" value="<%= userData.email %>" onblur="validateEmail()">
+                    <p class="text-danger" id="email_error"></p>
+                </div>
+                <div class="form-group col-md-12">
+                    <label>Mobile Number<span class="required">*</span></label>
+                    <input class="form-control square" name="mobile" id="mobile" type="tel" value="<%= userData.mobile %>" onblur="validatemobile()">
+                    <p class="text-danger" id="mobile_error"></p>
+                </div>
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+ <%- include ("../partilas/userfooter") -%>
+ <script>
+    const username = document.getElementById("username");
+        const email = document.getElementById("email");
+        const mobile = document.getElementById("mobile");
+        const user_name_error = document.getElementById("username_error");
+        const email_error = document.getElementById("email_error");
+        const mobile_error = document.getElementById("mobile_error");
+
+       function validateEmail() {
+            const Email = email.value.trim();
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(Email) || Email === "") {
+                email_error.innerHTML = "Enter a valid email ";
+
+            } else {
+                email_error.style.display = "none";
+                email_error.innerHTML = "";
+
+            }
+        }
+
+        function validatemobile() {
+            const mobileNumber = mobile.value.trim();
+            const mobilePattern = /^\d{10}$/
+            if (mobileNumber.length < 10) {
+                mobile_error.innerHTML = "Enter a valid mobile number (at least 10 digits)";
+                mobile_error.style.display = "block";
+            }
+            else if (!mobilePattern.test(mobileNumber)) {
+                mobile_error.innerHTML = "Enter a valid mobile number ";
+                mobile_error.style.display = "block";
+            }
+            else {
+                mobile_error.style.display = "none";
+                mobile_error.innerHTML = "";
+            }
+        }
+        function validateName() {
+            const name_value = username.value;
+            const nameRegex = /^[a-zA-Z\s\-',.]+$/;
+    const isValidName = nameRegex.test(name_value );
+
+            if (name_value.trim() === "") {
+                user_name_error.style.display = "block";
+                user_name_error.innerHTML = "Please Enter a valid Name.";
+            }else if(!isValidName){
+                user_name_error.style.display = "block";
+                user_name_error.innerHTML = "Please Enter a valid Name.";
+            }else if(name_value>30){
+                user_name_error.style.display = "block";
+                user_name_error.innerHTML = "Please Enter a valid Name.";
+            }
+             else {
+                user_name_error.style.display = "none";
+                user_name_error.innerHTML = "";
+            }
+        }
+        document.getElementById("form").addEventListener("submit",(e)=>{
+            validateName() 
+            validatemobile()
+            validateEmail()
+            if(user_name_error.innerHTML||mobile_error.innerHTML|| mobile_error.innerHTML){
+               
+            e.preventDefault()
+            }else{
+
+            }
+        })
+
+
+ </script>

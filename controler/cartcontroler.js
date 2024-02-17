@@ -8,8 +8,9 @@ const load_cart = async (req, res) => {
   const userCart = await cart
     .findOne({ userId: users })
     .populate("items.productId");
-  console.log(userCart, "form load cart");
-  res.render("cart", { cart: userCart });
+  const productIdsInCart = userCart.items.map(item => item.productId._id)
+  const relatedProducts = await product.find({ _id: { $nin: productIdsInCart } }).limit(4);
+  res.render("cart", { cart: userCart,relatedProducts:relatedProducts });
 };
 
 const addCart = async (req, res) => {
@@ -24,15 +25,17 @@ const addCart = async (req, res) => {
     const users = req.session.userId;
     console.log(users);
     if (!users) {
-      console.log("inside the users");
+    
       return res.json({ status: false });
     }
 
     const selectedSize = productData.size.find((item) => item.size === size);
 
     if (!selectedSize || selectedSize.quantity < parseInt(quantity)) {
-      console.log("form here size");
       return res.json({ status: "invalidQuantity" });
+    }
+    if ( parseInt(quantity) > maximumQuantityToBuy) {
+      return res.json({ status: "maximumQuantity" });
     }
 
     let userCart = await cart.findOne({ userId: users });
@@ -85,25 +88,26 @@ const addCart = async (req, res) => {
 
 const removeItem = async (req, res) => {
   try {
-    console.log("Hello");
+    console.log("Hellofffffffffffffffffffffffffffffffff");
     console.log(req.query);
+    const {itemId}=req.query
     const user = req.session.userId;
     console.log(user);
     const userCart=await cart.findOne({userId:user})
     console.log(userCart,"form the user");
-    const toRemove= userCart.items.find(item=>item._id==req.query.itemId)
+    const toRemove= userCart.items.find(item=>item._id==itemId)
     console.log(toRemove);
     const subTotal=toRemove.subTotal
     console.log("gotted subtotal",subTotal);
     const updatedCart= await cart.findOneAndUpdate(
       { userId: user },
-      { $pull: { items: { _id: req.query.itemId } } }, // Remove the item with the specified _id
+      { $pull: { items: { _id: itemId } } }, // Remove the item with the specified _id
       { new: true }
     );
     updatedCart.total-=subTotal
     await updatedCart.save()
   console.log(updatedCart,"success");
-    res.redirect("/cart");
+    res.json({status:true})
   } catch (error) {
     console.error(error.message);
   }
