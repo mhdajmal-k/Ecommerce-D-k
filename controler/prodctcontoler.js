@@ -1,3 +1,4 @@
+'use strict';
 const { errorMonitor, consumers } = require("nodemailer/lib/xoauth2");
 const category = require("../model/category");
 const product = require("../model/product_model");

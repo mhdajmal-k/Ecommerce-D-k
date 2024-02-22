@@ -1,3 +1,4 @@
+'use strict';
 const user = require("../model/user_model");
 const product = require("../model/product_model");
 const bcrypt = require("bcrypt");
@@ -262,7 +263,6 @@ res.render("shop",{product:lowToHighProduct})
 //one product details
 const shopProduct = async (req, res) => {
   try {
-   
     const { id } = req.query;
     const products = await product.findOne({ _id: id }).populate("categoryId");
     if(products ){
@@ -275,7 +275,6 @@ const shopProduct = async (req, res) => {
     else{
       res.send("oops!")
     }
-  
   } catch (error) {
     console.log(error.message);
   }

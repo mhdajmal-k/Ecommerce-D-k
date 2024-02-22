@@ -33,9 +33,7 @@ if(req.session.user==true){
 const isBlocked= async (req,res,next)=>{
     if(req.session.userId){
         const block=await user.findById(req.session.userId)
-        console.log(block,"fuckkkkkkkkkkkkkkkkkkkkkkkk");
         if(block.is_block==true){
-
             res.render("login_page",{message:"opps you have been blocked" })
         }else{
             next()

@@ -1,9 +1,14 @@
+
 const express=require("express")
 const admin_router=express()
 const admin_controller=require('../controler/admincontroler')
 const category_controller=require('../controler/categorycontrol')
 const product_controller=require('../controler/prodctcontoler')
 const upload=require('../controler/helper/multer')
+const adminOrderController=require("../controler/adminOrderController")
+
+
+
 
 const{login_load,
 verify_login,
@@ -18,6 +23,8 @@ const {load_products,add_ProductLoad,add_Product,load_editProduct,delete_product
 
 
 const {load_category,load_Addcategory,addCategory,load_editCategory,editCategory,listAndUnList}=category_controller
+
+const {load_orders}=adminOrderController
 
 
 
@@ -70,10 +77,10 @@ admin_router.post('/updateCategory',Auth.sessionChecker,editCategory)
 admin_router.get('/block_user',Auth.sessionChecker,listAndUnList)
 
 
-//==================================  category controller================================
+//==================================  Order controller================================
 
 
-
+admin_router.get("/listOrders",Auth.sessionChecker,load_orders)
 
 
 

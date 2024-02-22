@@ -202,7 +202,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if (cart && cart.items.length>0) { %>
+                                    <% if ( cart && cart.items.length>0) { %>
                                         <% for (let i=0; i < cart.items.length; i++) { %>
                                             <tr>
                                                 <td class="image product-thumbnail">
@@ -249,6 +249,7 @@
                                                     <tr>
                                                         <td colspan="7" class="text-center">No products in the cart.
                                                             Please shop.</td>
+
                                                     </tr>
                                                     <% } %>
                                 </tbody>
@@ -256,13 +257,14 @@
                         </div>
 
                         <div class="cart-action text-end">
-                            <a href="#" class="btn mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a>
-                            <a href="#" class="btn"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                            <a href="/cart" class="btn mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update
+                                Cart</a>
+                            <a href="/shop" class="btn"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
                         </div>
                         <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div>
                         <div class="container">
                             <div class="row">
-                                <div class="col-lg-6 col-md-12">
+                                <!-- <div class="col-lg-6 col-md-12">
                                     <form>
                                         <div class="form-row row">
                                             <div class="form-group col-lg-6">
@@ -304,8 +306,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-6 col-md-12">
+                                </div> -->
+                                <div class="col-lg-6 col-md-12 justify-content-center align-items-center text-center "
+                                    style="width: 100%;">
                                     <div class="border p-md-4 p-30 border-radius cart-totals">
                                         <div class="heading_s1 mb-3">
                                             <h4>Cart Totals</h4>
@@ -335,7 +338,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <a href="#" class="btn"><i class="fi-rs-box-alt mr-10"></i> Proceed To
+                                        <a href="/checkOut" class="btn"><i class="fi-rs-box-alt mr-10"></i> Proceed To
                                             CheckOut</a>
                                     </div>
                                 </div>
@@ -364,13 +367,11 @@
                                                     </div>
                                                     <div class="product-action-1">
                                                         <a aria-label="Quick view" class="action-btn small hover-up"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#quickViewModal"><i
+                                                            data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
                                                                 class="fi-rs-search"></i></a>
                                                         <a aria-label="Add To Wishlist"
-                                                            class="action-btn small hover-up"
-                                                            href="shop-wishlist.html" tabindex="0"><i
-                                                                class="fi-rs-heart"></i></a>
+                                                            class="action-btn small hover-up" href="shop-wishlist.html"
+                                                            tabindex="0"><i class="fi-rs-heart"></i></a>
                                                         <a aria-label="Compare" class="action-btn small hover-up"
                                                             href="shop-compare.html" tabindex="0"><i
                                                                 class="fi-rs-shuffle"></i></a>
@@ -468,42 +469,44 @@
                 });
             }
             function removeItem(itemId) {
-             
+
 
                 Swal.fire({
                     title: "<span style='color: red;'>Are you Sure</span>",
-                      html: "<span style='color: black;'>Do you want to remove this item</span>", 
-                 
+                    html: "<span style='color: black;'>Do you want to remove this item</span>",
+
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
                     confirmButtonText: "Yes, delete it!"
                 }).then((result) => {
-                
-                    $.ajax({
-                        url:"/removeItem",
-                        method:"get",
-                        data: {
-                            itemId: itemId,
+                    if (result.value == true) {
+                        $.ajax({
+                            url: "/removeItem",
+                            method: "get",
+                            data: {
+                                itemId: itemId,
 
-                        }, success: (response) => {
-                           
-                            if (response.status==true) {
-                                Swal.fire({
-                                    title: "<span style='color: red;'>Removed</span>",
-                                    html: "<span style='color: blue;'The item Has been Removed</span>", 
-                                    icon: "success",
-                                    timer: 1000,
-                                });
+                            }, success: (response) => {
+
+                                if (response.status == true) {
+                                    Swal.fire({
+                                        title: "<span style='color: red;'>Removed</span>",
+                                        html: "<span style='color: blue;'The item Has been Removed</span>",
+                                        icon: "success",
+                                        timer: 1000,
+                                    });
+                                }
+                                setTimeout(() => {
+                                    location.href = "/cart"
+                                }, 1200);
+
                             }
-                            setTimeout(() => {
-                                location.href="/cart"
-                            },1200);
 
-                        }
+                        })
+                    }
 
-                    })
                 });
 
 

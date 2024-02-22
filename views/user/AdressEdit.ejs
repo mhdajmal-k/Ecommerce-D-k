@@ -222,7 +222,7 @@ const district=document.getElementById("district").value.trim()
             }else if(address.length>50){
                 addressAreaError.style.display = "block";
                 addressAreaError.innerHTML = "Please Enter a valid address1";
-            }else if(!validAddress){
+            }else if(!isValidAddress){
                 addressAreaError.style.display = "block";
                 addressAreaError.innerHTML = "Please Enter a valid address2";
             }

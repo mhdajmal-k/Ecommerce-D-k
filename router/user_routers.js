@@ -1,3 +1,4 @@
+
 const express = require("express");
 const  passport=require("../passport")
 const user_router = express();
@@ -6,6 +7,7 @@ const profileController=require("../controler/userprofilecontrler")
 const path = require("path");
 const { isLogin, isLogout,isBlocked} = require("../middleware/userAuth");
 const cartController=require("../controler/cartcontroler")
+const orderController=require("../controler/ordercontroler")
 
 
 // isBlocked()
@@ -35,8 +37,9 @@ const {
 //=============================
 
 
-const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress,load_editProfile,editProfile}=profileController
+const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress,load_editProfile,editProfile,changePassword,load_order}=profileController
 const {load_cart,addCart,removeItem,decrementQuantity}=cartController
+const {load_checkout,place_Order,load_orderSuccess,viewOrderDeatails,cancelOrder}=orderController
 
 
 
@@ -89,8 +92,10 @@ user_router
 .get("/addressEdit", isBlocked, isLogin, load_editAddress)
 .post("/addressEdit", isBlocked, isLogin, editAddress)
 .get("/editProfile", isBlocked, isLogin, load_editProfile)
-.post("/editProfile", isLogin, editProfile);
-// user_router.get("/editProfile",isBlocked,isLogin,load_editProfile)
+.post("/editProfile", isLogin, editProfile)
+.post("/resetPassword", isLogin, changePassword)
+.get('/order',isBlocked,isLogin,load_order)
+
 
 
 //////////////////// cart ///////////////
@@ -101,6 +106,17 @@ user_router
 .post("/cart",addCart)
 .get("/removeItem",removeItem)
 .post("/decrementQuantity",decrementQuantity)
+
+
+///////////////order //////////////
+
+user_router
+.get('/checkOut',isBlocked,isLogin,load_checkout)
+.post('/placeOrder',isBlocked,isLogin,place_Order)
+.get('/orderSuccess',isBlocked,isLogin,load_orderSuccess)
+.get('/viewOrderDeatails',isBlocked,isLogin,viewOrderDeatails)
+.post('/cancelOrder',isBlocked,isLogin,cancelOrder)
+
 
 
 

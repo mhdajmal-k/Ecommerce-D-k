@@ -1,3 +1,4 @@
+'use strict';
 const express=require("express")
 const dotenv=require("dotenv").config()
 const app=express()
@@ -7,9 +8,12 @@ const session=require("express-session")
 const flash=require("express-flash")
 const nocache = require('nocache');
 const morgan=require('morgan')
-// const passport=require("passport")
 
+
+// const passport=require("passport")
 dbConnect()
+
+
 
 //session
 app.use(session({
@@ -33,9 +37,12 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use("/uploads",express.static(path.join(__dirname,'/uploads')));
 app.use(morgan("dev"))
 
+
 //routers
 const admin_router=require('./router/admin_routers')
 app.use('/admin',admin_router)
+
+
 const user_router=require('./router/user_routers')
 app.use('/',user_router)
 
@@ -56,7 +63,7 @@ app.use((err, req, res, next) => {
 
 
 //port
-port=process.env.port||3001
+ const port=process.env.port||3001
 app.listen(port,()=>{
     console.log(`server is ready${port}`)
 })

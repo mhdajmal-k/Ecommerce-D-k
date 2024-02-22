@@ -1,0 +1,122 @@
+<%- include ("../partilas/userheader") -%>
+    <div class="container">
+        <div class="table-responsive" style="margin: 100px;">
+            <table class="table shopping-summery text-center clean">
+                <thead>
+                    <tr class="main-heading">
+                        <th scope="col">Order ID</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">payment</th>
+                        <th scope="col">cancel</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (userOrder && userOrder.items.length> 0) { %>
+
+                        <button class="btn btn-danger" onclick="cancelOrder('<%= userOrder._id %>')">Cancel
+                            Order</button>
+
+                        <% userOrder.items.forEach((item)=> { %>
+                            <tr>
+                                <td>
+                                    <%= userOrder.orderNumber %>
+                                </td>
+                                <td class="image product-thumbnail">
+                                    <img src="/uploads/products/<%= item.product.image[1] %>" alt="#">
+                                </td>
+                                <td class="product-des product-name">
+                                    <h5 class="product-name">
+                                        <a href="shop-product-right.html">
+                                            <%= item.product.productName %>
+                                        </a>
+                                    </h5><br>
+                                    <p>Quantity:<%= item.quantity %>
+                                    </p>
+                                    <p>Size:<%= item.size %>
+                                    </p>
+                                </td>
+                                <td>
+                                    <%= item.price %>
+                                </td>
+                                <td>
+                                    <%= userOrder.status %>
+                                </td>
+                                <td>
+                                    <%= userOrder.payment %>
+                                </td>
+                            </tr>
+
+
+
+
+
+                            <% }); %>
+                                <tr>
+                                    <th>Total</th>
+                                    <td colspan="3" class="product-subtotal"><span class="font-xl text-brand fw-900">
+                                            <%= userOrder.totalAmount %>
+                                        </span></td>
+                                </tr>
+
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="text-center">No products in the order.</td>
+                                    </tr>
+                                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <%- include("../partilas/userfooter") -%>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+        <script>
+            function cancelOrder(orderId) {
+                alert(orderId)
+
+
+                Swal.fire({
+                    title: "<span style='color: red;'>Are you Sure</span>",
+                    html: "<span style='color: black;'>Do you want cancel this order</span>",
+
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.value == true) {
+                        $.ajax({
+                            url: "/cancelOrder",
+                            method: 'post',
+                            data: {
+                                orderId: orderId
+                            }, success: (response => {
+                                if (response.status == "order canceled") {
+                                    Swal.fire({
+                                        title: "<span style='color: green;'>canceled</span>",
+                                        html: "<span style='color: blue;'>your order has been canceled</span>",
+                                        icon: "success",
+                                        timer: 1000,
+                                    });
+                                }
+                                setTimeout(() => {
+                                    location.href = "/order"
+                                }, 1200);
+                            }), error: (xhr, status, error) => {
+                                console.error(xhr.responseText); // Log the error message to the console
+                                Swal.fire({
+                                    title: "<span style='color: red;'>Error</span>",
+                                    html: "<span style='color: blue;'>An error occurred while cancelling the order</span>",
+                                    icon: "error",
+                                    timer: 2000
+                                });
+                            }
+                        })
+                    }
+
+                })
+            }
+        </script>

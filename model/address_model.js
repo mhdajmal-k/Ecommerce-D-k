@@ -2,34 +2,33 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const address_model = new Schema({
+const addressSchema = new Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "users",
-    require: true,
+    ref: "User",
+    required: true,
   },
   name: {
     type: String,
-    require: true,
+    required: true,
     trim: true,
   },
   pinCode: {
     type: Number,
-    require: true,
+    required: true,
   },
   locality: {
     type: String,
-    require: true,
+    required: true,
   },
   address: {
     type: String,
     required: true,
   },
- district: {
+  district: {
     type: String,
     required: true,
   },
-
   state: {
     type: String,
     required: true,
@@ -44,11 +43,13 @@ const address_model = new Schema({
     type: String,
     required: true,
     enum: ["home", "work"],
-    required: true,
   },
+  default: {
+    type: Boolean,
+    default: false,
+  }
 });
 
+const Address = mongoose.model("Address", addressSchema);
 
-const Address=mongoose.model("address",address_model)
-
-module.exports=Address
+module.exports = Address;
