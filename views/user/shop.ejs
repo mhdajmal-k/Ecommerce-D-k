@@ -195,19 +195,23 @@
                                 <div class="sort-by-cover mr-10">
                                     <div class="sort-by-product-wrap">
                                         <div class="sort-by">
-                                            <span><i class="fi-rs-apps"></i>Show:</span>
+                                            <span><i class="fi-rs-apps"></i>Browse Category</span>
                                         </div>
                                         <div class="sort-by-dropdown-wrap">
-                                            <span> 50 <i class="fi-rs-angle-small-down"></i></span>
+                                            <span> Categories <i class="fi-rs-angle-small-down"></i></span>
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
                                         <ul>
-                                            <li><a class="active" href="#">50</a></li>
-                                            <li><a href="#">100</a></li>
+                                            <% categories.forEach(category => { %>
+                                                <li><a href="/browse?categoryId=<%= category.id %>"><%= category.categoryTitle %></a></li>
+                                            <% }) %>
+                                        </ul>
+                                           
+                                            <!-- <li><a href="#">100</a></li>
                                             <li><a href="#">150</a></li>
                                             <li><a href="#">200</a></li>
-                                            <li><a href="#">All</a></li>
+                                            <li><a href="#">All</a></li> -->
                                         </ul>
                                     </div>
                                 </div>
@@ -217,16 +221,18 @@
                                             <span><i class="fi-rs-apps-sort"></i>Sort by:</span>
                                         </div>
                                         <div class="sort-by-dropdown-wrap">
-                                            <span> Featured <i class="fi-rs-angle-small-down"></i></span>
+                                            <span> sort<i class="fi-rs-angle-small-down"></i></span>
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
                                         <ul>
-                                            <li><a class="active" href="#">Featured</a></li>
+                                            <!-- <li><a class="active" href="#">sort</a></li> -->
                                             <li><a href="/lowtohigh">Price: Low to High</a></li>
                                             <li><a href="/highToLow">Price: High to Low</a></li>
                                             <li><a href="/newArrival">newArrival</a></li>
                                             <li><a href="#">Avg. Rating</a></li>
+                                            <li><a href="/accedingOrder">aA - zZ</a></li>
+                                            <li><a href="/descendingOrder">zZ - aA </a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -234,70 +240,97 @@
                         </div>
 
                         <div class="product-grid-3 row">
-                            <% if (product.length > 0) { %>
-                                <% for(let i = 0; i < product.length; i++) { %>
-                                    
+                            <% if (product.length> 0) { %>
+                                <% for(let i=0; i < product.length; i++) { %>
+
                                     <div class="col-lg-3 col-md-4">
                                         <div class="product-cart-wrap mb-30" style=" width: 250px; 
                                         height: 470px;">
                                             <div class="product-img-action-wrap">
                                                 <div class="product-img product-img-zoom">
                                                     <a href="/shopProduct?id=<%= product[i]._id %>">
-                                                        <img class="default-img" src="../../uploads/products/<%= product[i].image[1] %>" alt="">
-                                                        <img class="hover-img" src="../../uploads/products/<%= product[i].image[0] %>" alt="">
+                                                        <img class="default-img"
+                                                            src="../../uploads/products/<%= product[i].image[1] %>"
+                                                            alt="">
+                                                        <img class="hover-img"
+                                                            src="../../uploads/products/<%= product[i].image[0] %>"
+                                                            alt="">
                                                     </a>
                                                 </div>
                                                 <div class="product-action-1">
-                                                    <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal"
-                                                        data-bs-target="#quickViewModal"><i class="fi-rs-search"></i></a>
-                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i
-                                                            class="fi-rs-heart"></i></a>
-                                                    <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i
-                                                            class="fi-rs-shuffle"></i></a>
+                                                    <a aria-label="Quick view" class="action-btn hover-up"
+                                                        data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
+                                                            class="fi-rs-search"></i></a>
+                                                    <a aria-label="Add To Wishlist" class="action-btn hover-up"
+                                                        href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                                    <a aria-label="Compare" class="action-btn hover-up"
+                                                        href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                                 </div>
                                                 <div class="product-badges product-badges-position product-badges-mrg">
                                                     <span class="hot">Hot</span>
                                                 </div>
                                             </div>
                                             <div class="product-content-wrap">
-                                                <div class="product-category"><h1>
-                                                    <a href="shop-grid-right.html" ><%= product[i].categoryId.categoryTitle%></a>
-                                                </h1>
-                                                   
+                                                <div class="product-category">
+                                                    <h1>
+                                                        <a href="shop-grid-right.html">
+                                                            <%= product[i].categoryId.categoryTitle%>
+                                                        </a>
+                                                    </h1>
+
                                                 </div>
-                                                <h2><a href="shop-product-right.html" ><%= product[i].productName %></a></h2>
+                                                <h2><a href="shop-product-right.html">
+                                                        <%= product[i].productName %>
+                                                    </a></h2>
                                                 <div class="rating-result" title="90%">
                                                     <span><span>90%</span></span>
                                                 </div>
                                                 <div class="product-price">
-                                                    <span>RS <%=product[i].sellingPrice  %> </span>
-                                                    <span class="old-price"><%=  product[i].price%></span>
+                                                    <span>RS <%=product[i].sellingPrice %> </span>
+                                                    <span class="old-price">
+                                                        <%= product[i].price%>
+                                                    </span>
                                                 </div>
-                                                <div class="product-action-1 show">
+                                                <!-- <div class="product-action-1 show">
                                                     <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i
                                                             class="fi-rs-shopping-bag-add"></i></a>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
                                     </div>
-                                <% } %>
-                            <% } %>
+                                    <% } %>
+                                        <% } %>
                         </div>
-                   
+
                         <!--pagination-->
                         <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination justify-content-start">
-                                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">16</a></li>
-                                    <li class="page-item"><a class="page-link" href="#"><i
-                                                class="fi-rs-angle-double-small-right"></i></a></li>
+
+                                    <% if (currentPage> 1) { %>
+                                        <li class="page-item">
+                                            <a class="page-link" href="/shop?page=<%= currentPage - 1 %>"
+                                                aria-label="Previous">prev
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        <% } %>
+
+                                            <% for (let i=1; i <=totalPage; i++) { %>
+                                                <li class="page-item <%= i == currentPage ? 'active' : '' %>">
+                                                    <a class="page-link" href="/shop?page=<%= i %>">
+                                                        <%= i %>
+                                                    </a>
+                                                </li>
+                                                <% } %>
+
+
                                 </ul>
                             </nav>
                         </div>
+
+
+
                     </div>
                 </div>
             </div>
@@ -458,6 +491,7 @@
     <!-- Template  JS -->
     <script src="./assets/js/main.js?v=3.4"></script>
     <script src="./assets/js/shop.js?v=3.4"></script>
+
     </body>
 
     </html>

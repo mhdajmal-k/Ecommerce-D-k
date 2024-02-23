@@ -6,13 +6,13 @@ const user=require("../model/user_model")
 
 
 const isLogin=(req,res,next)=>{
-    console.log(req.session.user,"form is");
+
 if(req.session.user==true){
-    console.log(req.session.user,"form is login");
+
 
     next()
 }else{
-    console.log("login")
+    
     res.redirect("/login")
 }
 }
@@ -20,12 +20,10 @@ if(req.session.user==true){
 const isLogout=(req,res,next)=>{
  
 
-   console.log(  req.session.user,"from the isLogout");
 if(req.session.user==true){
-    console.log('inside the true');
+
     res.redirect("/")
 }else{
-    console.log('inside the false');
     next()
 }
 }

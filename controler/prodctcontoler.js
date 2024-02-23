@@ -5,6 +5,7 @@ const product = require("../model/product_model");
 const { rawListeners, findByIdAndDelete } = require("../model/user_model");
 const fs = require("fs");
 const { promisify } = require("util");
+const randomId=require("../controler/helper/randomId")
 const unlinkAsync = promisify(fs.unlink);
 const path = require("path");
 //product page
@@ -22,6 +23,7 @@ const load_products = async (req, res) => {
 
 const add_ProductLoad = async (req, res) => {
   try {
+    console.log(randomId());
     const categories = await category.find({ isList: true });
     res.render("addProduct", { category: categories });
   } catch (error) {
@@ -53,13 +55,13 @@ const add_Product = async (req, res) => {
         description,
         categories,
       } = req.body;
-
+console.log(randomId());
       const productNameExist = await product.findOne({
         productName: { $regex: new RegExp("^" + productName + "$", "i") },
       });
       // const exitingColor=await product.findOne({productName:productName,color:color})
       const newProduct = new product({
-        productId: productId,
+        productId:randomId() ,
         productName: productName,
         description: description,
         color: color,

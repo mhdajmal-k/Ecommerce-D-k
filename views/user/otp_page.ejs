@@ -43,7 +43,7 @@
             setTimeout(() => {
                 document.getElementById("show").style.display = "block";
          
-                // document.getElementById("verify").style.display = "none";
+                
                 document.getElementById("block").style.display = "none";
 
             }, 60000);
@@ -51,11 +51,6 @@
 
             function verifyOtp() {
                 const otp = document.getElementById("otp").value
-                // const otpInvalidError = document.getElementById("otpInvalidError")
-
-               
-             
-                alert("heloo")
                 $.ajax({
                     url: "/otp_verification",
                     method: "post",

@@ -1,6 +1,6 @@
 
 const express=require("express")
-const admin_router=express()
+admin_router=express()
 const admin_controller=require('../controler/admincontroler')
 const category_controller=require('../controler/categorycontrol')
 const product_controller=require('../controler/prodctcontoler')
@@ -18,19 +18,36 @@ userBlockUnblock,
 logout}=admin_controller
 
 
-const {load_products,add_ProductLoad,add_Product,load_editProduct,delete_product,listAndUnListProduct,editProduct,delete_image}=product_controller
+const {load_products,
+    add_ProductLoad,
+    add_Product,
+    load_editProduct
+    ,delete_product,
+    listAndUnListProduct
+    ,editProduct,
+    delete_image}=product_controller
 
 
 
-const {load_category,load_Addcategory,addCategory,load_editCategory,editCategory,listAndUnList}=category_controller
+const {load_category,
+    load_Addcategory,
+    addCategory,
+    load_editCategory,
+    editCategory,
+    listAndUnList}=category_controller
 
-const {load_orders}=adminOrderController
+
+
+const {load_orders,
+    load_ordersDetails,
+    changeOrderStatus}=adminOrderController
 
 
 
 
 const path=require("path")
 const Auth = require('../middleware/adminAuth');
+const{sessionChecker}=Auth
 
 admin_router.set("view engine","ejs")
 admin_router.set("views",'./views/admin')
@@ -42,11 +59,11 @@ admin_router.set("views",'./views/admin')
 
 
 admin_router.get("/",login_load)
-admin_router.post("/",verify_login)
-admin_router.get("/dashboard",Auth.sessionChecker,Dashboard_load);
-admin_router.get("/userLoad",Auth.sessionChecker,userLoad)
-admin_router.post('/block_user',Auth.sessionChecker,userBlockUnblock)
-admin_router.get('/logout',logout)
+.post("/",verify_login)
+.get("/dashboard",sessionChecker,Dashboard_load)
+.get("/userLoad",sessionChecker,userLoad)
+.post('/block_user',sessionChecker,userBlockUnblock)
+.get('/logout',logout)
 
 //==================================  admin controller================================
 
@@ -54,14 +71,14 @@ admin_router.get('/logout',logout)
 
 //==================================  product controller================================
 
-admin_router.get('/products',Auth.sessionChecker, load_products)
-admin_router.get('/addproduct',Auth.sessionChecker, add_ProductLoad)
-admin_router.post('/addproduct',Auth.sessionChecker,upload.array('images', 5),add_Product)
-admin_router.get('/editProduct',Auth.sessionChecker,load_editProduct)
-admin_router.post('/editProduct',Auth.sessionChecker,upload.array('images', 5),editProduct)
-admin_router.post('/productListAndUnList',Auth.sessionChecker,listAndUnListProduct)
-admin_router.get('/blockProducts/:id',Auth.sessionChecker,delete_product)
-admin_router.post('/deleteImage',Auth.sessionChecker,delete_image)
+admin_router.get('/products',sessionChecker, load_products)
+.get('/addproduct',sessionChecker, add_ProductLoad)
+.post('/addproduct',sessionChecker,upload.array('images', 5),add_Product)
+.get('/editProduct',sessionChecker,load_editProduct)
+.post('/editProduct',sessionChecker,upload.array('images', 5),editProduct)
+.post('/productListAndUnList',sessionChecker,listAndUnListProduct)
+.get('/blockProducts/:id',sessionChecker,delete_product)
+.post('/deleteImage',sessionChecker,delete_image)
 
 //==================================  product controller================================
 
@@ -69,18 +86,21 @@ admin_router.post('/deleteImage',Auth.sessionChecker,delete_image)
 
 //==================================  category controller================================
 
-admin_router.get('/category',Auth.sessionChecker,load_category)
-admin_router.get('/addcategory',Auth.sessionChecker,load_Addcategory)
-admin_router.post('/addcategory',Auth.sessionChecker,addCategory )
-admin_router.get('/updateCategory',Auth.sessionChecker,load_editCategory)
-admin_router.post('/updateCategory',Auth.sessionChecker,editCategory)
-admin_router.get('/block_user',Auth.sessionChecker,listAndUnList)
+admin_router.get('/category',sessionChecker,load_category)
+.get('/addcategory',sessionChecker,load_Addcategory)
+.post('/addcategory',sessionChecker,addCategory )
+.get('/updateCategory',sessionChecker,load_editCategory)
+.post('/updateCategory',sessionChecker,editCategory)
+.get('/block_user',sessionChecker,listAndUnList)
 
 
 //==================================  Order controller================================
 
 
-admin_router.get("/listOrders",Auth.sessionChecker,load_orders)
+admin_router.
+get("/listOrders",sessionChecker,load_orders)
+.get("/orderDetails",sessionChecker,load_ordersDetails)
+.post("/updateOrderStatus",sessionChecker,changeOrderStatus)
 
 
 

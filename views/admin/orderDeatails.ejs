@@ -1,0 +1,191 @@
+<%- include ("../partilas/admin") %>
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Order Detail</h2>
+            <% if (orderData) { %>
+                <p>Details for Order ID: <%= orderData.orderNumber %></p>
+            <% } %>
+        </div>
+    </div>
+
+    <% if (orderData) { %>
+        <div class="card">
+            <header class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                        <span>
+                            <i class="material-icons md-calendar_today"></i> <b><%= orderData.orderDate %></b>
+                        </span> <br>
+                        <small class="text-muted">Order ID: <%= orderData.orderNumber %></small>
+                    </div>
+                    <div class="col-lg-6 col-md-6 ms-auto text-md-end">
+                        <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200" id="statusMode">
+                            <option>Change status</option>
+                            <!-- <option>Awaiting payment</option> -->
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Shipped">Shipped</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Delivered">Cancel</option>
+                        </select>
+                        <button class="btn btn-primary" id="saveStatus">Save</button>
+                        <!-- <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a> -->
+                    </div>
+                </div>
+            </header>
+        </div>
+
+            <div class="card-body">
+                <div class="row mb-50 mt-20 order-info-wrap">
+                    <!-- Customer Info -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Customer</h5>
+                                <p class="card-text">
+                                    <%= orderData.userId.username %><br>
+                                    <%= orderData.userId.email %><br>
+                                    <%= orderData.userId.mobile %>
+                                </p>
+                               
+                            </div>
+                        </div>
+                    </div> <!-- col// -->
+
+                    <!-- Delivery Info -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Deliver to</h5>
+                                <p class="card-text">
+                                    <%= orderData.shippingAddress.locality %><br>
+                                    <%= orderData.shippingAddress.address %>, <%= orderData.shippingAddress.district %>, <%= orderData.shippingAddress.state %><br>
+                                    <%= orderData.shippingAddress.pinCode %>,<br>
+                                    <%= orderData.shippingAddress.mobile %>, <%= orderData.shippingAddress.alternatePhone %>
+                                </p>
+                            </div>
+                        </div>
+                    </div> <!-- col// -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">payment</h5>
+                                <p class="card-text">
+                                    <%= orderData.payment %><br>
+                                    
+                                </p>
+                            </div>
+                        </div>
+                    </div> <!-- col// -->
+                </div> <!-- row // -->
+
+                <!-- Product Table -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Product Name</th>
+                                        <th>Unit Price</th>
+                                        <th>Quantity</th>
+                                        <th>Size</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% orderData.items.forEach(item => { %>
+                                        <tr>
+                                            <td class="text-center">
+                                                <img src="/uploads/products/<%= item.product.image[1] %>" width="80px" alt="Product Image">
+                                            </td>
+                                            <td class="text-center"><%= item.product.productName %></td>
+                                            <td class="text-center"><%= item.price %></td>
+                                            <td class="text-center"><%= item.quantity %></td>
+                                            <td class="text-center"><%= item.size %></td>
+                                            <td class="text-center"><%= item.price * item.quantity %></td>
+                                        </tr>
+                                    <% }) %>
+                                    
+                                    <tr>
+                                        <td colspan="5" class="text-end fw-bold">Total Amount:</td>
+                                        <td class="text-center fw-bold"><%= orderData.totalAmount %></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                        </div> <!-- table-responsive// -->
+                    </div> <!-- col// -->
+                </div> <!-- row// -->
+            </div> <!-- card-body end// -->
+        </div> <!-- card end// -->
+    <% } %>
+</section> <!-- content-main end// -->
+
+<footer class="main-footer font-xs">
+    <div class="row pb-30 pt-15">
+        <div class="col-sm-6">
+            <script>
+                document.write(new Date().getFullYear())
+            </script> ©, Evara - HTML Ecommerce Template .
+        </div>
+        <div class="col-sm-6">
+            <div class="text-sm-end">
+                All rights reserved
+            </div>
+        </div>
+    </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+<script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+<script src="assets/js/vendors/select2.min.js"></script>
+<script src="assets/js/vendors/perfect-scrollbar.js"></script>
+<script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+<script src="assets/js/main.js" type="text/javascript"></script>
+<script>
+     document.getElementById('saveStatus').addEventListener('click', function() {
+   
+    var selectedStatus = document.getElementById('statusMode').value;
+    const orderId='<%= orderData._id %>'
+    console.log(orderId);
+console.log(selectedStatus);
+    $.ajax({
+        url:"/admin/updateOrderStatus",
+        method: "POST",
+        data: {
+            status: selectedStatus,
+            orderId:orderId
+        },
+        success: function(response) {
+           if(response.status=="orderStatusChanged"){
+            Swal.fire({
+                                title: "<span style='color: green;'>success</span>",
+                                html: "<span style='color: blue;'>Order status has been changed</span>",
+                                icon: "success",
+                                timer: 2000
+                            });
+                            setTimeout(() => {
+                                location.href = "/admin/listOrders"
+                            }, 2100);
+           }
+        },
+        error: function(error) {
+
+            alert("Error occurred while updating order status: " + error.responseText);
+            console.log(error);
+        }
+    });
+});
+
+</script>
+</body>
+</html>
+   

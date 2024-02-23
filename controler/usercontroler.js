@@ -1,12 +1,16 @@
-'use strict';
+"use strict";
 const user = require("../model/user_model");
 const product = require("../model/product_model");
+const cart = require("../model/cart_model");
+const category = require("../model/category");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const { render } = require("../router/user_routers");
 const { sendMail } = require("./helper/nodemailer");
 
+const { pagination } = require("../controler/helper/pagination");
 
+("use strict");
 //secure Password
 
 const securePassword = async (password) => {
@@ -32,43 +36,46 @@ const generateOTP = (length) => {
 //Home page
 
 const landing_page = async (req, res) => {
-  'use strict';
   try {
-  //   const email=req.user.displayName
-  //   const name=req.user.emails
-  // //  const i= req.user.username
-  // //  const f=req.user.email
-    // console.log(email,"form google");
-    // console.log(name,"form google");
-    console.log(  req.session.userId,'from the session in loginlllllllllllllll');
-    const user=req.session.user || false
-    console.log(user+"1");
-    
-  
+    const user = req.session.user || false;
+    const cartCount = await cart.find({}).count();
+    console.log("cartCount:",cartCount);
     const products = await product
       .find({ isBlocked: false })
       .limit(8)
       .populate("categoryId");
-if(user){
-  res.render("landing_page", { products: products,user:user});
+    const newArrival = await product
+      .find()
+      .sort({
+        createdAt: -1,
+      })
+      .limit(4);
+    if (user) {
+      res.render("landing_page", {
+        products: products,
+        user: user,
+        newArrival: newArrival,
+        cartCount
+      });
+    } else {
+      res.render("landing_page", {
+        products: products,
+        newArrival: newArrival,
+        cartCount
 
-}else{
-  res.render("landing_page", { products: products });
-
-}
+      });
+    }
     // if (products&&user) res.render("landing_page", { products: products,user:user });
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
-
 //Login page
 const load_login = async (req, res) => {
   try {
-    if(req.session.user==true){
-      res.redirect('/')
+    if (req.session.user == true) {
+      res.redirect("/");
     }
     res.render("login_page");
   } catch (error) {
@@ -98,8 +105,7 @@ const submit_signup = async (req, res) => {
     });
     if (!existingUser) {
       const securedPassword = await securePassword(password);
-      req.session.userTemp  = { email, username, mobile, securedPassword };
-      console.log(req.session.userTemp.email+"goted");
+      req.session.userTemp = { email, username, mobile, securedPassword };
       const OTP = await generateOTP(6);
       req.session.OTP = OTP;
       console.log(OTP);
@@ -115,6 +121,7 @@ const submit_signup = async (req, res) => {
 
 
 
+
 //load otp
 const otp_verification = async (req, res) => {
   try {
@@ -124,35 +131,27 @@ const otp_verification = async (req, res) => {
   }
 };
 
-
-
 //resend otp
-const resendOtp=async (req,res)=>{
+const resendOtp = async (req, res) => {
   try {
     const newOtp = await generateOTP(6);
-    console.log(newOtp+"new otp");
+    console.log(newOtp + "new otp");
     req.session.OTP = newOtp;
-    const sessionEmail=  req.session.userTemp.email
-    const a = await sendMail(sessionEmail, newOtp);
-    res.render("otp_page")
-    
+    const sessionEmail = req.session.userTemp.email;
+    const send = await sendMail(sessionEmail, newOtp);
+    res.render("otp_page");
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
-
-
+};
 
 //otp checking...
 const otp_submit = async (req, res) => {
   try {
-    console.log("hellooooooooooooooooooo");
     const { otp } = req.body;
-
-    console.log(otp, "from the ajax call");
-    console.log(`session ${req.session.OTP}`);
-  
-    if (otp== req.session.OTP) {
+    // console.log(otp, "from the ajax call");
+    // console.log(`session ${req.session.OTP}`);
+    if (otp == req.session.OTP) {
       const { email, securedPassword, mobile, username } = req.session.userTemp;
       const saving_data = new user({
         username: username,
@@ -162,20 +161,17 @@ const otp_submit = async (req, res) => {
         is_verified: 1,
       });
       const userData = await saving_data.save();
-       req.session.OTP=null
+      req.session.OTP = null;
       if (userData) {
         res.json({ status: true });
-      } 
-    }else {
+      }
+    } else {
       res.json({ status: false });
     }
   } catch (error) {
     console.log(error.message);
   }
 };
-
-
-
 
 //user login
 const verify_login = async (req, res) => {
@@ -187,12 +183,9 @@ const verify_login = async (req, res) => {
       if (passwordMatch) {
         if (user_email.is_verified == 1) {
           if (!user_email.is_block) {
-            console.log(user_email._id,"from the ueremail idssssssssssssssss");
-
-            req.session.userId= user_email._id;
-            console.log(  req.session.userId,'from the session in loginddddddddddddddddd');
-            req.session.user=true
-            req.session.save()
+            req.session.userId = user_email._id;
+            req.session.user = true;
+            req.session.save();
             res.redirect("/");
           } else {
             res.render("login_page", { message: "oop! you have been blocked" });
@@ -211,175 +204,251 @@ const verify_login = async (req, res) => {
   }
 };
 
-
-
 //get log page
 const load_shop = async (req, res) => {
-  console.log("heloo");
   try {
-    const products = await product.find({ isBlocked: false }).populate("categoryId")
-    res.render("shop", { product: products });
+    const productCount = await product.find().count();
+    const page = req.query.page || 1;
+    const pagesize = 8;
+    const skip = (page - 1) * pagesize;
+    const totalPage = Math.ceil(productCount / pagesize);
+    const products = await product
+      .find({ isBlocked: false })
+      .populate("categoryId")
+      .skip(skip)
+      .limit(pagesize);
+    const categories = await category.find();
+    console.log(products);
+    res.render("shop", {
+      product: products,
+      totalPage,
+      currentPage: page,
+      categories,
+    });
   } catch (error) {
     console.log(error.message);
   }
 };
 
-const lowtohigh=async (req,res)=>{
+const lowtohigh = async (req, res) => {
   try {
-    console.log("hi");
-const lowToHighProduct=await product.find().sort({sellingPrice:1})
-res.render("shop",{product:lowToHighProduct})
-    
+    console.log("hello");
+    const { skip, page, pageSize, totalPage } = await pagination(req, res);
+    const lowToHigh = await product
+      .find()
+      .sort({ sellingPrice: 1 })
+      .skip(skip)
+      .limit(pageSize);
+    const categories = await category.find();
+    res.render("shop", {
+      product: lowToHigh,
+      totalPage,
+      currentPage: page,
+      categories,
+    });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
   }
-}
-const highToLow=async (req,res)=>{
+};
+
+const highToLow = async (req, res) => {
   try {
-    console.log("hi");
-const lowToHighProduct=await product.find().sort({sellingPrice:-1})
-res.render("shop",{product:lowToHighProduct})
-    
+    const { skip, page, pageSize, totalPage } = await pagination(req, res);
+    const lowToHighProduct = await product
+      .find()
+      .sort({ sellingPrice: -1 })
+      .skip(skip)
+      .limit(pageSize);
+    const categories = await category.find();
+    res.render("shop", {
+      product: lowToHighProduct,
+      totalPage,
+      currentPage: page,
+      categories,
+    });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
+};
 
-const newArrival=async(req,res)=>{
+const newArrival = async (req, res) => {
   try {
-    console.log("hi");
-const lowToHighProduct=await product.find().sort({
-  createdAt:-1})
-res.render("shop",{product:lowToHighProduct})
-    
+    const { skip, page, pageSize, totalPage } = await pagination(req, res);
+    const newArrival = await product
+      .find()
+      .sort({
+        createdAt: -1,
+      })
+      .skip(skip)
+      .limit(pageSize);
+    const categories = await category.find();
+    res.render("shop", {
+      product: newArrival,
+      totalPage,
+      currentPage: page,
+      categories,
+    });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
-
-
-
+};
 
 //one product details
 const shopProduct = async (req, res) => {
   try {
     const { id } = req.query;
     const products = await product.findOne({ _id: id }).populate("categoryId");
-    if(products ){
-      const relatedProducts = await product.find({ _id: { $ne: id } }).populate({
-        path: 'categoryId',
-        match: { categoryTitle: 'categoryId' } 
-    }).limit(4);
-      res.render("viewOneproduct", { products,relatedProducts});
-    } 
-    else{
-      res.send("oops!")
+    if (products) {
+      const relatedProducts = await product
+        .find({ _id: { $ne: id } })
+        .populate({
+          path: "categoryId",
+          match: { categoryTitle: "categoryId" },
+        })
+        .limit(4);
+      res.render("viewOneproduct", { products, relatedProducts });
+    } else {
+      res.send("oops!");
     }
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
-
-
 //logout
-const logout=async(req,res)=>{
+const logout = async (req, res) => {
   try {
-   req.session.userId=null
-   req.session.user=false
-    res.redirect("/")
-  } catch (error) {
-    console.log(error.message)
-  }
-}
-
-
-
-
-///FORGOT PASSWORD
-const load_forgotPassword=async(req,res)=>{
-  try {
-    res.render("forgotPassword")
-    
-  } catch (error) {
-    console.log(error.message)
-  }
-}
-
-
-const forgotPassword=async(req,res)=>{
-  try {
-    const {email}=req.body
-    console.log(email)
-    const existingUser=await user.findOne({email:email})
-    if(existingUser){
-      const forgotPassword_OTP= await generateOTP(6);
-      console.log(forgotPassword_OTP,"its the forgot password otp");
-      req.session.forgotPassword_OTP=forgotPassword_OTP
-      req.session.forgotPassword_email=email
-
-      const a = await sendMail(email, forgotPassword_OTP);
-      console.log("success");
-      res.redirect("/forgotPassword_verify")
-    }else{
-      res.render("forgotPassword",{message:"invalid email please sign up"})
-    }  
-   // render('verifyForgotPassword')
-  } catch (error) {
-    console.log(error.message)
-  }
-}
-
-
-
-//verifying forgot password
-const  verify_forgotPassword=async(req,res)=>{
-  try {
-    console.log("Hello")
-    res.render("verifyForgotPassword")
+    req.session.userId = null;
+    req.session.user = false;
+    res.redirect("/");
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
-
-
-const resetPassword=async (req,res)=>{
+///FORGOT PASSWORD
+const load_forgotPassword = async (req, res) => {
   try {
-    const {otp,newPassword,conformNewPassword}=req.body
-    console.log(otp,newPassword,conformNewPassword);
+    res.render("forgotPassword");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log(email);
+    const existingUser = await user.findOne({ email: email });
+    if (existingUser) {
+      const forgotPassword_OTP = await generateOTP(6);
+      console.log(forgotPassword_OTP, "its the forgot password otp");
+      req.session.forgotPassword_OTP = forgotPassword_OTP;
+      req.session.forgotPassword_email = email;
+
+      const a = await sendMail(email, forgotPassword_OTP);
+      console.log("success");
+      res.redirect("/forgotPassword_verify");
+    } else {
+      res.render("forgotPassword", { message: "invalid email please sign up" });
+    }
+    // render('verifyForgotPassword')
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+//verifying forgot password
+const verify_forgotPassword = async (req, res) => {
+  try {
+    res.render("verifyForgotPassword");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { otp, newPassword, conformNewPassword } = req.body;
+    console.log(otp, newPassword, conformNewPassword);
     console.log(req.session?.forgotPassword_OTP);
-    console.log(req.session.forgotPassword_email)
-    const {forgotPassword_email}=req.session
-  console.log(forgotPassword_email,"form session email");
-    if( otp==req.session?.forgotPassword_OTP){
-      if(newPassword==conformNewPassword){
-console.log("success on this steps");
-const hashedPassword=await securePassword(newPassword)
-console.log(hashedPassword);
-const updatePassword=await user.findOneAndUpdate({email:forgotPassword_email},{$set:{password:hashedPassword}})
-if(updatePassword){
-  req.session.forgotPassword_email=null
-  req.session.forgotPassword_OTP=null
-  res.redirect("\login")
-}
-      }else{
-        res.render("verifyForgotPassword",{message:"Password is not Match"})
+    console.log(req.session.forgotPassword_email);
+    const { forgotPassword_email } = req.session;
+    console.log(forgotPassword_email, "form session email");
+    if (otp == req.session?.forgotPassword_OTP) {
+      if (newPassword == conformNewPassword) {
+        console.log("success on this steps");
+        const hashedPassword = await securePassword(newPassword);
+        console.log(hashedPassword);
+        const updatePassword = await user.findOneAndUpdate(
+          { email: forgotPassword_email },
+          { $set: { password: hashedPassword } }
+        );
+        if (updatePassword) {
+          req.session.forgotPassword_email = null;
+          req.session.forgotPassword_OTP = null;
+          res.redirect("login");
+        }
+      } else {
+        res.render("verifyForgotPassword", {
+          message: "Password is not Match",
+        });
       }
-    }else{
-      res.render("verifyForgotPassword",{message:"invalid OTP"})
+    } else {
+      res.render("verifyForgotPassword", { message: "invalid OTP" });
     }
   } catch (error) {
     console.log(error.message);
   }
+};
+const browsCategory = async (req, res) => {
+  try {
+    console.log(req.query);
+    const { categoryId } = req.query;
+    const { skip, page, pageSize, totalPage } = await pagination(req, res);
+    const categorySort = await product.find({ categoryId: categoryId });
+    const categories = await category.find();
+    res.render("shop", {
+      product: categorySort,
+      totalPage,
+      currentPage: page,
+      categories,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+const accedingOrder=async (req,res)=>{
+  try {
+    const accedingOrderProduct=await product.find({}).sort({productName:1})
+    const { skip, page, pageSize, totalPage } = await pagination(req, res);
+    const categories = await category.find();
+    res.render("shop", {
+      product: accedingOrderProduct,
+      totalPage,
+      currentPage: page,
+      categories,
+    });
+  } catch (error) {
+    console.error(error.message)
+  }
 }
-
-  
-
-
-
-
+const descendingOrder=async (req,res)=>{
+  try {
+    const accedingOrderProduct=await product.find({}).sort({productName:-1})
+    const { skip, page, pageSize, totalPage } = await pagination(req, res);
+    const categories = await category.find();
+    res.render("shop", {
+      product: accedingOrderProduct,
+      totalPage,
+      currentPage: page,
+      categories,
+    });
+  } catch (error) {
+    console.error(error.message)
+  }
+}
 
 module.exports = {
   landing_page,
@@ -397,7 +466,10 @@ module.exports = {
   resendOtp,
   logout,
   load_forgotPassword,
-  forgotPassword, 
+  forgotPassword,
   verify_forgotPassword,
-  resetPassword,  
+  resetPassword,
+  browsCategory,
+  accedingOrder,
+  descendingOrder
 };

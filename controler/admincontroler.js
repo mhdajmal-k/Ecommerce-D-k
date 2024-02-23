@@ -12,8 +12,6 @@ const login_load=async(req,res)=>{
     res.redirect('/admin/dashboard')
   }
   try {
-      // const message=req.flash()
-      // console.log(message);
       res.render('adminLogin')
   } catch (error) {
     console.log(error.message+"from herer")

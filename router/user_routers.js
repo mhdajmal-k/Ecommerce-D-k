@@ -31,6 +31,9 @@ const {
   forgotPassword,
   verify_forgotPassword,
   resetPassword,
+  browsCategory,
+  accedingOrder,
+  descendingOrder
 
 } = userController;
 
@@ -66,6 +69,9 @@ user_router.get("/",isBlocked,landing_page)
 .post("/forgotPassword", isLogout, forgotPassword)
 .get("/forgotPassword_verify", isLogout, verify_forgotPassword)
 .post("/forgotPassword_verify", isLogout, resetPassword)
+.get('/browse',isBlocked,browsCategory)
+.get("/accedingOrder",isBlocked,accedingOrder)
+.get("/descendingOrder",isBlocked,descendingOrder)
 
 
 // user_router.get('/auth/google', 

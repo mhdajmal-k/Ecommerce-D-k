@@ -17,12 +17,12 @@
                         <div class="col-lg-6" style="width: 100%;">
                             <div class="card mb-4">
                                 <div class="card-body">
-                                    <div class="mb-4">
+                                    <!-- <div class="mb-4">
                                         <label for="product_title" class="form-label">Product ID</label>
                                         <input type="text" name="productId" placeholder="Type here"
                                             onblur="validateId()" class="form-control" id="product_id">
                                         <p id="productError" class="text-danger "></p>
-                                    </div>
+                                    </div> -->
                                     <div class="mb-4">
                                         <label for="product_title" class="form-label">Product title</label>
                                         <input type="text" name="productName" placeholder="Type here"
@@ -138,7 +138,7 @@
 
 // FileReader.
 
-        const productId = document.getElementById("product_id")
+        // const productId = document.getElementById("product_id")
         const product_title = document.getElementById("product_title")
         const product_color = document.getElementById("product_color")
         const size = document.getElementsByClassName("size")
@@ -147,7 +147,7 @@
         const product_Description = document.getElementById("product_Description")
         const productPrice = document.getElementById("product_price")
         const sellingPrice = document.getElementById("sellingPrice")
-        const productError = document.getElementById("productError")
+        // const productError = document.getElementById("productError")
         const productTitleError = document.getElementById("productTitleError")
         const productColorError = document.getElementById("productColorError")
         const sizeError = document.getElementsByClassName("sizeError")
@@ -156,19 +156,19 @@
         const sellingPriceError = document.getElementById("sellingPriceError")
 
         console.log("entered")
-        function validateId() {
-            productvalue = productId.value.trim()
-            if (productvalue == "") {
-                productError.innerHTML = "product id is required"
-                productError.style.display = "block"
-            } else if (productvalue.length > 15) {
-                productError.innerHTML = "Enter a valid id"
-                productError.style.display = "block"
-            } else {
-                productError.innerHTML = ""
-                productError.style.display = "none"
-            }
-        }
+        // function validateId() {
+        //     productvalue = productId.value.trim()
+        //     if (productvalue == "") {
+        //         productError.innerHTML = "product id is required"
+        //         productError.style.display = "block"
+        //     } else if (productvalue.length > 15) {
+        //         productError.innerHTML = "Enter a valid id"
+        //         productError.style.display = "block"
+        //     } else {
+        //         productError.innerHTML = ""
+        //         productError.style.display = "none"
+        //     }
+        // }
 
         function validateTittle() {
             const productName = product_title.value.trim()
@@ -261,7 +261,6 @@
         document.getElementById("form").addEventListener("submit", (e) => {
 
 
-            validateId()
 
 
             validateTittle()
@@ -277,12 +276,12 @@
 
 
 
-
-            if (productError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML) {
+            // productError.innerHTML ||
+            if ( productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML) {
 
                 e.preventDefault();
             } else {
-                alert("form else")
+                
 
 
             }

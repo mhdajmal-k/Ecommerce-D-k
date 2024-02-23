@@ -444,7 +444,20 @@
             function placeOrder(cartId) {
                 const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
                 const selectedPayment = document.querySelector('input[name="selectedPayment"]:checked');
+                
+                if(selectedAddress==null){
+                    
+                    Swal.fire({
+                        title: "<span style='color: red;'>Please select Address</span>",
+                        html: "<span style='color: blue;'>For ordering, please select any valid address</span>",
+                        icon: "warning",
+                        timer: 2000
+                    });
+                    return;
+                
 
+                }
+        
                 if (selectedPayment === null || selectedPayment === undefined) {
                     Swal.fire({
                         title: "<span style='color: red;'>Please select payment option</span>",

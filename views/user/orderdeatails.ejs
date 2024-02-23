@@ -15,8 +15,12 @@
                 </thead>
                 <tbody>
                     <% if (userOrder && userOrder.items.length> 0) { %>
-
-                        <button class="btn btn-danger" onclick="cancelOrder('<%= userOrder._id %>')">Cancel
+                        <% if (userOrder.status=="Delivered") { %>
+                         
+                            <% } else { %>
+                                <button class="btn btn-danger" onclick="cancelOrder('<%= userOrder._id %>')">Cancel
+                         
+                        <% } %>
                             Order</button>
 
                         <% userOrder.items.forEach((item)=> { %>

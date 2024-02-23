@@ -12,8 +12,12 @@ const load_cart = async (req, res) => {
     .populate("items.productId");
     if(userCart){
       const productIdsInCart = userCart.items.map(item => item.productId._id)
-      const relatedProducts = await product.find({ _id: { $nin: productIdsInCart } }).limit(4);
-      res.render("cart", { cart: userCart,relatedProducts:relatedProducts });
+      const randomProduct = await product.aggregate([
+        { $match: { _id: { $nin: productIdsInCart } } },
+        { $sample: { size: 4 } }
+      ]);
+      
+      res.render("cart", { cart: userCart,relatedProducts:randomProduct });
     }
 
 };

@@ -162,7 +162,7 @@ const cancelOrder = async (req, res) => {
     console.log(orderId, "///////////////////");
     const orderData = await order.findByIdAndUpdate(
       orderId,
-      { $set: { status: "cancelled" } },
+      { $set: { status: "Canceled" } },
       { new: true }
     );
 
