@@ -60,7 +60,7 @@
                                         
                                         <div class="form-group col-md-12">
                                             <label>State <span class="required">*</span></label>
-                                            <input id="state" class="form-control square" name="state" type="text" placeholder="Enter the State"  onblur="validateState()">
+                                            <input id="state" class="form-control square" name="state" type="text" placeholder="Enter the State"  onblur="validateState()" value="kerala">
                                             <p id="stateError" class="alert text-danger"></p>
                                         </div>
                                         <div class="form-group col-md-12">
@@ -227,13 +227,13 @@ function validateName() {
             console.log(address+"addressvalue");
             const addressRegex = /^[a-zA-Z0-9\s\-\.,'#]+$/;
             const isValidAddress = addressRegex.test(address);
-            alert("form fucntion validate")
+           
             if (address=="") {
-                alert("fonm address 1")
+         
                 addressAreaError.style.display = "block";
                 addressAreaError.innerHTML = "Please Enter a address";
             }else if(address.length>50){
-                alert("fonm address 2")
+              
                 addressAreaError.style.display = "block";
                 addressAreaError.innerHTML = "Please Enter a valid address1";
             }else if(!isValidAddress){
@@ -285,7 +285,7 @@ function validateName() {
             validateAddress()
            
             if(nameError.innerHTML||districtError.innerHTML||pinCodeError.innerHTML||localityError.innerHTML||stateError.innerHTML||mobileError.innerHTML||addressAreaError.innerHTML){
-                alert("from prevetn")
+               
                 e.preventDefault()
             }else{
 

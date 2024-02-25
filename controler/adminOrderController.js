@@ -8,6 +8,7 @@ const load_orders = async (req, res) => {
     console.error(error.message);
   }
 };
+
 const load_ordersDetails = async (req, res) => {
   try {
     const { orderId } = req.query;

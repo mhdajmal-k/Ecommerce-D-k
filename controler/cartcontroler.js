@@ -5,6 +5,8 @@ const product = require("../model/product_model");
 
 
 
+///cart page
+
 const load_cart = async (req, res) => {
   const users = req.session.userId;
   const userCart = await cart
@@ -16,18 +18,18 @@ const load_cart = async (req, res) => {
         { $match: { _id: { $nin: productIdsInCart } } },
         { $sample: { size: 4 } }
       ]);
-      
       res.render("cart", { cart: userCart,relatedProducts:randomProduct });
     }
 
 };
 
 
+//adding a product in to cart
+
 const addCart = async (req, res) => {
   try {
     const maximumQuantityToBuy = 5;
     const { productId, size, quantity } = req.body;
-    console.log(productId,"iddddddddddddddd");
     const users = req.session.userId;
     if (!users) {
       return res.json({ status: false });
@@ -36,12 +38,12 @@ const addCart = async (req, res) => {
     if (!productData) {
       return res.status(404).json({ error: "Product not found" });
     }
-    if(productData.isBlocked==true){
+    if(productData.isBlocked){
       return res.status(404).json({ error: "Product has been removed " });
     }
     const selectedSize = productData.size.find((item) => item.size === size);
     if (!selectedSize || selectedSize.quantity < parseInt(quantity)) {
-      return res.json({ status: "invalidQuantity" });
+      return res.status(201).json({ status: "invalidQuantity" });
     }
     if ( parseInt(quantity) > maximumQuantityToBuy) {
       return res.json({ status: "maximumQuantity" });
@@ -56,7 +58,6 @@ const addCart = async (req, res) => {
       (product) => product.productId == productId && product.size === size
     );
     const qty = parseInt(quantity);
-    console.log(productId,"cart validation");
     if (productIndex === -1) {
       userCart.items.push({
         productId:productData._id,
@@ -87,6 +88,8 @@ const addCart = async (req, res) => {
   }
 };
 
+//remove from the cart
+
 const removeItem = async (req, res) => {
   try {
     const {itemId}=req.query
@@ -94,6 +97,7 @@ const removeItem = async (req, res) => {
     console.log(user);
     const userCart=await cart.findOne({userId:user})
     const toRemove= userCart.items.find(item=>item._id==itemId)
+    console.log("toRemove:",toRemove);
     const subTotal=toRemove.subTotal
     const updatedCart= await cart.findOneAndUpdate(
       { userId: user },
@@ -109,7 +113,7 @@ const removeItem = async (req, res) => {
   }
 };
 
-const decrementQuantity = async (req, res) => {
+const changeQuantity = async (req, res) => {
   try {
     console.log(req.body);
     const {
@@ -157,5 +161,5 @@ module.exports = {
   load_cart,
   addCart,
   removeItem,
-  decrementQuantity,
+  changeQuantity,
 };

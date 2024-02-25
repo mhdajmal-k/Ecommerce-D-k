@@ -6,7 +6,6 @@ const session = require('express-session')
 
 
 //login page
-
 const login_load=async(req,res)=>{
   if(req.session.admin){
     res.redirect('/admin/dashboard')
@@ -73,7 +72,6 @@ const Dashboard_load=async (req,res)=>{
 
   const userBlockUnblock=async(req,res)=>{
     try {
-   
       const {userId, status} = req.body
       if(status === "blockUser"){
         const block=await user.updateOne({_id:userId},{$set:{is_block:true}})
@@ -84,8 +82,7 @@ const Dashboard_load=async (req,res)=>{
       }else{
         console.log(error.message);
         res.json({status : false})
-      }
-      
+      }  
     } catch (error) {
       console.error(error.message)
     }
@@ -96,14 +93,9 @@ const Dashboard_load=async (req,res)=>{
 
   const logout=async(req,res)=>{
     try {
-      // req.flash('message', 'You have been successfully logged out.')
-    
-  
       req.session.admin=null
       req.session.adminOn=false
-   
       res.redirect("/admin")
-      
     } catch (error) {
       console.log(error.message)
     }
@@ -117,7 +109,4 @@ module.exports = {
   userLoad,
   userBlockUnblock,
   logout
-  
-
-
 };

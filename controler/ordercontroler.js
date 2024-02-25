@@ -7,6 +7,16 @@ const User = require("../model/user_model");
 const Product = require("../model/product_model");
 const generateOrderNumber = require("./helper/orderId");
 const order = require("../model/order_model");
+const Razorpay = require('razorpay');
+
+
+
+const razorpay = new Razorpay({
+  key_id: process.env.RazopayId,
+  key_secret: process.env.RazopaySecret
+});
+
+//check out page
 
 const load_checkout = async (req, res) => {
   try {
@@ -19,7 +29,6 @@ const load_checkout = async (req, res) => {
       },
     });
     const items = userCart.items.length;
-    console.log(items, "kkkkkkkkkkkkkkkkkkk");
     if (items > 0) {
       const userAddress = await address.find({ user: user });
       res.render("checkout", {
@@ -35,9 +44,12 @@ const load_checkout = async (req, res) => {
   }
 };
 
+
+//place order
+
 const place_Order = async (req, res) => {
   try {
-    console.log("hi");
+    // console.log("hi");
     const userId = req.session.userId;
     const user = await User.findById(userId);
     const { cartId, addressId, paymentOption } = req.body;
@@ -45,6 +57,7 @@ const place_Order = async (req, res) => {
       .findById({ _id: cartId })
       .populate("items.productId");
     // console.log(userCart, "gooted user CArt");
+    
     for (let i = 0; i < userCart.items.length; i++) {
       const cartItem = userCart.items[i];
       // console.log(cartItem, "gotted userItesm");
@@ -64,8 +77,7 @@ const place_Order = async (req, res) => {
     }
     console.log("hello");
     const orderProducts = userCart.items.map((cartProduct) => ({
-      product: cartProduct.productId._id, // Access the inner object
-      // Access the inner object
+      product: cartProduct.productId._id, 
       quantity: cartProduct.quantity,
       price: cartProduct.subTotal,
       size: cartProduct.size,
@@ -74,8 +86,9 @@ const place_Order = async (req, res) => {
     // console.log(orderProducts);
 
     // Retrieve user address
+
     const userAddress = await address.findById(addressId);
-    console.log(userAddress.pinCode);
+    // console.log(userAddress.pinCode);
 
     // Generate order number
     const orderNumber = generateOrderNumber();
@@ -137,23 +150,33 @@ const place_Order = async (req, res) => {
   }
 };
 
+
+//order Success page
+
 const load_orderSuccess = async (req, res) => {
-  res.render("ordersuccesPage");
+  try {
+    res.render("ordersuccesPage");
+  } catch (error) {
+    console.log(error.message)
+  }
 };
 
 const viewOrderDeatails = async (req, res) => {
   try {
     const { orderId } = req.query;
-    console.log(orderId, "gotted orderId");
+    // console.log(orderId, "gotted orderId");
     const userOrder = await order
       .findById({ _id: orderId })
       .populate("items.product");
-    console.log(userOrder, "/////////////////////////////");
+    // console.log(userOrder, "/////////////////////////////");
     res.render("orderdeatails", { userOrder });
   } catch (error) {
     console.log(error);
   }
 };
+
+
+//cancel order
 
 const cancelOrder = async (req, res) => {
   try {
@@ -188,7 +211,6 @@ const cancelOrder = async (req, res) => {
         product.size = updatedSizes;
         await product.save();
       }
-      console.log("hello");
       res.json({ status: "order canceled" });
     }
   } catch (error) {

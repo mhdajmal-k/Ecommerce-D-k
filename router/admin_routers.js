@@ -65,7 +65,7 @@ admin_router.get("/",login_load)
 .post('/block_user',sessionChecker,userBlockUnblock)
 .get('/logout',logout)
 
-//==================================  admin controller================================
+//==================================  product admin controller================================
 
 
 
@@ -73,9 +73,9 @@ admin_router.get("/",login_load)
 
 admin_router.get('/products',sessionChecker, load_products)
 .get('/addproduct',sessionChecker, add_ProductLoad)
-.post('/addproduct',sessionChecker,upload.array('images', 5),add_Product)
+.post('/addproduct',sessionChecker,upload.array('images',5),add_Product)
 .get('/editProduct',sessionChecker,load_editProduct)
-.post('/editProduct',sessionChecker,upload.array('images', 5),editProduct)
+.post('/editProduct',sessionChecker,upload.array('images',5),editProduct)
 .post('/productListAndUnList',sessionChecker,listAndUnListProduct)
 .get('/blockProducts/:id',sessionChecker,delete_product)
 .post('/deleteImage',sessionChecker,delete_image)

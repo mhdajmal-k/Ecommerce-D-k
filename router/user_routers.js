@@ -33,7 +33,8 @@ const {
   resetPassword,
   browsCategory,
   accedingOrder,
-  descendingOrder
+  descendingOrder,
+  addToWishList
 
 } = userController;
 
@@ -41,7 +42,7 @@ const {
 
 
 const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress,load_editProfile,editProfile,changePassword,load_order}=profileController
-const {load_cart,addCart,removeItem,decrementQuantity}=cartController
+const {load_cart,addCart,removeItem,changeQuantity}=cartController
 const {load_checkout,place_Order,load_orderSuccess,viewOrderDeatails,cancelOrder}=orderController
 
 
@@ -52,8 +53,8 @@ user_router.set("view engine", "ejs");
 user_router.set("views", "./views/user");
 
 user_router.get("/",isBlocked,landing_page)
-.get("/login", isLogout, load_login)
-.get("/signup", isLogout,load_signup)
+.get("/login",isBlocked, isLogout, load_login)
+.get("/signup",isBlocked, isLogout,load_signup)
 .post("/signup", isLogout, submit_signup)
 .get("/otp_verification", isLogout,otp_verification)
 .post("/otp_verification", isLogout, otp_submit)
@@ -72,6 +73,7 @@ user_router.get("/",isBlocked,landing_page)
 .get('/browse',isBlocked,browsCategory)
 .get("/accedingOrder",isBlocked,accedingOrder)
 .get("/descendingOrder",isBlocked,descendingOrder)
+.get("/wishList",isBlocked,addToWishList)
 
 
 // user_router.get('/auth/google', 
@@ -108,10 +110,10 @@ user_router
 
 
 user_router
-.get("/cart",isLogin,load_cart)
-.post("/cart",addCart)
-.get("/removeItem",removeItem)
-.post("/decrementQuantity",decrementQuantity)
+.get("/cart",isBlocked,isLogin,load_cart)
+.post("/cart",isBlocked,isLogin,addCart)
+.get("/removeItem",isBlocked,isLogin,removeItem)
+.post("/decrementQuantity",isBlocked,isLogin,changeQuantity)
 
 
 ///////////////order //////////////
@@ -122,6 +124,7 @@ user_router
 .get('/orderSuccess',isBlocked,isLogin,load_orderSuccess)
 .get('/viewOrderDeatails',isBlocked,isLogin,viewOrderDeatails)
 .post('/cancelOrder',isBlocked,isLogin,cancelOrder)
+
 
 
 

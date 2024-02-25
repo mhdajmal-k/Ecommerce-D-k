@@ -8,9 +8,11 @@ const nodemailer = require("nodemailer");
 const { render } = require("../router/user_routers");
 const { sendMail } = require("./helper/nodemailer");
 
+
 const { pagination } = require("../controler/helper/pagination");
 
 ("use strict");
+
 //secure Password
 
 const securePassword = async (password) => {
@@ -33,13 +35,15 @@ const generateOTP = (length) => {
   return otp;
 };
 
+
+
 //Home page
 
 const landing_page = async (req, res) => {
   try {
     const user = req.session.user || false;
     const cartCount = await cart.find({}).count();
-    console.log("cartCount:",cartCount);
+    console.log("cartCount:", cartCount);
     const products = await product
       .find({ isBlocked: false })
       .limit(8)
@@ -55,14 +59,13 @@ const landing_page = async (req, res) => {
         products: products,
         user: user,
         newArrival: newArrival,
-        cartCount
+        cartCount,
       });
     } else {
       res.render("landing_page", {
         products: products,
         newArrival: newArrival,
-        cartCount
-
+        cartCount,
       });
     }
     // if (products&&user) res.render("landing_page", { products: products,user:user });
@@ -83,8 +86,6 @@ const load_login = async (req, res) => {
   }
 };
 
-
-
 //signup page
 const load_signup = async (req, res) => {
   try {
@@ -93,8 +94,6 @@ const load_signup = async (req, res) => {
     console.log(error.message);
   }
 };
-
-
 
 //submit_signup
 const submit_signup = async (req, res) => {
@@ -118,9 +117,6 @@ const submit_signup = async (req, res) => {
     console.log(error.message);
   }
 };
-
-
-
 
 //load otp
 const otp_verification = async (req, res) => {
@@ -346,7 +342,6 @@ const forgotPassword = async (req, res) => {
       console.log(forgotPassword_OTP, "its the forgot password otp");
       req.session.forgotPassword_OTP = forgotPassword_OTP;
       req.session.forgotPassword_email = email;
-
       const a = await sendMail(email, forgotPassword_OTP);
       console.log("success");
       res.redirect("/forgotPassword_verify");
@@ -371,7 +366,7 @@ const verify_forgotPassword = async (req, res) => {
 const resetPassword = async (req, res) => {
   try {
     const { otp, newPassword, conformNewPassword } = req.body;
-    console.log(otp, newPassword, conformNewPassword);
+    console.log(otp, newPassword, conformNewPassword,"form reset password");
     console.log(req.session?.forgotPassword_OTP);
     console.log(req.session.forgotPassword_email);
     const { forgotPassword_email } = req.session;
@@ -419,9 +414,11 @@ const browsCategory = async (req, res) => {
     console.log(error);
   }
 };
-const accedingOrder=async (req,res)=>{
+const accedingOrder = async (req, res) => {
   try {
-    const accedingOrderProduct=await product.find({}).sort({productName:1})
+    const accedingOrderProduct = await product
+      .find({})
+      .sort({ productName: 1 });
     const { skip, page, pageSize, totalPage } = await pagination(req, res);
     const categories = await category.find();
     res.render("shop", {
@@ -431,12 +428,14 @@ const accedingOrder=async (req,res)=>{
       categories,
     });
   } catch (error) {
-    console.error(error.message)
+    console.error(error.message);
   }
-}
-const descendingOrder=async (req,res)=>{
+};
+const descendingOrder = async (req, res) => {
   try {
-    const accedingOrderProduct=await product.find({}).sort({productName:-1})
+    const accedingOrderProduct = await product
+      .find({})
+      .sort({ productName: -1 });
     const { skip, page, pageSize, totalPage } = await pagination(req, res);
     const categories = await category.find();
     res.render("shop", {
@@ -446,9 +445,12 @@ const descendingOrder=async (req,res)=>{
       categories,
     });
   } catch (error) {
-    console.error(error.message)
+    console.error(error.message);
   }
-}
+};
+const addToWishList = async (req, res) => {
+  console.log("hello");
+};
 
 module.exports = {
   landing_page,
@@ -471,5 +473,6 @@ module.exports = {
   resetPassword,
   browsCategory,
   accedingOrder,
-  descendingOrder
+  descendingOrder,
+  addToWishList,
 };
