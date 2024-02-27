@@ -253,6 +253,7 @@ const delete_image = async (req, res) => {
       $pull: { image: imageId },
     });
     const imagePath = path.join("uploads", "products", imageId);
+    console.log("IMAGE pATH:",imagePath);
     await unlinkAsync(imagePath);
     if (products) {
       res.json({ status: true });

@@ -144,8 +144,9 @@
                                     </div> <!-- col.// -->
                                     <% } %>
                                         <label class="form-label">Images</label>
-                                        <input class="form-control" name="images" type="file" id="Images" multiple>
+                                        <input class="form-control" name="images" type="file" id="imageInput"  accept="image/*" multiple>
                                         <p id="productImageError" class="text-danger "></p>
+                                        <p id="imageValidationError" style="color: red; display: none;"></p>
 
                             </div>
                         </div>
@@ -182,6 +183,9 @@
         const productDescriptionError = document.getElementById("productDescriptionError")
         const productPriceError = document.getElementById("productPriceError")
         const sellingPriceError = document.getElementById("sellingPriceError")
+        const input = document.getElementById("imageInput")
+        const errorDisplay = document.getElementById('imageValidationError');
+
 
         console.log("entered")
         function validateId() {
@@ -285,32 +289,37 @@
             }
         }
 
+        function validateImages() {
+    errorDisplay.style.display = 'none';
+    const files = input.files;
+    if (files.length > 5) {
+        errorDisplay.style.display = 'block';
+        errorDisplay.innerHTML = 'Image limit is 5';
+        return false;
+    }
+}
+
 
         document.getElementById("form").addEventListener("submit", (e) => {
-            console.log("val")
-
+         
+            validateImages()
             validateId()
 
             validateTittle()
 
             validateColor()
-
             validatePrice()
-
-
             validateDescription()
-
             validateSellingPrice()
+           
 
 
 
 
-            if (productError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML) {
+            if (productError.innerHTML || productTitleError.innerHTML || productColorError.innerHTML || productPriceError.innerHTML || productDescriptionError.innerHTML || sellingPriceError.innerHTML||errorDisplay.innerHTML) {
 
                 e.preventDefault();
             } else {
-                alert("form else")
-
 
             }
         });
@@ -318,7 +327,7 @@
        
 
         function deleteProduct(productID) {
-            console.log(productID)
+        
             swal({
                 title: "delete product",
                 text: "are you sure for delete the product",
@@ -332,7 +341,7 @@
         }
 
         function deleteImage(productID,imageId){
-            alert(productID)
+          
             swal({
                 title: "are you sure",
                 text: "are you sure for delete the image",
