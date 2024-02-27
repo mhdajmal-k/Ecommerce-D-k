@@ -15,12 +15,12 @@ function validateForm(e) {
         e.preventDefault();
     } else if (description === "" ) {
         categoryDescriptionError.style.display = "block";
-        categoryDescriptionError.innerHTML = "Description is required2";
+        categoryDescriptionError.innerHTML = "Description is required";
         e.preventDefault();
     }
     else if(productTitle.length>30){
         errorMessageElement.style.display = "block";
-        errorMessageElement.innerHTML = "product tittle must be short3";
+        errorMessageElement.innerHTML = "product tittle must be short";
         e.preventDefault();
     }
 }

@@ -86,6 +86,7 @@ const load_login = async (req, res) => {
   }
 };
 
+
 //signup page
 const load_signup = async (req, res) => {
   try {
@@ -94,6 +95,7 @@ const load_signup = async (req, res) => {
     console.log(error.message);
   }
 };
+
 
 //submit_signup
 const submit_signup = async (req, res) => {
@@ -337,6 +339,7 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
     console.log(email);
     const existingUser = await user.findOne({ email: email });
+    console.log(existingUser,"its existing user");
     if (existingUser) {
       const forgotPassword_OTP = await generateOTP(6);
       console.log(forgotPassword_OTP, "its the forgot password otp");
@@ -365,15 +368,14 @@ const verify_forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { otp, newPassword, conformNewPassword } = req.body;
-    console.log(otp, newPassword, conformNewPassword,"form reset password");
+    const { otp, newPassword,conformNewPassword } = req.body;
+    console.log(otp, newPassword,"form reset password");
     console.log(req.session?.forgotPassword_OTP);
     console.log(req.session.forgotPassword_email);
     const { forgotPassword_email } = req.session;
     console.log(forgotPassword_email, "form session email");
     if (otp == req.session?.forgotPassword_OTP) {
       if (newPassword == conformNewPassword) {
-        console.log("success on this steps");
         const hashedPassword = await securePassword(newPassword);
         console.log(hashedPassword);
         const updatePassword = await user.findOneAndUpdate(
@@ -383,15 +385,15 @@ const resetPassword = async (req, res) => {
         if (updatePassword) {
           req.session.forgotPassword_email = null;
           req.session.forgotPassword_OTP = null;
-          res.redirect("login");
+          res.json({status:"password updated"})
         }
       } else {
-        res.render("verifyForgotPassword", {
-          message: "Password is not Match",
-        });
+        res.json({status:"Password is not Match"})
+          
+        ;
       }
     } else {
-      res.render("verifyForgotPassword", { message: "invalid OTP" });
+      res.json({status:"invalid OTP"})
     }
   } catch (error) {
     console.log(error.message);

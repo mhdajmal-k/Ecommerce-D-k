@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
+const e = require("express");
 const category = require("../model/category");
 
 ///////////////////////// category page//////////////////////////////////////////////
-
 
 const load_category = async (req, res) => {
   try {
@@ -15,7 +15,6 @@ const load_category = async (req, res) => {
 
 ///////////////////////// category adding page//////////////////////////////////////////////
 
-
 const load_Addcategory = (req, res) => {
   try {
     res.render("addCategory");
@@ -24,9 +23,7 @@ const load_Addcategory = (req, res) => {
   }
 };
 
-
 ///////////////////////// post addcategory//////////////////////////////////////////////
-
 
 const addCategory = async (req, res) => {
   try {
@@ -59,15 +56,13 @@ const addCategory = async (req, res) => {
   }
 };
 
-
 ///////////////////////// edit page//////////////////////////////////////////////
-
 
 const load_editCategory = async (req, res) => {
   try {
     const id = req.query.id;
     if (id) {
-      const categoryData = await category.findById(id);    
+      const categoryData = await category.findById(id);
       if (categoryData) {
         res.render("editCategory", { categories: categoryData });
       }
@@ -79,53 +74,66 @@ const load_editCategory = async (req, res) => {
   }
 };
 
-
-
 ///////////////////////// edit post page/////////////////////////////////////////////
 
-
-const editCategory=async(req,res)=>{
+const editCategory = async (req, res) => {
   try {
-    const {categoryName,Description,id}=req.body
-    const updateCategory=await category.findByIdAndUpdate({_id:id},{$set:{
-categoryTitle:categoryName,
-description:Description
-    }})
-    if(updateCategory){
-      res.redirect("/admin/category")
+    const { categoryName, Description, id } = req.body;
+    const categoryData = await category.findById(id);
+    const existingCategory = await category.findOne({
+      categoryTitle: { $regex: new RegExp("^" + categoryName + "$", "i") },
+    });
+    if (existingCategory) {
+      res.render("editCategory", {
+        message: "Category already existing!...",
+        categories: categoryData,
+      });
+      return;
+    }
+    const updateCategory = await category.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: {
+          categoryTitle: categoryName,
+          description: Description,
+        },
+      }
+    );
+    if (updateCategory) {
+      res.redirect("/admin/category");
     }
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
-
-
+};
 
 /////////////////////////  soft delete //////////////////////////////////////////////
 
-const listAndUnList=async(req,res)=>{
+const listAndUnList = async (req, res) => {
   try {
-
-    const id=req.query.id
-    const _id=await category.findById({_id:id})
-    if(_id){
-      if(_id.isList==true){
-        const unList=await category.updateOne({_id},{$set:{isList:false}})
-        res.redirect("/admin/category")
-      }else if(_id.isList==false){
-        const List=await category.updateOne({_id},{$set:{isList:true}})
-        res.redirect("/admin/category")
+    const id = req.query.id;
+    const _id = await category.findById({ _id: id });
+    if (_id) {
+      if (_id.isList == true) {
+        const unList = await category.updateOne(
+          { _id },
+          { $set: { isList: false } }
+        );
+        res.redirect("/admin/category");
+      } else if (_id.isList == false) {
+        const List = await category.updateOne(
+          { _id },
+          { $set: { isList: true } }
+        );
+        res.redirect("/admin/category");
       }
-
-    }else{
-      res.render("categories",{message:"invalid id!"})
+    } else {
+      res.render("categories", { message: "invalid id!" });
     }
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
-
-
+};
 
 module.exports = {
   load_Addcategory,
@@ -133,5 +141,5 @@ module.exports = {
   load_category,
   load_editCategory,
   editCategory,
-  listAndUnList
+  listAndUnList,
 };

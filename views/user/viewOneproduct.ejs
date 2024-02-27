@@ -292,14 +292,32 @@
                                                 <% for( let i=0; i < 4; i++ ) { %>
                                                     <option>
                                                         <%= products.size[i].size %>
+                                                        
+                                                        
                                                     </option>
                                                     <% } %>
 
 
                                             </select>
+                                         
                                             <!-- <strong class="mr-10">Size: </strong> -->
 
                                         </div>
+                                        <% for( let J = 0; J < 4; J++ ) { %>
+                                          
+                                           
+                                            <% if (products.size[J].quantity==0) { %>
+                                                <p class="text-danger">
+                                                    <%= products.size[J].size %>:   Out of stock
+                                                </p>
+                                                <% } else if(products.size[J].quantity<10) { %>
+                                                    <%= products.size[J].size %>:  <span style="color: red;">Warning - Low Stock (<%= products.size[J].quantity %>)</span>
+                                                
+                                                <% } %>
+                                            
+                                          
+                                        <% } %>
+                                        <p class="text-success">  In Stock</p>
                                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                                         <div class="detail-extralink">
                                             <div class="detail-qty border radius">

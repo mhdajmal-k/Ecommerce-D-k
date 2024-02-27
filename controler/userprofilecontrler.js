@@ -58,14 +58,15 @@ const addAddress = async (req, res) => {
       locationType,
     } = req.body;
 
-    console.log(req.session.userId, "it form session id");
+  
     // Check if the mobile number already exists in the database
-    const existingUser = await user.findOne({ mobile: mobile });
-    console.log(existingUser, "existing user.................");
-    if (existingUser) {
-      return res.render("addAddress", {
+    const userId=req.session.userId
+    const existingUser = await user.findById(userId)
+    if (existingUser.mobile==mobile) {
+    res.render("addAddress", {
         message: "Please enter another mobile number",
       });
+      return
     } else {
       let newAddress;
       if(locationType=="home"){
@@ -126,6 +127,25 @@ const load_editAddress = async (req, res) => {
     console.log(error.message);
   }
 };
+
+
+const addressDelete=async(req,res)=>{
+  try {
+    console.log("hello")
+    console.log(req.body,":address id");
+    const {Id}=req.body
+    const deleteAddress=await address.findByIdAndDelete(Id)
+    if(deleteAddress){
+   res.json({status:true})
+    }else{
+      res.status(500).json("error")
+    }
+   
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
  const editAddress = async (req, res) => {
   try {
     console.log("pppppppppppppppppppppppppppppppppppppppp");
@@ -193,38 +213,88 @@ const editProfile=async(req,res)=>{
   }
 }
 
-const changePassword= async(req,res)=>{
-  try {
-    const {currentPassword,newPassword}=req.body
-    const {userId}= req.session
-    const userData=await user.findById({_id:userId})
-  const passwordMatch= await bcrypt.compare(currentPassword,userData.password)
-  console.log(passwordMatch,"compare");
-  if(passwordMatch==false){
-    return res.json({status:"invalid password"})
-  }
-  const hashPassword=await securePassword(newPassword)
-  console.log(hashPassword,"000000000000000000000000000000000000000000");
-  if(hashPassword){
-    console.log("Hlelo");
-    userData.password=hashPassword
-    await userData.save();
-    req.session.userId=null
-    req.session.user=false
-    return res.json({status:"password reset success"})
-  }
+// const changePassword= async(req,res)=>{
+//   try {
+//     console.log(req.body);
+//     const {currentPassword,newPassword}=req.body
+//     const {userId}= req.session
+//     const userData=await user.findById({_id:userId})
+//   const passwordMatch= await bcrypt.compare(currentPassword,userData.password)
+//   console.log(passwordMatch,"compare");
+//   if(passwordMatch==false){
+//     return res.json({status:"invalid password"})
+//   }
+//   const hashPassword=await securePassword(newPassword)
+//   console.log(hashPassword,"000000000000000000000000000000000000000000");
+//   if(hashPassword){
+//     console.log("Hlelo");
+//     userData.password=hashPassword
+//     await userData.save();
+//     req.session.userId=null
+//     req.session.user=false
+//     return res.json({status:"password reset success"})
+//   }
 
-  } catch (error) {
-    console.log(error.message)
-  }
+//   } catch (error) {
+//     console.log(error.message)
+//   }
   // 
-}
+// }
+
+
+const changePassword = async (req, res) => {
+  try {
+    console.log("hello");
+      const { currentPassword, newPassword } = req.body;
+      const { userId } = req.session;
+      console.log(currentPassword,newPassword)
+      const userData = await user.findById(userId);
+      console.log(userData,"userDAtea");
+
+      if (!userData) {
+          return res.status(404).json({ error: "User not found" });
+      }
+
+      // Check if the current password provided by the user matches the stored password
+      const passwordMatch = await bcrypt.compare(currentPassword, userData.password);
+      console.log(passwordMatch,":currentPassword");
+
+      if (!passwordMatch) {
+        console.log("inside password dismatch");
+          return res.json({ status: "invalid password" });
+      }
+
+      // Hash the new password
+      const hashedPassword = await securePassword(newPassword);
+
+      if (hashedPassword) {
+          // Update the user's password with the new hashed password
+          userData.password = hashedPassword;
+          await userData.save();
+          
+          // Clear session data
+          req.session.userId = null;
+          req.session.user = false;
+
+          return res.json({ status: "password reset success" });
+      }
+  } catch (error) {
+      console.error("Error changing password:", error);
+      return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+module.exports = {
+  changePassword
+};
+
 
 module.exports = {
   load_profile,
   load_addAddress,
   addAddress,
   load_editAddress,
+  addressDelete,
   editAddress,
   load_editProfile,
   editProfile,

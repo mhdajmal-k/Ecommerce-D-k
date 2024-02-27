@@ -41,9 +41,9 @@ const {
 //=============================
 
 
-const {load_profile,load_addAddress,addAddress,load_editAddress,editAddress,load_editProfile,editProfile,changePassword,load_order}=profileController
+const {load_profile,load_addAddress,addAddress,load_editAddress,addressDelete,editAddress,load_editProfile,editProfile,changePassword,load_order}=profileController
 const {load_cart,addCart,removeItem,changeQuantity}=cartController
-const {load_checkout,place_Order,load_orderSuccess,viewOrderDeatails,cancelOrder}=orderController
+const {load_checkout,place_Order,load_orderSuccess,viewOrderDeatails,cancelOneProduct,cancelOrder}=orderController
 
 
 
@@ -99,9 +99,10 @@ user_router
 .post("/addAddress", isBlocked, isLogin, addAddress)
 .get("/addressEdit", isBlocked, isLogin, load_editAddress)
 .post("/addressEdit", isBlocked, isLogin, editAddress)
+.post("/addressDelete", isBlocked, isLogin, addressDelete)
 .get("/editProfile", isBlocked, isLogin, load_editProfile)
-.post("/editProfile", isLogin, editProfile)
-.post("/resetPassword", isLogin, changePassword)
+.post("/editProfile", isBlocked,isLogin, editProfile)
+.post("/resetPassword",isBlocked, isLogin, changePassword)
 .get('/order',isBlocked,isLogin,load_order)
 
 
@@ -124,6 +125,7 @@ user_router
 .get('/orderSuccess',isBlocked,isLogin,load_orderSuccess)
 .get('/viewOrderDeatails',isBlocked,isLogin,viewOrderDeatails)
 .post('/cancelOrder',isBlocked,isLogin,cancelOrder)
+.post('/cancelOneProduct',isBlocked,isLogin,cancelOneProduct)
 
 
 

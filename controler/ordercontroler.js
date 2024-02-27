@@ -66,13 +66,13 @@ const place_Order = async (req, res) => {
         return res.json({ status: "invalid product" });
       }
       if (product.isBlocked) {
-        return res.json({ status: "blocked product" });
+        return res.json({ status: "blocked product"});
       }
       const sizeCheck = product.size.find((size) => {
         return size.size === cartItem.size;
       });
       if (!sizeCheck || sizeCheck.quantity < cartItem.quantity) {
-        return res.json({ status: "out of stock" });
+        return res.json({ status: "out of stock"});
       }
     }
     console.log("hello");
@@ -82,18 +82,11 @@ const place_Order = async (req, res) => {
       price: cartProduct.subTotal,
       size: cartProduct.size,
     }));
-    // console.log("gotted items in order products")
-    // console.log(orderProducts);
 
-    // Retrieve user address
 
     const userAddress = await address.findById(addressId);
-    // console.log(userAddress.pinCode);
-
-    // Generate order number
+   
     const orderNumber = generateOrderNumber();
-
-    // Create new order object
     const order = {
       userId: user._id,
       orderNumber: orderNumber,
@@ -120,17 +113,9 @@ const place_Order = async (req, res) => {
       const orderedProductId = orderedProduct.product;
       const orderedQuantity = orderedProduct.quantity;
       const orderedProductSize = orderedProduct.size;
-      // console.log(orderedProductId,"it procuct id");
-      // console.log(orderedQuantity,"its quantity");
-      // console.log(orderedProductSize,"its size");
-      // console.log(typeof orderedQuantity,"its quantity");
       const product = await Product.findById(orderedProductId);
 
       const updatedSizes = product.size.map((size) => {
-        // console.log("----------------------------");
-        // console.log(product.size);
-        // console.log("----------------------------");
-        // console.log(size.size);
         if (size.size === orderedProductSize) {
           size.quantity -= orderedQuantity;
         }
@@ -164,17 +149,22 @@ const load_orderSuccess = async (req, res) => {
 const viewOrderDeatails = async (req, res) => {
   try {
     const { orderId } = req.query;
-    // console.log(orderId, "gotted orderId");
     const userOrder = await order
       .findById({ _id: orderId })
       .populate("items.product");
-    // console.log(userOrder, "/////////////////////////////");
     res.render("orderdeatails", { userOrder });
   } catch (error) {
     console.log(error);
   }
 };
-
+const cancelOneProduct=async(req,res)=>{
+  try {
+    console.log("Hi");
+   console.log(req.body); 
+  } catch (error) {
+    console.error(error.message)
+  }
+}
 
 //cancel order
 
@@ -222,5 +212,6 @@ module.exports = {
   place_Order,
   load_orderSuccess,
   viewOrderDeatails,
+  cancelOneProduct,
   cancelOrder,
 };

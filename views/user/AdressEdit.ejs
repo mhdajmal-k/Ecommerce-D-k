@@ -10,14 +10,15 @@
                     <div class="col-lg-6 mx-auto" style="width: 100%;"> <!-- Adjust col-lg-6 for wider content -->
                         <div class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5" >
                             <div class="padding_eight_all bg-white">
-                                <% if (locals.message) { %>
-                                 <p class="text-danger"><%=message  %></p>
-                                <% } %>
+                               
                                 <div class="heading_s1">
                                     <h3 class="mb-30 text-center">ADD New Address</h3>
                                 </div>
                                 <form method="post" action="/addressEdit" id="addressForm">
-                                    <div class="row">
+                                    <div class="row">\
+                                        <% if (locals.message) { %>
+                                            <p class="text-danger"><%=message  %></p>
+                                           <% } %>
                                         <div class="form-group col-md-6">
                                             <label>Name <span class="required">*</span></label>
                                             <input  class="form-control square" name="name" type="text"  placeholder="Enter Name" id="name" value="<%= userAddress.name %>" onblur="validateName()">

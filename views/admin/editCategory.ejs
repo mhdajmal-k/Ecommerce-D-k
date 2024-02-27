@@ -10,6 +10,9 @@
                 <div class="col-lg-6 ">
                     <div class="card mb-4">
                         <div class="card-body">
+                            <% if (locals.message) { %>
+                             <p class="text-center text-danger"><%= message %></p>
+                            <% } %>
 
                             <div class="mb-4">
                                 <label for="product_title" class="form-label">categoryName</label>

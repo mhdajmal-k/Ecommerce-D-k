@@ -369,7 +369,11 @@
                                                                     <%= userAddress[i].state %>
                                                                 </p>
                                                                 <a href="/addressEdit?addressId=<%= userAddress[i]._id %>"
-                                                                    class="btn-small">Edit</a>
+                                                                    class="btn ">Edit</a>
+                                                                    <div id="DeleteAddress" >
+                                                                        <button class="btn mt-10" onclick="deleteAddress('<%= userAddress[i]._id %>')">Delete</button>
+                                                                    </div>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -402,7 +406,10 @@
                                                                         </p>
                                                                         <a href="/addressEdit?addressId=<%= userAddress[i]._id %>"
                                                                             class="btn-small">Edit</a>
-                                                                    </div>
+                                                                            <button class="btn" onclick="deleteAddress('<%= userAddress[i]._id %>')">Delete</button>
+
+                                                                        </div>
+                                                                        
                                                                 </div>
                                                             </div>
                                                             <% } %>
@@ -591,6 +598,7 @@
         </div>
     </div>
     <!-- Vendor JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
@@ -619,10 +627,12 @@
         document.getElementById("submitId").addEventListener("click", resetPassword);
 
         function resetPassword() {
+
             const currentPassword = document.getElementById("currentPassword").value;
             const newPassword = document.getElementById("newPassword").value;
             const confirmPassword = document.getElementById("password_conform").value;
 
+         
 
 
             if (currentPassword.trim() == '') {
@@ -657,40 +667,88 @@
             } else {
                 document.getElementById("password_error").innerText = "";
             }
-          fetch("/resetPassword", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    currentPassword: currentPassword,
-                    newPassword: newPassword
-                })
-            })
-                .then(response => {
-                    if (response.status =="invalid password") {
-                        document.getElementById("serverError").innerText = "invalid current password"
-                        return
-                    } else {
+            fetch("/resetPassword", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        currentPassword: currentPassword,
+        newPassword: newPassword
+    })
+})
+.then(response => {
+    if (!response.ok) {
+        // Handle HTTP error
+        console.error("HTTP error:", response.status);
+        alert("An error occurred while resetting your password.");
+    } else {
+        // Parse the JSON response
+        return response.json();
+    }
+})
+.then(data => {
 
-                        Swal.fire({
-                            title: "<span style='color: green;'>Password rested</span>",
-                            html: "<span style='color: blue;'please log agin</span>",
-                            icon: "success",
-                            timer: 1000,
-                        });
-                        setTimeout(() => {
-                            location.href = "/login"
-                        }, 1200);
-                    }
-                })
-                .catch(error => {
-                    console.error("Error resetting password:", error);
-                    alert("An error occurred while resetting your password.");
-                });
+    if (data.status === "invalid password") {
+        alert("hi")
+        document.getElementById("serverError").innerText = "Invalid current password";
+    } else {
+        Swal.fire({
+            title: "<span style='color: green;'>Password reset</span>",
+            html: "<span style='color: blue;'>Please log in again.</span>",
+            icon: "success",
+            timer: 1000,
+        });
+        setTimeout(() => {
+            location.href = "/login";
+        }, 1200);
+    }
+})
+.catch(error => {
+    console.error("Error resetting password:", error);
+    alert("An error occurred while resetting your password.");
+});
+
         }
 
 
+        function deleteAddress(addressId){
+            Swal.fire({
+                            title: "<span style='color:red;'>are you sure</span>",
+                            html: "<span style='color: black;'>Do you want to remove this address</span>",
+                            icon: "warning",
+                        
+                            buttons: true,
+                dangerMode: true,
+                        }).then((value)=>{
+                        
+                            if(value){
+                                $.ajax({
+                                    url:"addressDelete",
+                                    method:"post",
+                                    data:{
+                                        Id:addressId
+                                    },success:(response)=>{
+                                        if(response.status==true){
+                                            Swal.fire({
+                            title: "<span style='color:green;'>Deleted</span>",
+                            html: "<span style='color: black;'>Address has been success fully deleted</span>",
+                            icon: "success",
+                        
+                    
+                        })
+                        setTimeout(() => {
+                            location.href="/profile"
+                        }, 1500);
+                                            
+
+                                        }
+
+                                    }
+                                })
+                            }
+                        })
+        }
 
     </script>
     </body>

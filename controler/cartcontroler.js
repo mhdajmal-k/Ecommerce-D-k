@@ -10,15 +10,49 @@ const product = require("../model/product_model");
 const load_cart = async (req, res) => {
   const users = req.session.userId;
   const userCart = await cart
-    .findOne({ userId: users })
-    .populate("items.productId");
+  .findOne({ userId: users })
+  .populate({
+    path: "items.productId",
+    populate: {
+      path: "categoryId",
+      model: "categories" 
+    }
+  });
+  let cartsInd = []
+   userCart.items.forEach(el=>{
+    const index = el.productId.size.findIndex(element=>element.size === el.size)
+    const qty = el.productId.size[index].quantity
+    console.log(index)
+    console.log(qty)
+    if(el.quantity > qty){
+      el.quantity = qty
+    }
+    if(el.quantity === 0){
+      const cartIndex = userCart.items.findIndex(index=> index.quantity === el.quantity)
+      console.log(cartIndex)
+      cartsInd.push(cartIndex)
+    }
+   })
+   cartsInd.forEach(carts=>{
+     userCart.items.splice(carts,1)
+     cartsInd.forEach(el=>el--)
+   })
+
+   userCart.save()
+  console.log(userCart,"llllllllllllllllllllllllllll");
+ 
+  // const selectedSize = productData.size.find((item) => item.size === size);
+
     if(userCart){
       const productIdsInCart = userCart.items.map(item => item.productId._id)
       const randomProduct = await product.aggregate([
         { $match: { _id: { $nin: productIdsInCart } } },
         { $sample: { size: 4 } }
       ]);
+
       res.render("cart", { cart: userCart,relatedProducts:randomProduct });
+    }else{
+       res.render("cart", { cart: null, relatedProducts: [] });
     }
 
 };

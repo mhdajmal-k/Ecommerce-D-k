@@ -6,6 +6,6 @@ function generateProductId() {
 
 // Example usage
 const productId = generateProductId();
-console.log(productId);
+
 
 module.exports=generateProductId

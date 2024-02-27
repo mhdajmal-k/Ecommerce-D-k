@@ -482,6 +482,7 @@
                         paymentOption: paymentOption
                     }, success: (response) => {
                         if (response.status == "invalid user") {
+                            
                             location.href = "/login"
                         } else if (response.status == "blocked product") {
                             Swal.fire({
@@ -506,6 +507,9 @@
                             }, 3100);
                         }
                         else if (response.status == "out of stock") {
+                         
+
+
                             Swal.fire({
                                 title: "<span style='color: red;'>Oops!</span>",
                                 html: "<span style='color: blue;'>Out Of Stock,Please keep in touch with us</span>",
@@ -513,7 +517,8 @@
                                 timer: 3000
                             });
                             setTimeout(() => {
-                                location.href = "/shop"
+                                
+                                location.reload()
                             }, 3100);
                         } else if (response.status == "order placed") {
                             Swal.fire({

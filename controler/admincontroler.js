@@ -73,11 +73,8 @@ const Dashboard_load=async (req,res)=>{
   const userBlockUnblock=async(req,res)=>{
     try {
       const {userId, status} = req.body
-      if(status === "blockUser"){
-        const block=await user.updateOne({_id:userId},{$set:{is_block:true}})
-        res.json({status : true})
-      }else if(status === "unblockUser"){
-        const unblock=await user.updateOne({_id:userId},{$set:{is_block:false}})
+      if(status){
+        const block=await user.updateOne({_id:userId},{$set:{is_block:status}})
         res.json({status : true})
       }else{
         console.log(error.message);

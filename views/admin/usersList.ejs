@@ -67,13 +67,13 @@
                                         <td>
                                             <% if (users[i].is_block===false) { %>
                                         <td class="text-end">
-                                            <a onclick="userBlockUnblock('<%= users[i]._id %>', 'blockUser')"
+                                            <a onclick="userBlockUnblock('<%= users[i]._id %>', true)"
                                                 class="btn rounded font-sm mt-15 btn-danger"
                                                 id="block_<%= users[i]._id %>">Block</a>
                                         </td>
                                         <% } else { %>
                                             <td class="text-end">
-                                                <a onclick="userBlockUnblock('<%= users[i]._id %>', 'unblockUser')"
+                                                <a onclick="userBlockUnblock('<%= users[i]._id %>', false)"
                                                     class="btn rounded font-sm  btn-success"
                                                     id="block_<%= users[i]._id %>">Unblock</a>
                                             </td>
