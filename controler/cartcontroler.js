@@ -18,7 +18,11 @@ const load_cart = async (req, res) => {
       model: "categories" 
     }
   });
+  if(userCart){
+
+  
   let cartsInd = []
+
    userCart.items.forEach(el=>{
     const index = el.productId.size.findIndex(element=>element.size === el.size)
     const qty = el.productId.size[index].quantity
@@ -40,6 +44,7 @@ const load_cart = async (req, res) => {
 
    userCart.save()
   console.log(userCart,"llllllllllllllllllllllllllll");
+}
  
   // const selectedSize = productData.size.find((item) => item.size === size);
 

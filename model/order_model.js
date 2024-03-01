@@ -37,6 +37,9 @@ const order_schema = new mongoose.Schema({
       isCancelled:{
         type: Boolean,
         default: false
+      },isReturned:{
+        type:Boolean,
+        default:false
       }
     },
   ],
@@ -50,7 +53,7 @@ const order_schema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "Confirmed", "shipped", "Delivered","Canceled"],
+    enum: ["pending", "Confirmed", "shipped", "Delivered","Canceled","Payment "],
     default: "pending",
   },
   shippingAddress: {

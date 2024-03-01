@@ -2,18 +2,16 @@
 
 const cart = require("../model/cart_model");
 const address = require("../model/address_model");
-const Order = require("../model/order_model");
 const User = require("../model/user_model");
 const Product = require("../model/product_model");
 const generateOrderNumber = require("./helper/orderId");
-const order = require("../model/order_model");
-const Razorpay = require('razorpay');
-
-
-
-const razorpay = new Razorpay({
-  key_id: process.env.RazopayId,
-  key_secret: process.env.RazopaySecret
+const Order = require("../model/order_model");
+const Razorpay = require("razorpay");
+const crypto=require("crypto")
+// const order = require("../model/order_model");
+const razorpayInstance = new Razorpay({
+  key_id: process.env.RazorPayId,
+  key_secret: process.env.RazorPaySecret,
 });
 
 //check out page
@@ -44,48 +42,40 @@ const load_checkout = async (req, res) => {
   }
 };
 
-
 //place order
 
 const place_Order = async (req, res) => {
   try {
-    // console.log("hi");
     const userId = req.session.userId;
     const user = await User.findById(userId);
     const { cartId, addressId, paymentOption } = req.body;
     const userCart = await cart
       .findById({ _id: cartId })
       .populate("items.productId");
-    // console.log(userCart, "gooted user CArt");
-    
     for (let i = 0; i < userCart.items.length; i++) {
       const cartItem = userCart.items[i];
-      // console.log(cartItem, "gotted userItesm");
       const product = cartItem.productId;
       if (!product) {
         return res.json({ status: "invalid product" });
       }
       if (product.isBlocked) {
-        return res.json({ status: "blocked product"});
+        return res.json({ status: "blocked product" });
       }
       const sizeCheck = product.size.find((size) => {
         return size.size === cartItem.size;
       });
       if (!sizeCheck || sizeCheck.quantity < cartItem.quantity) {
-        return res.json({ status: "out of stock"});
+        return res.json({ status: "out of stock" });
       }
     }
-    console.log("hello");
     const orderProducts = userCart.items.map((cartProduct) => ({
-      product: cartProduct.productId._id, 
+      product: cartProduct.productId._id,
       quantity: cartProduct.quantity,
       price: cartProduct.subTotal,
       size: cartProduct.size,
     }));
 
-
     const userAddress = await address.findById(addressId);
-   
     const orderNumber = generateOrderNumber();
     const order = {
       userId: user._id,
@@ -107,13 +97,19 @@ const place_Order = async (req, res) => {
 
     const createOrder = await Order.create(order);
 
-    await cart.findByIdAndDelete({ _id: cartId });
+    
+
+    if (paymentOption === "cod") {
+      console.log(("inside the cod"));
+      await cart.findByIdAndDelete({ _id: cartId });
+      
 
     for (const orderedProduct of createOrder.items) {
       const orderedProductId = orderedProduct.product;
       const orderedQuantity = orderedProduct.quantity;
       const orderedProductSize = orderedProduct.size;
       const product = await Product.findById(orderedProductId);
+      console.log(product,"its prodcuct");
 
       const updatedSizes = product.size.map((size) => {
         if (size.size === orderedProductSize) {
@@ -121,13 +117,19 @@ const place_Order = async (req, res) => {
         }
         return size;
       });
-      console.log(updatedSizes);
+
       product.size = updatedSizes;
       await product.save();
     }
 
-    if (paymentOption === "cod") {
       res.json({ status: "order placed" });
+      return;
+    }
+    if (paymentOption === "razorPay") {
+
+    const generateRazor=await generateRazorPay(createOrder.totalAmount,createOrder.orderNumber)
+    console.log(generateRazor);
+    res.json({status:"razorPay",generateRazor,user,userOrder:createOrder})
     }
   } catch (error) {
     console.log(error.message);
@@ -136,35 +138,155 @@ const place_Order = async (req, res) => {
 };
 
 
+
+
+function generateRazorPay(orderAmount,orderId){
+  console.log(typeof orderAmount)
+  console.log(typeof orderId,"its orderId ")
+  return new Promise((resolve,reject)=>{
+    const options = {
+      amount:parseInt(orderAmount)*100,
+      currency: "INR",
+      receipt:orderId.toString() ,
+    };
+     console.log(options);
+    razorpayInstance.orders.create(options, (err, order) => {
+      if(err){
+        console.log(err)
+      }else{
+        
+        console.log(order, "its order");
+        resolve(order)
+      }
+    })
+     
+  })
+   
+}
+
+const razorPaymentVerify=async(req,res)=>{
+  try {
+
+    const {userOrder}=req.body
+    const { razorpay_payment_id,razorpay_order_id,razorpay_signature}=req.body.response
+    const userOrderData=await Order.findByIdAndUpdate(userOrder._id)
+   
+  let hmac=crypto.createHmac('sha256','1K3dgR8PXdK42NNRMYbicrrB')
+    hmac.update(razorpay_order_id+"|"+razorpay_payment_id)
+    hmac=hmac.digest("hex")
+    if(hmac===razorpay_signature){
+      for (const orderedProduct of userOrderData.items) {
+        const orderedProductId = orderedProduct.product;
+        const orderedQuantity = orderedProduct.quantity;
+        const orderedProductSize = orderedProduct.size;
+        const product = await Product.findById(orderedProductId);
+        console.log(product,"its prodcuct");
+  
+        const updatedSizes = product.size.map((size) => {
+          if (size.size === orderedProductSize) {
+            size.quantity -= orderedQuantity;
+          }
+          return size;
+        });
+  
+        product.size = updatedSizes;
+        await product.save();
+      }
+  
+      console.log(userOrder,"ist userOrder");
+      userOrderData.status="Confirmed"
+      userOrderData.save()
+
+
+      res.json({status:true})
+    }else{
+      userOrderData.status="Canceled"
+      userOrderData.totalAmount=-0
+      for (const orderedProduct of userOrderData.items) {
+        const orderedProductId = orderedProduct.product;
+        const orderedQuantity = orderedProduct.quantity;
+        const orderedProductSize = orderedProduct.size;
+        const product = await Product.findById(orderedProductId);
+
+        const updatedSizes = product.size.map((size) => {
+          if (size.size === orderedProductSize) {
+            size.quantity += orderedQuantity;
+          }
+          return size;
+        });
+        console.log(
+          "its updated Sizekkkkkkkkkkkkkkk",
+          updatedSizes,
+          "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+        );
+        product.size = updatedSizes;
+        await product.save();
+      }
+
+      res.json({status:false,err})
+    }
+
+
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
 //order Success page
 
 const load_orderSuccess = async (req, res) => {
   try {
     res.render("ordersuccesPage");
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
 };
 
 const viewOrderDeatails = async (req, res) => {
   try {
     const { orderId } = req.query;
-    const userOrder = await order
-      .findById({ _id: orderId })
-      .populate("items.product");
+    const userOrder = await Order.findById({ _id: orderId }).populate(
+      "items.product"
+    );
     res.render("orderdeatails", { userOrder });
   } catch (error) {
     console.log(error);
   }
 };
-const cancelOneProduct=async(req,res)=>{
+const cancelOneProduct = async (req, res) => {
   try {
-    console.log("Hi");
-   console.log(req.body); 
+    // console.log(req.body);
+    const { productId, userOrder, userId } = req.body;
+    // console.log(typeof productId);
+
+    const userOrders = await Order.findById({ _id: userOrder });
+    const productIndex = userOrders.items.findIndex(
+      (item) => item.product._id.toString() === productId.toString()
+    );
+    // console.log(productIndex,"its userOrders");
+    userOrders.items[productIndex].isCancelled = true;
+    const price = userOrders.items[productIndex].price;
+    const orderedSize = userOrders.items[productIndex].size;
+    const quantity = userOrders.items[productIndex].quantity;
+    userOrders.totalAmount -= price;
+    // console.log(userOrder,"userORder");
+    await userOrders.save();
+    const productData = await Product.findById(productId);
+    // console.log( "gooted",productData);
+
+    const updatedSizes = productData.size.map((size) => {
+      if (size.size === orderedSize) {
+        size.quantity += quantity;
+      }
+      return size;
+    });
+    productData.size = updatedSizes;
+    await productData.save();
+    res.json({ status: "items cancelled" });
   } catch (error) {
-    console.error(error.message)
+    console.error(error.message);
   }
-}
+};
 
 //cancel order
 
@@ -173,9 +295,9 @@ const cancelOrder = async (req, res) => {
     console.log(req.body);
     const { orderId } = req.body;
     console.log(orderId, "///////////////////");
-    const orderData = await order.findByIdAndUpdate(
+    const orderData = await Order.findByIdAndUpdate(
       orderId,
-      { $set: { status: "Canceled" } },
+      { $set: { status: "Canceled", totalAmount: 0 } },
       { new: true }
     );
 
@@ -185,12 +307,6 @@ const cancelOrder = async (req, res) => {
         const orderedQuantity = orderedProduct.quantity;
         const orderedProductSize = orderedProduct.size;
         const product = await Product.findById(orderedProductId);
-        console.log(":-----------------------");
-        console.log(orderedProductId);
-        console.log(":-----------------------");
-        console.log(orderedQuantity);
-        console.log(":-----------------------");
-        console.log(orderedProductSize);
 
         const updatedSizes = product.size.map((size) => {
           if (size.size === orderedProductSize) {
@@ -198,6 +314,11 @@ const cancelOrder = async (req, res) => {
           }
           return size;
         });
+        console.log(
+          "its updated Sizekkkkkkkkkkkkkkk",
+          updatedSizes,
+          "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+        );
         product.size = updatedSizes;
         await product.save();
       }
@@ -214,4 +335,5 @@ module.exports = {
   viewOrderDeatails,
   cancelOneProduct,
   cancelOrder,
+  razorPaymentVerify
 };

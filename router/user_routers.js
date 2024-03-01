@@ -34,16 +34,41 @@ const {
   browsCategory,
   accedingOrder,
   descendingOrder,
-  addToWishList
+  Load_WishList,
+  submitReview,
+  removeReview,
+  add_ToWishlist,
+  removeFromWishList,
+  averageRating
 
 } = userController;
 
 //=============================
 
 
-const {load_profile,load_addAddress,addAddress,load_editAddress,addressDelete,editAddress,load_editProfile,editProfile,changePassword,load_order}=profileController
+const {
+  load_profile,
+  load_addAddress,
+  addAddress,
+  load_editAddress,
+  addressDelete,
+  editAddress,
+  load_editProfile,
+  editProfile,
+  changePassword,
+  load_order
+  }=profileController
+
 const {load_cart,addCart,removeItem,changeQuantity}=cartController
-const {load_checkout,place_Order,load_orderSuccess,viewOrderDeatails,cancelOneProduct,cancelOrder}=orderController
+
+const {
+  load_checkout,
+  place_Order,
+  load_orderSuccess,
+  viewOrderDeatails,
+  cancelOneProduct,
+  cancelOrder,
+  razorPaymentVerify}=orderController
 
 
 
@@ -73,7 +98,12 @@ user_router.get("/",isBlocked,landing_page)
 .get('/browse',isBlocked,browsCategory)
 .get("/accedingOrder",isBlocked,accedingOrder)
 .get("/descendingOrder",isBlocked,descendingOrder)
-.get("/wishList",isBlocked,addToWishList)
+.get("/wishList",isBlocked,isLogin,Load_WishList)
+.post("/addToWishlist",isBlocked,add_ToWishlist)
+.post("/submitReview",isBlocked,submitReview)
+.post("/removeReview",isBlocked,removeReview)
+.post("/removeFromWishList",isBlocked,removeFromWishList)
+.get("/averageRating",isBlocked,averageRating)
 
 
 // user_router.get('/auth/google', 
@@ -107,6 +137,7 @@ user_router
 
 
 
+
 //////////////////// cart ///////////////
 
 
@@ -126,6 +157,7 @@ user_router
 .get('/viewOrderDeatails',isBlocked,isLogin,viewOrderDeatails)
 .post('/cancelOrder',isBlocked,isLogin,cancelOrder)
 .post('/cancelOneProduct',isBlocked,isLogin,cancelOneProduct)
+.post('/razorPayVerify',razorPaymentVerify)
 
 
 

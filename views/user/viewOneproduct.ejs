@@ -250,13 +250,17 @@
                                                         <%= products.categoryId.categoryTitle %>
                                                     </a></span>
                                             </div>
-                                            <div class="product-rate-cover text-end">
+                                            <div class="desc">
                                                 <div class="product-rate d-inline-block">
-                                                    <div class="product-rating" style="width:90%">
+                                                    <div class="product-rating" style="width: <%= products.rating * 20 %>%">
+                                                        
                                                     </div>
+                                                <p>(review<%= products.totalReview %>)</p>
                                                 </div>
-
                                             </div>
+                                            
+                                            
+                                            
                                         </div>
 
                                         <div class="bt-1 border-color-1 mt-15 mb-15"></div>
@@ -292,56 +296,68 @@
                                                 <% for( let i=0; i < 4; i++ ) { %>
                                                     <option>
                                                         <%= products.size[i].size %>
-                                                        
-                                                        
+
+
                                                     </option>
                                                     <% } %>
 
 
                                             </select>
-                                         
+
                                             <!-- <strong class="mr-10">Size: </strong> -->
 
                                         </div>
-                                        <% for( let J = 0; J < 4; J++ ) { %>
-                                          
-                                           
+                                        <% for( let J=0; J < 4; J++ ) { %>
+
+
                                             <% if (products.size[J].quantity==0) { %>
                                                 <p class="text-danger">
-                                                    <%= products.size[J].size %>:   Out of stock
+                                                    <%= products.size[J].size %>: Out of stock
                                                 </p>
                                                 <% } else if(products.size[J].quantity<10) { %>
-                                                    <%= products.size[J].size %>:  <span style="color: red;">Warning - Low Stock (<%= products.size[J].quantity %>)</span>
-                                                
-                                                <% } %>
-                                            
-                                          
-                                        <% } %>
-                                        <p class="text-success">  In Stock</p>
-                                        <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-                                        <div class="detail-extralink">
-                                            <div class="detail-qty border radius">
-                                                <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                                <span id="quantity" class="qty-val">1</span>
-                                                <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                                            </div>
-                                            <div class="product-extra-link2">
-                                                <button type="submit" class="button button-add-to-cart"
-                                                    id="addToCartButton" data-product-id="<%= products._id %>">Add to
-                                                    cart</button>
+                                                    <%= products.size[J].size %>: <span style="color: red;">Low Stock (
+                                                            <%= products.size[J].quantity %>)</span>
 
-                                                <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                    href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
-                                                <a aria-label="Compare" class="action-btn hover-up"
-                                                    href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
-                                            </div>
-                                        </div>
-                                        <ul class="product-meta font-xs color-grey mt-50">
-                                            <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
-                                            <li class="mb-5">Tags: <a href="#" rel="tag">Cloth</a>, <a href="#"
-                                                    rel="tag"></a>, <a href="#" rel="tag">Dress</a> </li>
+                                                        <% } %>
 
-                                        </ul>
+
+                                                            <% } %>
+                                                                <p class="text-success"> In Stock</p>
+                                                                <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                                                                <div class="detail-extralink">
+                                                                    <div class="detail-qty border radius">
+                                                                        <a href="#" class="qty-down"><i
+                                                                                class="fi-rs-angle-small-down"></i></a>
+                                                                        <span id="quantity" class="qty-val">1</span>
+                                                                        <a href="#" class="qty-up"><i
+                                                                                class="fi-rs-angle-small-up"></i></a>
+                                                                    </div>
+                                                                    <div class="product-extra-link2">
+                                                                        <button type="submit"
+                                                                            class="button button-add-to-cart"
+                                                                            id="addToCartButton"
+                                                                            data-product-id="<%= products._id %>">Add to
+                                                                            cart</button>
+
+                                                                            <a aria-label="Add To Wishlist"
+                                                                            class="action-btn hover-up"
+                                                                            id="wishlistBtn"
+                                                                            onclick="addToWishlist('<%=products._id %>')"><i class="fi-rs-heart"></i></a>
+                                                                         
+                                                                        <a aria-label="Compare"
+                                                                            class="action-btn hover-up"
+                                                                            href="shop-compare.html"><i
+                                                                                class="fi-rs-shuffle"></i></a>
+                                                                    </div>
+                                                                </div>
+                                                                <ul class="product-meta font-xs color-grey mt-50">
+                                                                    <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
+                                                                    <li class="mb-5">Tags: <a href="#"
+                                                                            rel="tag">Cloth</a>, <a href="#"
+                                                                            rel="tag"></a>, <a href="#"
+                                                                            rel="tag">Dress</a> </li>
+
+                                                                </ul>
 
 
 
@@ -349,80 +365,177 @@
                                     </div>
                                     <!-- Detail Info -->
                                 </div>
-                            </div>
-                            <div class="row mt-60">
-                                <div class="row mt-60">
-                                    <div class="col-12">
-                                        <h3 class="section-title style-1 mb-30">Related products</h3>
-                                    </div>
+                                
+                                <div id="Reviews">
+                                    <div class="comments-area">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <h4 class="mb-30">Customer reviews</h4>
+                                                <div class="comment-list">
+                                                    <% if (reviews && reviews.length> 0) { %>
+                                                        <% reviews.forEach(review=> { %>
+                                                            <div class="single-comment justify-content-between d-flex">
+                                                                <div class="user justify-content-between d-flex">
+                                                                    <div class="thumb text-center">
+                                                                        <h6><a href="#">
+                                                                                <%= review.userId.username %>
+                                                                            </a></h6>
+                                                                        <p class="font-xxs">Since <%=
+                                                                                review.createdAt.getFullYear() %>
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="desc">
+                                                                        <div class="product-rate d-inline-block">
+                                                                            <div class="product-rating" style="width: <%= review.rating * 20 %>%">
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        <p>
+                                                                            <%= review.review %>
+                                                                        </p>
+                                                                        <div class="d-flex justify-content-between">
+                                                                            <div class="d-flex align-items-center">
+                                                                                <p class="font-xs mr-30">
+                                                                                    <%= review.createdAt.toLocaleString()
+                                                                                        %>
+                                                                                </p>
 
-                                    <div class="col-12 d-flex flex-wrap">
-                                        <% for (let i=0; i < relatedProducts.length; i++) { %>
-                                            <div class="col-lg-3 col-md-4 col-12 col-sm-6 mb-4">
-                                                <div class="product-cart-wrap small hover-up">
-                                                    <div class="product-img-action-wrap">
-                                                        <div class="product-img product-img-zoom"><a
-                                                                href="/shopProduct?id=<%= relatedProducts[i]._id %>">
-                                                                <img class="default-img"
-                                                                    src="../../uploads/products/<%= relatedProducts[i].image[0] %>"
-                                                                    alt="">
-                                                                <img class="hover-img"
-                                                                    src="../../uploads/products/<%= relatedProducts[i].image[1] %>"
-                                                                    alt="">
-                                                            </a>
-                                                        </div>
-                                                        <div class="product-action-1">
-                                                            <a aria-label="Quick view" class="action-btn small hover-up"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#quickViewModal"><i
-                                                                    class="fi-rs-search"></i></a>
-                                                            <a aria-label="Add To Wishlist"
-                                                                class="action-btn small hover-up"
-                                                                href="shop-wishlist.html" tabindex="0"><i
-                                                                    class="fi-rs-heart"></i></a>
-                                                            <a aria-label="Compare" class="action-btn small hover-up"
-                                                                href="shop-compare.html" tabindex="0"><i
-                                                                    class="fi-rs-shuffle"></i></a>
-                                                        </div>
-                                                        <div
-                                                            class="product-badges product-badges-position product-badges-mrg">
-                                                            <span class="hot">Hot</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="product-content-wrap">
-                                                        <h2><a href="shop-product-right.html" tabindex="0">
-                                                                <%= relatedProducts[i].productName %>
-                                                            </a></h2>
-                                                        <div class="rating-result" title="90%">
-                                                            <span></span>
-                                                        </div>
-                                                        <div class="product-price">
-                                                            <span>
-                                                                <%= relatedProducts[i].price %>
-                                                            </span>
-                                                            <span class="old-price">
-                                                                <%= relatedProducts[i].sellingPrice %>
-                                                            </span>
-                                                        </div>
-                                                    </div>
+                                                                            </div>
+                                                                            <a class="btn btn-small"
+                                                                                onclick="removeReview('<%= review._id%>')">
+                                                                                remove Review
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <% }); %>
+                                                                <% } else { %>
+                                                                    <p>No reviews available.</p>
+                                                                    <% } %>
                                                 </div>
                                             </div>
+                                            <!-- Add your ratings summary and other elements here -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--comment form-->
+                                <% if (locals.checkingOrderedProduct) { %>
+                                    <% if (checkingOrderedProduct==true) { %>
+                                        <div class="row">
+                                            <div class="col-lg-8 col-md-12">
+                                                <form class="form-contact comment_form" id="commentForm">
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <textarea required class="form-control w-100"
+                                                                    name="comment" id="comment" cols="30" rows="9"
+                                                                    placeholder="Write Comment"></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <input type="hidden" id="productId" value='<%=products._id %>'>
+                                                        <div class="col-12">
+                                                            <!-- Add emoji-based rating system -->
+                                                            <h6>Product Rating</h6>
+                                                            <div id="ratingContainer">
+                                                                <div class="stars" data-rating="1">&#9733;</div>
+                                                                <div class="stars" data-rating="2">&#9733;</div>
+                                                                <div class="stars" data-rating="3">&#9733;</div>
+                                                                <div class="stars" data-rating="4">&#9733;</div>
+                                                                <div class="stars" data-rating="5">&#9733;</div>
+                                                            </div>
+                                                            <div id="feedback"></div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button type="submit" class="button button-contactForm">Submit
+                                                            Review</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+
+                                        <% } %>
                                             <% } %>
-                                    </div>
 
-                                </div>
 
-                                <div class="banner-img banner-big wow fadeIn f-none animated mt-50">
-                                    <img class="border-radius-10" src="assets/imgs/banner/banner-4.png" alt="">
-                                    <div class="banner-text">
-                                        <h4 class="mb-15 mt-40">TREND WITH US</h4>
-                                        <h2 class="fw-600 mb-20">DUCK <br>& WAVE</h2>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="row mt-60">
+                    <div class="row mt-60">
+                        <div class="col-12">
+                            <h3 class="section-title style-1 mb-30">Related products</h3>
+                        </div>
+
+                        <div class="col-12 d-flex flex-wrap">
+                            <% for (let i=0; i < relatedProducts.length; i++) { %>
+                                <div class="col-lg-3 col-md-4 col-12 col-sm-6 mb-4">
+                                    <div class="product-cart-wrap small hover-up">
+                                        <div class="product-img-action-wrap">
+                                            <div class="product-img product-img-zoom"><a
+                                                    href="/shopProduct?id=<%= relatedProducts[i]._id %>">
+                                                    <img class="default-img"
+                                                        src="../../uploads/products/<%= relatedProducts[i].image[0] %>"
+                                                        alt="">
+                                                    <img class="hover-img"
+                                                        src="../../uploads/products/<%= relatedProducts[i].image[1] %>"
+                                                        alt="">
+                                                </a>
+                                            </div>
+                                            <div class="product-action-1">
+                                                <a aria-label="Quick view" class="action-btn small hover-up"
+                                                    data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
+                                                        class="fi-rs-search"></i></a>
+                                                <a aria-label="Add To Wishlist" class="action-btn small hover-up"
+                                                    href="shop-wishlist.html" tabindex="0"><i
+                                                        class="fi-rs-heart"></i></a>
+                                                <a aria-label="Compare" class="action-btn small hover-up"
+                                                    href="shop-compare.html" tabindex="0"><i
+                                                        class="fi-rs-shuffle"></i></a>
+                                            </div>
+                                            <div class="product-badges product-badges-position product-badges-mrg">
+                                                <span class="hot">Hot</span>
+                                            </div>
+                                        </div>
+                                        <div class="product-content-wrap">
+                                            <h2><a href="shop-product-right.html" tabindex="0">
+                                                    <%= relatedProducts[i].productName %>
+                                                </a></h2>
+                                            <div class="rating-result" title="90%">
+                                                <span></span>
+                                            </div>
+                                            <div class="product-price">
+                                                <span>
+                                                    <%= relatedProducts[i].price %>
+                                                </span>
+                                                <span class="old-price">
+                                                    <%= relatedProducts[i].sellingPrice %>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+                        </div>
+
+                    </div>
+
+                    <div class="banner-img banner-big wow fadeIn f-none animated mt-50">
+                        <img class="border-radius-10" src="assets/imgs/banner/banner-4.png" alt="">
+                        <div class="banner-text">
+                            <h4 class="mb-15 mt-40">TREND WITH US</h4>
+                            <h2 class="fw-600 mb-20">DUCK <br>& WAVE</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            </div>
         </section>
     </main>
     <footer class="main">
@@ -587,18 +700,18 @@
 
     <script>
 
-document.addEventListener("DOMContentLoaded",function(){
-    const addToCartButton=document.getElementById("addToCartButton")
-    addToCartButton.addEventListener("click",()=>{
-        const productId=addToCartButton.getAttribute("data-product-id")
-        addToCart(productId)
+        document.addEventListener("DOMContentLoaded", function () {
+            const addToCartButton = document.getElementById("addToCartButton")
+            addToCartButton.addEventListener("click", () => {
+                const productId = addToCartButton.getAttribute("data-product-id")
+                addToCart(productId)
 
-    })
-    
-})
+            })
+
+        })
 
         function addToCart(productId) {
-         
+
             const size = document.getElementById("size").value
             const quantity = document.getElementById("quantity").innerHTML
 
@@ -663,6 +776,170 @@ document.addEventListener("DOMContentLoaded",function(){
 
             })
 
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let selectedRating = 0; // Variable to store the selected rating
+
+            const stars = document.querySelectorAll('.stars');
+            const feedbackDiv = document.getElementById('feedback');
+
+            stars.forEach(function (star) {
+                star.addEventListener('click', function () {
+                    selectedRating = parseInt(this.getAttribute('data-rating')); // Store the selected rating
+                    feedbackDiv.innerHTML = `You rated this product ${selectedRating} stars!`;
+                });
+            });
+
+            document.getElementById("commentForm").addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent form submission
+
+                const comment = document.getElementById('comment').value;
+                const productID = document.getElementById("productId").value
+
+
+
+
+                // Here, you can send the comment, name, email, website, and selectedRating to your backend using AJAX or fetch API
+                // Example:
+                fetch('/submitReview', {
+                    method: 'POST',
+                    body: JSON.stringify({ comment, rating: selectedRating, productID }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (response.status == 201) {
+
+                            console.log('Review submitted successfully!');
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                }
+                            });
+                            Toast.fire({
+                                icon: "success",
+                                title: "Thank for your valuable review"
+                            })
+
+                        }else if(response.status==300){
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                }
+                            });
+                            Toast.fire({
+                                icon: "error",
+                                title: "Your review is already recorded"
+                            }) 
+                        }
+
+                    })
+                    .catch(error => {
+                        console.error('Error submitting review:', error);
+                    });
+            });
+        });
+
+        function removeReview(id) {
+            fetch("/removeReview", {
+                method: 'POST',
+                body: JSON.stringify({ id }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.status == 200) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "warning",
+                        title: "your review removed"
+                    })
+
+                }
+                setTimeout(() => {
+                    location.reload()
+                }, 2100);
+            }).catch(error => {
+                alert(error)
+            })
+        }
+
+        function addToWishlist(productId){
+            
+            $.ajax({
+                url:"/addToWishlist",
+                method:"post",
+                data:{
+                    productId:productId
+                },success:(response)=>{
+                
+                    if(response.status=="invalid User"){
+                        window.location.href = "/login"
+                    }else if(response.status=="add to wishlist"){
+                        const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "items has been added"
+                    })
+                    
+                    }else if(response.status=="already added"){
+                        const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "warning",
+                        title: "this item already added"
+                    })
+                    }
+                    
+                },error:(error=>{
+                    alert("some thing happend")
+                })
+            })
+            
+ 
         }
     </script>
     </body>

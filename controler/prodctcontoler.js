@@ -2,6 +2,7 @@
 const { errorMonitor, consumers } = require("nodemailer/lib/xoauth2");
 const category = require("../model/category");
 const product = require("../model/product_model");
+
 const { rawListeners, findByIdAndDelete } = require("../model/user_model");
 const fs = require("fs");
 const { promisify } = require("util");
@@ -14,6 +15,7 @@ const path = require("path");
 const load_products = async (req, res) => {
   try {
     const productData = await product.find({}).populate("categoryId");
+    
     res.render("productList", { products: productData });
   } catch (error) {
     console.log(error.message);

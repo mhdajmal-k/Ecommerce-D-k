@@ -115,6 +115,7 @@
                                             id="imageInput" multiple>
                                         <div id="imagePreviewContainer" style="display: none;">
                                             <div id="imagePreviews" style="width: 100px;"></div>
+                                            
                                             <button id="deselectButton">Deselect All</button>
 
                                             <p id="imageValidationError" style="color: red; display: none;"></p>
@@ -136,12 +137,16 @@
     </section>
 
     <script>
+
         const product_title = document.getElementById("product_title")
         const product_color = document.getElementById("product_color")
         const size = document.getElementsByClassName("size")
+
+
         const product_Description = document.getElementById("product_Description")
         const productPrice = document.getElementById("product_price")
         const sellingPrice = document.getElementById("sellingPrice")
+    
         const productTitleError = document.getElementById("productTitleError")
         const productColorError = document.getElementById("productColorError")
         const sizeError = document.getElementsByClassName("sizeError")
@@ -290,32 +295,81 @@
         const deselectButton = document.getElementById('deselectButton');
 
 
+        // imageInput.addEventListener('change', function (event) {
+        //     const files = event.target.files;
+
+        //     if (files) {
+        //         imagePreviews.innerHTML = '';
+
+
+        //         Array.from(files).forEach(file => {
+        //             const reader = new FileReader();
+        //             reader.onload = function (e) {
+        //                 const imgElement = document.createElement('img');
+        //                 imgElement.src = e.target.result;
+        //                 imgElement.classList.add('previewImage');
+        //                 imagePreviews.appendChild(imgElement);  
+        //             };
+        //             reader.readAsDataURL(file);
+        //         });
+        //         imagePreviewContainer.style.display = 'block';
+        //     }
+        // });
+
+
+        // deselectButton.addEventListener('click', function () {
+        //     imageInput.value = '';
+        //     imagePreviews.innerHTML = '';
+        //     imagePreviewContainer.style.display = 'none';
+        // });
+
+        let selectedFiles = [];
+
         imageInput.addEventListener('change', function (event) {
-            const files = event.target.files;
+        const files = event.target.files;
 
-            if (files) {
-                imagePreviews.innerHTML = '';
-
-
-                Array.from(files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const imgElement = document.createElement('img');
-                        imgElement.src = e.target.result;
-                        imgElement.classList.add('previewImage');
-                        imagePreviews.appendChild(imgElement);
-                    };
-                    reader.readAsDataURL(file);
-                });
-                imagePreviewContainer.style.display = 'block';
-            }
-        });
-
-
-        deselectButton.addEventListener('click', function () {
-            imageInput.value = '';
+        if (files) {
             imagePreviews.innerHTML = '';
-            imagePreviewContainer.style.display = 'none';
-        });
+            selectedFiles = Array.from(files);
+
+            selectedFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = e.target.result;
+                    imgElement.classList.add('previewImage');
+
+                   
+                    imgElement.addEventListener('click', function () {
+                        
+                        imagePreviews.removeChild(imgElement);
+                        selectedFiles = selectedFiles.filter(selectedFile => selectedFile !== file);
+                      
+                        const remainingFileList = new DataTransfer();
+                        selectedFiles.forEach(file => {
+                            remainingFileList.items.add(file);
+                        });
+                    
+                        imageInput.files = remainingFileList.files;
+                    });
+
+                    imagePreviews.appendChild(imgElement);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            imagePreviewContainer.style.display = 'block';
+        }
+    });
+
+
+deselectButton.addEventListener('click', function () {
+    imageInput.value = '';
+    imagePreviews.innerHTML = '';
+    imagePreviewContainer.style.display = 'none';
+});
+
+
+
 
     </script>

@@ -3,13 +3,16 @@ const user = require("../model/user_model");
 const product = require("../model/product_model");
 const cart = require("../model/cart_model");
 const category = require("../model/category");
+const order = require("../model/order_model");
+const Rating=require("../model/rating_model")
+const wishList=require("../model/wishList")
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-const { render } = require("../router/user_routers");
+const { render, map } = require("../router/user_routers");
 const { sendMail } = require("./helper/nodemailer");
 
-
 const { pagination } = require("../controler/helper/pagination");
+const { json } = require("express");
 
 ("use strict");
 
@@ -34,8 +37,6 @@ const generateOTP = (length) => {
   }
   return otp;
 };
-
-
 
 //Home page
 
@@ -86,7 +87,6 @@ const load_login = async (req, res) => {
   }
 };
 
-
 //signup page
 const load_signup = async (req, res) => {
   try {
@@ -95,7 +95,6 @@ const load_signup = async (req, res) => {
     console.log(error.message);
   }
 };
-
 
 //submit_signup
 const submit_signup = async (req, res) => {
@@ -216,7 +215,6 @@ const load_shop = async (req, res) => {
       .skip(skip)
       .limit(pagesize);
     const categories = await category.find();
-    console.log(products);
     res.render("shop", {
       product: products,
       totalPage,
@@ -270,6 +268,7 @@ const highToLow = async (req, res) => {
   }
 };
 
+
 const newArrival = async (req, res) => {
   try {
     const { skip, page, pageSize, totalPage } = await pagination(req, res);
@@ -297,22 +296,50 @@ const shopProduct = async (req, res) => {
   try {
     const { id } = req.query;
     const products = await product.findOne({ _id: id }).populate("categoryId");
-    if (products) {
-      const relatedProducts = await product
-        .find({ _id: { $ne: id } })
-        .populate({
-          path: "categoryId",
-          match: { categoryTitle: "categoryId" },
-        })
-        .limit(4);
-      res.render("viewOneproduct", { products, relatedProducts });
+    const relatedProducts = await product
+          .find({ _id: { $ne: id } })
+          .populate({
+            path: "categoryId",
+            match: { categoryTitle: "categoryId" },
+          })
+          .limit(4);
+          const reviews= await Rating.find({productId:id}).populate("userId")
+          console.log(reviews);
+          
+    if (req.session.userId) {
+      const { userId } = req.session;
+
+      const orderData = await order.find({ userId: userId });
+    
+      
+      const checkingOrderedProduct = orderData.some((order) => {
+        return order.items.some(
+          (item) =>
+            item.product.toString() === id && order.status === "Delivered"
+        );
+      });
+
+
+      if (products) {
+        
+        
+        if (checkingOrderedProduct) {
+          res.render("viewOneproduct", { products, relatedProducts, checkingOrderedProduct,reviews });
+        } else {
+          res.render("viewOneproduct", { products, relatedProducts,reviews });
+        }
+      } else {
+        res.send("Product not found");
+      }
     } else {
-      res.send("oops!");
+      res.render("viewOneproduct", { products, relatedProducts,reviews });
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).send("Internal Server Error");
   }
 };
+
 
 //logout
 const logout = async (req, res) => {
@@ -339,7 +366,7 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
     console.log(email);
     const existingUser = await user.findOne({ email: email });
-    console.log(existingUser,"its existing user");
+    console.log(existingUser, "its existing user");
     if (existingUser) {
       const forgotPassword_OTP = await generateOTP(6);
       console.log(forgotPassword_OTP, "its the forgot password otp");
@@ -368,8 +395,8 @@ const verify_forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   try {
-    const { otp, newPassword,conformNewPassword } = req.body;
-    console.log(otp, newPassword,"form reset password");
+    const { otp, newPassword, conformNewPassword } = req.body;
+    console.log(otp, newPassword, "form reset password");
     console.log(req.session?.forgotPassword_OTP);
     console.log(req.session.forgotPassword_email);
     const { forgotPassword_email } = req.session;
@@ -385,15 +412,13 @@ const resetPassword = async (req, res) => {
         if (updatePassword) {
           req.session.forgotPassword_email = null;
           req.session.forgotPassword_OTP = null;
-          res.json({status:"password updated"})
+          res.json({ status: "password updated" });
         }
       } else {
-        res.json({status:"Password is not Match"})
-          
-        ;
+        res.json({ status: "Password is not Match" });
       }
     } else {
-      res.json({status:"invalid OTP"})
+      res.json({ status: "invalid OTP" });
     }
   } catch (error) {
     console.log(error.message);
@@ -450,9 +475,156 @@ const descendingOrder = async (req, res) => {
     console.error(error.message);
   }
 };
-const addToWishList = async (req, res) => {
+
+const averageRating=async(req,res)=>{
+  try {
+    console.log("hi ");
+    const averageRatingProduct=await product.find({}).sort({rating:-1})
+    console.log(averageRatingProduct,"ok");
+       const { skip, page, pageSize, totalPage } = await pagination(req, res);
+    const categories = await category.find();
+    res.render("shop", {
+      product: averageRatingProduct,
+      totalPage,
+      currentPage: page,
+      categories,
+    });
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const Load_WishList = async (req, res) => {
   console.log("hello");
+  try {
+    const userId=req.session.userId
+    const product=await wishList.findOne({userId:userId}).populate("items.productId")
+    console.log(product);
+    res.render("wishlist",{product:product})
+  } catch (error) {
+  console.log(error.message)
+  }
 };
+
+
+const submitReview = async (req, res) => {
+  try {
+      const { userId } = req.session;
+      const { comment, rating, productID } = req.body;
+      // Check if the user has already reviewed the product
+      const alreadyReviewed = await Rating.findOne({ userId: userId, productId: productID });
+      if (alreadyReviewed) {
+          return res.status(300).json({ message: "already reviewed" });
+      }
+
+      const ratingProduct = new Rating({
+          userId: userId,
+          productId: productID,
+          rating: rating,
+          review: comment
+      });
+
+      await ratingProduct.save();
+
+    const review=await Rating.find({productId:productID})
+
+  let  totalReview=0
+    review.forEach((rating) => {
+      totalReview += rating.rating;
+    });
+ 
+  const productRating = Math.round(totalReview / review.length);
+  const ReviewCount=review.length
+
+  await product.findOneAndUpdate(
+    { _id: productID },
+    { 
+      $set: { rating: productRating },
+      $inc: { totalReview: ReviewCount }
+    },
+    { new: true }
+  );
+  
+    
+      res.status(201).json({ message: "review added" });
+  } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+ const removeReview=async(req,res)=>{
+  try {
+    console.log(req.body);
+    const {id}=req.body
+    const removeReview=await Rating.findByIdAndDelete(id)
+    if(removeReview){
+      res.status(200).json("review removed")
+    }
+  } catch (error) {
+    console.error(error)
+  }
+ }
+ const removeFromWishList=async(req,res)=>{
+  try {
+    console.log("hi");
+    const {userId}=req.session
+    const{productId}=req.body
+    console.log(userId);
+    console.log(productId);
+    const userWishlist=await wishList.findOneAndUpdate({userId:userId},{$pull:{items:{productId:productId}}})
+    if(userWishlist){
+      res.json({status:true})
+      return
+    }
+  } catch (error) {
+    
+  }
+ }
+
+
+ const add_ToWishlist = async (req, res) => {
+    try {
+        console.log("HI");
+        console.log(req.body);
+        const { productId } = req.body;
+        const { userId } = req.session;
+        
+        if (!userId) {
+            res.json({ status: "invalid User" });
+            return;
+        }
+        
+        let userWishlist = await wishList.findOne({ userId: userId });
+        
+        console.log("hi");
+        if (!userWishlist) {
+            userWishlist = new wishList({
+                userId: userId,
+                items: []
+            });
+            console.log("here ok");
+        }
+        
+        console.log("checking loaded");
+        const alreadyAddedIndex = userWishlist.items.findIndex(item => item.productId.toString() === productId.toString());
+        console.log(alreadyAddedIndex);
+        
+        if (alreadyAddedIndex !== -1) {
+            res.json({ status: "already added" });
+            return;
+        }
+        userWishlist.items.push({ productId: productId });
+        await userWishlist.save();
+        
+        res.json({ status: "add to wishlist" });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
 
 module.exports = {
   landing_page,
@@ -476,5 +648,10 @@ module.exports = {
   browsCategory,
   accedingOrder,
   descendingOrder,
-  addToWishList,
+  Load_WishList,
+  add_ToWishlist,
+  submitReview,
+  removeReview,
+  removeFromWishList,
+  averageRating
 };

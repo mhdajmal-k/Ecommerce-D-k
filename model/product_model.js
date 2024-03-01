@@ -48,6 +48,14 @@ type:String
     require: true,
     default:false
   },
+  rating:{
+    type:Number,
+    default:0,
+    max:5
+  },totalReview:{
+    type:Number,
+    default:0
+  }
 },{
   timestamps:true
 })
