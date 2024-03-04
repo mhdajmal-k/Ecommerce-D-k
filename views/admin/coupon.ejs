@@ -1,0 +1,136 @@
+<%- include ("../partilas/admin") -%>
+    <section class="content-main">
+        <div class="content-header">
+            <h2 class="content-title">Coupons</h2>
+            <div>
+                <a href="/admin/addCoupon" class="btn btn-primary">Create New</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body ">
+                <div class="table-responsive">
+                    <table class="table table-hover ">
+                        <thead>
+                            <tr>
+                                <th>Coupon Code</th>
+                                <th scope="col">Coupon Discount</th>
+                                <th scope="col">Maximum Discount</th>
+                                <th scope="col">Minimum Purchase</th>
+                                <th scope="col">Starting Date</th>
+                                <th scope="col">Expiry Date</th>
+                                <th scope="col">Status</th>
+
+                                <th scope="col" class="text-end  ml-15">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (couponData && couponData.length> 0) { %>
+                                <% couponData.forEach(function(coupon) { %>
+                                    <tr>
+                                        <td class="text-center">
+                                            <%= coupon.couponCode %>
+                                        </td>
+                                        <td class="text-center">
+                                            <%= coupon.couponDiscount %>%
+                                        </td>
+                                        <td class="text-center">
+                                            <%= coupon.maximumDiscount %>
+                                        </td>
+                                        <td class="text-center">
+                                            <%= coupon.minimumPrice %>
+                                        </td>
+                                        <td class="text-center">
+                                            <%= coupon.staringDate %>
+                                        </td>
+                                        <td class="text-center">
+                                            <%= coupon.expiryDate %>
+                                        </td>
+                                        <td class="text-center" id="status">
+                                            <%= coupon.listed %>
+                                        </td>
+                                        <TD>
+                                            <% if (coupon.listed==true) { %>
+                                                <button class="btn btn-danger list-unlist-btn" id="Unlist"
+                                                    onclick="changeStatus('<%= coupon._id%>')"> Unlist</button>
+                                                <% } else { %>
+                                                    <button class="btn btn-success list-list-btn" id="list"
+                                                        onclick="changeStatus('<%= coupon._id%>')"> list</button>
+                                                    <% } %>
+                                        </TD>
+                                        <td class="text-end">
+
+                                            <a href="/admin/coupon-edit?id=<%= coupon._id%>"
+                                                class="btn btn-primary ">Edit</a>
+
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr class="text-center">
+                                                <td colspan="8">No coupon available</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div><!-- card end// -->
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+    <script>
+        function changeStatus(id) {
+            $.ajax({
+                url: "/admin/coupon-listAndUnList",
+                method: 'post',
+                data: {
+                    couponId: id
+                }, success: ((response) => {
+                    if (response.status == "coupon is listed") {
+                        // document.getElementById("list").innerText="unList"
+                        // document.getElementById9("status").innerText="true"
+                    
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top",
+                            showConfirmButton: false,
+                            timer: 1000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "success",
+                            title: "coupon listed "
+                        });
+                        setTimeout(() => {
+location.reload()
+                        }, 1010);
+                    } if (response.status == "coupon is unlisted") {
+                        // document.getElementById("Unlist").innerText = "list"
+                        // document.getElementById9("status").innerText = "false"
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top",
+                            showConfirmButton: false,
+                            timer: 1000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "success",
+                            title: "coupon UnListed "
+                        });
+                        setTimeout(() => {
+location.reload()
+                        }, 1010);
+                    }
+                })
+            })
+        }
+    </script>

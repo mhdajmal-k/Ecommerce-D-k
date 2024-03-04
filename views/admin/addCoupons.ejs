@@ -1,0 +1,190 @@
+<%- include("../partilas/admin") %>
+    <section class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2 class="text-center mb-4">Add Coupon</h2>
+                <% if (locals.message) { %>
+                 <P class="text-danger"><%= message %></P>
+                <% } %>
+                <form action="/admin/add-coupon" method="POST" id="form">
+                    <div class="mb-3">
+                        <label for="couponCode" class="form-label">Coupon Code:</label>
+                        <input type="text" class="form-control" id="couponCode" name="couponCode">
+                        <p class="text-danger" id="couponCodeError"></p>
+                    </div>
+                    <!-- <div class="mb-3">
+                        <label for="expiryDate" class="form-label">Starting Date:</label>
+                        <input type="date" class="form-control" id="StartingDate" name="StartingDate">
+                        <p class="text-danger" id="StartingDateError"></p>
+                    </div> -->
+                    <div class="mb-3">
+                        <label for="expiryDate" class="form-label">Expiry Date:</label>
+                        <input type="date" class="form-control" id="expiryDate" name="expiryDate">
+                        <p class="text-danger" id="expiryDateError"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="couponDiscountr" class="form-label">Coupon Discount%:</label>
+                        <input type="number" class="form-control" id="couponDiscount" name="couponDiscount">
+                        <p class="text-danger" id="couponDiscountError"></p>
+                        <div class="mb-3">
+                            <label for="maximumDiscount" class="form-label">Maximum Discount Price:</label>
+                            <input type="number" class="form-control" id="maximumDiscount" name="maximumDiscount">
+                            <p class="text-danger" id="maximumDiscountError"></p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="minimumPrice" class="form-label">Minimum Purchase:</label>
+                            <input type="number" class="form-control" id="minimumPurchase" name="minimumPurchase">
+                            <p class="text-danger" id="minimumPurchaseError"></p>
+                        </div>
+                        <!-- <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="listed" name="listed" checked>
+                            <label class="form-check-label" for="listed">Listed</label>
+                        </div> -->
+                        <button type="submit" class="btn btn-primary">Add Coupon</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/vendors/select2.min.js"></script>
+    <script src="assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="assets/js/main.js" type="text/javascript"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const couponCode = document.getElementById("couponCode");
+            const expiryDate = document.getElementById("expiryDate");
+            // const startingDate = document.getElementById("StartingDate");
+            const couponDiscount = document.getElementById("couponDiscount");
+            const maximumDiscount = document.getElementById("maximumDiscount");
+            const minimumPurchase = document.getElementById("minimumPurchase");
+
+            const couponCodeError = document.getElementById("couponCodeError");
+            // const startingDateError = document.getElementById("StartingDateError");
+            const expiryDateError = document.getElementById("expiryDateError");
+            const couponDiscountError = document.getElementById("couponDiscountError")
+            const maximumDiscountError = document.getElementById("maximumDiscountError");
+            const minimumPurchaseError = document.getElementById("minimumPurchaseError");
+
+            couponCode.addEventListener('blur', validateCouponCode);
+            expiryDate.addEventListener('blur', validateExpiryDate);
+            // startingDate.addEventListener('blur', validateStartingDate);
+            couponDiscount.addEventListener('blur', validateCouponDiscount);
+            maximumDiscount.addEventListener('blur', validateMaximumDiscountAmount);
+            minimumPurchase.addEventListener('blur', validateMinimumPurchase);
+
+            function validateCouponCode() {
+
+                const couponCodeValue = couponCode.value.trim();
+                if (couponCodeValue === "") {
+                    couponCodeError.textContent = "Coupon code is required";
+                } else if (couponCodeValue.length > 20) {
+                    couponCodeError.textContent = "Coupon must be short";
+                }
+                else {
+                    couponCodeError.textContent = ""; // Clear error message if valid
+                }
+            }
+
+            function validateExpiryDate() {
+                const expiryDateValue =new Date( expiryDate.value);
+                const currentDate = new Date();
+                if (isNaN(expiryDateValue)) {
+                    expiryDateError.textContent = "its is required for coupon"
+                } else if (expiryDateValue < currentDate) {
+                    expiryDateError.textContent = "Expiry date must be in the future"
+                
+                } else {
+                    expiryDateError.textContent = ""
+                }
+
+            }
+
+//             function validateStartingDate() {
+//     const startingDateValue = new Date(startingDate.value);
+//     const currentDate = new Date();
+//     const expiryDateValue = new Date(expiryDate.value);
+//     const startingDateError = document.getElementById("StartingDateError");
+
+//     if (isNaN(startingDateValue)) {
+//         startingDateError.textContent = 'Starting date is required';
+//     } else if (startingDateValue.getTime() > currentDate.getTime()) {
+    
+//         startingDateError.textContent = "Starting date must be in the future";
+//     } else if (startingDateValue >= expiryDateValue) {
+//         startingDateError.textContent = "Starting date must be before the expiry date";
+//     } else {
+//         startingDateError.textContent = "";
+//     }
+// }
+
+
+function validateCouponDiscount() {
+    const couponDiscountValue = parseFloat(couponDiscount.value.trim());
+
+    if (isNaN(couponDiscountValue)) {
+        couponDiscountError.textContent = 'Coupon discount is required';
+    } else if (couponDiscountValue <= 0 || couponDiscountValue > 100) {
+        couponDiscountError.textContent = "Coupon discount must be between 0 and 100";
+    } else {
+        couponDiscountError.textContent = "";
+    }
+}
+
+
+            function validateMaximumDiscountAmount() {
+                const maximumDiscountValue = maximumDiscount.value.trim();
+             
+                if (maximumDiscountValue=="") {
+                    maximumDiscountError.textContent = "Maximum discount must be a valid number";
+                } else if (maximumDiscountValue < 0) {
+                    maximumDiscountError.textContent = "Maximum discount cannot be negative";
+                }
+                 else {
+                    maximumDiscountError.textContent = ""
+                }
+
+            }
+
+            function validateMinimumPurchase() {
+                const minimumPurchaseValue = minimumPurchase.value.trim();
+        
+                 if (minimumPurchaseValue < 0) {
+                    minimumPurchaseError.textContent = "Minimum purchase cannot be negative";
+                } else {
+                    minimumPurchaseError.textContent = ""
+                }
+
+            }
+            const form = document.getElementById("form")
+
+            form.addEventListener("submit", (e) => {
+
+                validateCouponCode()
+                
+                validateExpiryDate()
+                
+                validateCouponDiscount()
+                validateMaximumDiscountAmount()
+                validateMinimumPurchase()
+                if (couponCodeError.textContent || minimumPurchaseError.textContent || maximumDiscountError.textContent || couponDiscountError.textContent || expiryDateError.textContent || couponCodeError.textContent) {
+                    e.preventDefault()
+                } else {
+                    alert("ooh yey")
+                }
+            })
+
+        });
+
+
+
+
+
+
+    </script>
+    </body>
+
+    </html>

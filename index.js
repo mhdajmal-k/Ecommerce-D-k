@@ -8,6 +8,7 @@ const session=require("express-session")
 const flash=require("express-flash")
 const nocache = require('nocache');
 const morgan=require('morgan')
+const compression = require('compression')
 
 
 // const passport=require("passport")
@@ -26,6 +27,7 @@ app.use(session({
 
 // app.use(passport.initialize())  
 // app.use(passport.session())  
+app.use(compression())
 app.use(nocache())
 app.use(express.json())
 app.use(flash())

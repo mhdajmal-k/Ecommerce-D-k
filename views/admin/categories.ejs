@@ -132,30 +132,30 @@
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        function listandunlist(id, status) {
-            alert(id + "chekcing")
-            alert(status)
+        // function listandunlist(id, status) {
+        //     alert(id + "chekcing")
+        //     alert(status)
 
-            console.log(id)
-            $.ajax({
-                url: '/admin/listAndUnList',
-                method: "post",
-                data: {
-                    _id: id,
-                    status: status
-                },
-                success: (response) => {
-                    if (response.status === true) {
+        //     console.log(id)
+        //     $.ajax({
+        //         url: '/admin/listAndUnList',
+        //         method: "post",
+        //         data: {
+        //             _id: id,
+        //             status: status
+        //         },
+        //         success: (response) => {
+        //             if (response.status === true) {
 
 
 
-                    } else {
-                        alert("error")
-                    }
-                }
+        //             } else {
+        //                 alert("error")
+        //             }
+        //         }
 
-            })
-        }
+        //     })
+        // }
     </script>
 
     </body>

@@ -1,11 +1,12 @@
 
 const express=require("express")
-admin_router=express()
+const admin_router=express()
 const admin_controller=require('../controler/admincontroler')
 const category_controller=require('../controler/categorycontrol')
 const product_controller=require('../controler/prodctcontoler')
 const upload=require('../controler/helper/multer')
 const adminOrderController=require("../controler/adminOrderController")
+const couponController=require("../controler/coupon_controler")
 
 
 
@@ -41,6 +42,15 @@ const {load_category,
 const {load_orders,
     load_ordersDetails,
     changeOrderStatus}=adminOrderController
+
+const {load_coupon,
+    addCoupons,
+    CreateCoupons,
+    load_couponEdit,
+    editCoupon,
+    delete_coupon,
+    statusChange
+}=couponController
 
 
 
@@ -101,6 +111,16 @@ admin_router.
 get("/listOrders",sessionChecker,load_orders)
 .get("/orderDetails",sessionChecker,load_ordersDetails)
 .post("/updateOrderStatus",sessionChecker,changeOrderStatus)
+
+
+//==================================  coupon controller================================
+admin_router.get("/coupon",sessionChecker,load_coupon)
+.get("/addCoupon",sessionChecker,addCoupons)
+.post("/add-coupon",sessionChecker,CreateCoupons)
+.get("/coupon-edit",sessionChecker,load_couponEdit)
+.post("/edit-coupon",sessionChecker,editCoupon)
+.delete("/delete-coupon",sessionChecker,delete_coupon)
+.post("/coupon-listAndUnList",sessionChecker,statusChange)
 
 
 
