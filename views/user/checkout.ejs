@@ -305,9 +305,13 @@
                                                     <td colspan="3"><em>Free Shipping</em></td>
                                                 </tr>
                                                 <tr>
+                                                    <th>Discount</th>
+                                                    <td colspan="3" id="discountAmount"><em>0</em></td>
+                                                </tr>
+                                                <tr>
                                                     <th>Total</th>
                                                     <td colspan="3" class="product-subtotal"><span
-                                                            class="font-xl text-brand fw-900">
+                                                            class="font-xl text-brand fw-900" id="orderTotal">
                                                             <%= userCart.total %>
                                                         </span></td>
                                                 </tr>
@@ -318,6 +322,49 @@
 
                                         </tbody>
                             </table>
+                        </div>
+                        <div>
+                            <p class="mt-10" id="show">coupon available?</p>
+                            <div class="mb-30 mt-50">
+                                <div class="heading_s1 mb-3">
+                                    <h4>Apply Coupon</h4>
+                                </div>
+                                <% if (coupons&&coupons.length>0) { %>
+                                    <% for( let i=0; i < coupons.length; i++ ) { %>
+
+                                        <div class="hidden" style="display: none;">
+                                            <div class="right">
+                                                <div class="coupon">
+
+                                                    <div class="form-row row justify-content-center">
+                                                        <div class="form-group col-lg-6">
+                                                            <input class="font-medium" name="Coupon"
+                                                                placeholder="Enter Your Coupon"
+                                                                value="<%= coupons[i].couponCode%>">
+                                                            <p>T&C(maximumDiscount:<%= coupons[i].couponDiscount %>% or
+                                                                    RS:<%= coupons[i].maximumDiscount %>)</p>
+                                                        </div>
+                                                        <div class="form-group col-lg-6">
+                                                            <button class="btn btn-sm" class="fi-rs-label mr-10"
+                                                                id="apply<%=i%>" style="display: inline-block;"
+                                                                onclick="applyCoupon('<%=coupons[i]._id%>','<%=coupons[i].couponDiscount%>','<%=coupons[i].maximumDiscount%>','<%=i%>')">Apply</button>
+                                                            <button class="btn btn-danger" id="remove<%=i%>"
+                                                                style="display: none;"
+                                                                onclick="removeCoupon('<%=coupons[i]._id%>','<%=coupons[i].couponDiscount%>','<%=coupons[i].maximumDiscount%>','<%=i%>')">Remove</button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                            </div>
+                            <% } %>
+
+
+                                <% } else { %>
+                                    No coupons available
+                                    <% } %>
+
                         </div>
                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                         <div class="payment_method">
@@ -358,6 +405,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <button class="btn btn-fill-out btn-block mt-30" id="placeOrderButton"
                             style="text-align: center; display: flex; justify-content: center; width: 100%; font-size:larger;">Place
                             Order</button>
@@ -436,6 +484,47 @@
         <script>
 
 
+            couponApplied = false
+            const discountAmount = document.getElementById("discountAmount");
+            const orderTotal = document.getElementById("orderTotal");
+
+            /////////////////////////////////////accessing local storage value/////////////////////////////////
+
+            document.addEventListener("DOMContentLoaded", function () {
+                const data = localStorage.getItem("coupon")
+                coupon_data = JSON.parse(data);
+                if (localStorage.getItem("coupon")) {
+                    if (coupon_data.maximumDiscountValue) {
+                        discountAmount.innerHTML = coupon_data.maximumDiscountValue
+                        orderTotal.innerText = orderTotal.innerHTML - coupon_data.maximumDiscountValue
+                    } else {
+                        discountAmount.innerHTML = coupon_data.Discount
+                        orderTotal.innerText = orderTotal.innerHTML - coupon_data.Discount
+                    }
+                    document.getElementById("remove" + coupon_data.index).style.display = "inline-block"
+                    document.getElementById("apply" + coupon_data.index).style.display = "none"
+                    couponApplied = true
+                    return
+                }
+            })
+
+
+            ////////////////////////////////////////COUPON AVAILABLE CHECKING////////////////////////////////////////
+
+            document.getElementById("show").addEventListener("click", () => {
+                var coupons = document.querySelectorAll('.hidden');
+                coupons.forEach(section => {
+                    if (section.style.display === "none" || section.style.display === "") {
+                        section.style.display = "block";
+                    } else {
+                        section.style.display = "none";
+                    }
+                });
+            });
+
+
+
+            //////////////////////////////////// PALACE ORDER///////////////////////////////////////////
             document.getElementById("placeOrderButton").addEventListener("click", () => {
                 const userCartId = "<%= userCart._id %>";
 
@@ -443,10 +532,97 @@
                     placeOrder(userCartId);
             })
 
+
+
+
+            //////////////////////////////////APPLYING COUPON////////////////////////////////////////////
+
+            function applyCoupon(id, couponDiscount, maximumDiscount, index) {
+                if (couponApplied == true) {
+                    Swal.fire({
+                        title: "<span style='color: red;'>Coupon Already applied</span>",
+                        html: "<span style='color: Black;'>Sorry you have already applied one coupon if you want add more coupon please remove and add new one</span>",
+                        icon: "warning",
+                        timer: 3000
+                    });
+                    return
+                }
+                const total = parseInt(orderTotal.innerText);
+                const couponDiscountValue = parseInt(couponDiscount);
+                const Discount = Math.round((total * couponDiscountValue) / 100);
+                const maximumDiscountValue = parseInt(maximumDiscount);
+                if (Discount > maximumDiscountValue) {
+                    orderTotal.innerText = total - maximumDiscountValue;
+                    discountAmount.innerText = maximumDiscountValue;
+                    const obj = { maximumDiscountValue, id, index }
+                    localStorage.setItem('coupon', JSON.stringify(obj))
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Coupon Applied"
+                    })
+                    //////////////////UI CHANGING/////////////////
+                    
+                    document.getElementById("remove" + index).style.display = "inline-block"
+                    document.getElementById("apply" + index).style.display = "none"
+                } else {
+                    orderTotal.innerText = total - Discount;
+                    discountAmount.innerText = Discount;
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Coupon Applied"
+                    })
+                    const obj = { Discount, id, index }
+                    localStorage.setItem('coupon', JSON.stringify(obj))
+                    ////////////////////////////UI CHANGING//////////////////////////
+                    document.getElementById("remove" + index).style.display = "inline-block"
+                    document.getElementById("apply" + index).style.display = "none"
+                }
+                couponApplied = true
+                return
+            }
+
+
+            ////////////////////////////////////REMOVE COUPON ////////////////////////////////////////////////
+
+
+            function removeCoupon(id, couponDiscount, maximumDiscount, index) {
+                alert(id)
+                discountAmount.innerHTML = 0
+                orderTotal.innerText = parseInt(orderTotal.innerText) + parseInt(maximumDiscount)
+                document.getElementById("remove" + index).style.display = "none"
+                document.getElementById("apply" + index).style.display = "inline-block"
+                couponApplied = false
+                localStorage.removeItem('coupon');
+            }
+
+
+            //////////////////////////////PALACE ORDER MAIN FUNCTION  ///////////////////////////////////////
+
             function placeOrder(cartId) {
                 const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
                 const selectedPayment = document.querySelector('input[name="selectedPayment"]:checked');
-
                 if (selectedAddress == null) {
 
                     Swal.fire({
@@ -455,11 +631,8 @@
                         icon: "warning",
                         timer: 2000
                     });
-                    return;
-
-
+                    return
                 }
-
                 if (selectedPayment === null || selectedPayment === undefined) {
                     Swal.fire({
                         title: "<span style='color: red;'>Please select payment option</span>",
@@ -469,14 +642,8 @@
                     });
                     return;
                 }
-
                 const paymentOption = selectedPayment.value;
-
-
-
-
                 $.ajax({
-
                     url: "/placeOrder",
                     method: "post",
                     data: {
@@ -510,9 +677,6 @@
                             }, 3100);
                         }
                         else if (response.status == "out of stock") {
-
-
-
                             Swal.fire({
                                 title: "<span style='color: red;'>Oops!</span>",
                                 html: "<span style='color: blue;'>Out Of Stock,Please keep in touch with us</span>",
@@ -520,7 +684,6 @@
                                 timer: 3000
                             });
                             setTimeout(() => {
-
                                 location.reload()
                             }, 3100);
                         } else if (response.status == "order placed") {
@@ -534,8 +697,8 @@
                                 location.href = "/orderSuccess"
                             }, 3100);
                         } else if (response.status = "razorPay") {
-                       
-                            razorPayPayment(response.generateRazor, response.user, response.userOrder)
+
+                            razorPayPayment(response.generateRazor, response.user, response.userOrder, response.cartIdforPassing)
                         }
                         //     }else if(response.status=="empty_cart"){
                         //         Swal.fire({
@@ -560,8 +723,9 @@
             }
 
 
-            function razorPayPayment(RazorPayOrderID, user, userOrder) {
-           
+            ////////////////////////////////// RAZOR PAY INTEGRATION/////////////////////////////////////             
+
+            function razorPayPayment(RazorPayOrderID, user, userOrder, cartId) {
                 const amount = RazorPayOrderID.amount;
                 const userOrderId = RazorPayOrderID.receipt;
                 const razorPayOrderId = RazorPayOrderID.id;
@@ -570,44 +734,39 @@
                 // alert(userOrderId);
                 // alert(user);
                 // alert(user.username);
-
                 var options = {
-                    "key": "rzp_test_SWPaqecbwGGJZa", // Enter the Key ID generated from the Dashboard
-                    "amount": amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "key": "rzp_test_SWPaqecbwGGJZa",
+                    "amount": amount,
                     "currency": "INR",
-                    "name": "Duck & Wave", // your business name
+                    "name": "Duck & Wave",
                     "description": "Test Transaction",
                     "image": "https://example.com/your_logo",
-                    "order_id": razorPayOrderId, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "order_id": razorPayOrderId,
                     "handler": function (response) {
-                 
-
                         $.ajax({
                             url: "/razorPayVerify",
                             method: "post",
                             data: {
                                 response: response,
                                 razorPayOrderId: razorPayOrderId,
-                                userOrder: userOrder
+                                userOrder: userOrder,
+                                cartId: cartId
                             },
                             success: function (data) {
-                                if(data.status){
+                                if (data.status) {
 
-                                    location.href="/orderSuccess"
-                                }else{
+                                    location.href = "/orderSuccess"
+                                } else {
                                     Swal.fire({
-                                title: "<span style='color: red;'>payment filed</span>",
-                                html:data.error,
-                                icon: "error",
-                                timer: 3000
-                            });
-                            setTimeout(() => {
-                                location.href = "/cart"
-                            }, 3100);
+                                        title: "<span style='color: red;'>payment filed</span>",
+                                        html: data.error,
+                                        icon: "error",
+                                        timer: 3000
+                                    });
+                                    setTimeout(() => {
+                                        location.href = "/cart"
+                                    }, 3100);
                                 }
-
-                           
-
                             }
                             ,
                             error: function (error) {
@@ -616,13 +775,11 @@
                                 alert("Error");
                             }
                         });
-
-
                     },
-                    "prefill": { // We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
-                        "name": user.username, // your customer's name
+                    "prefill": {
+                        "name": user.username,
                         "email": user.userEmail,
-                        "contact": user.mobile // Provide the customer's phone number for better conversion rates 
+                        "contact": user.mobile
                     },
                     "notes": {
                         "address": "Razorpay Corporate Office"
@@ -643,36 +800,25 @@
                     // alert(response.error.metadata.order_id);
                     // alert(response.error.metadata.payment_id);
 
-                      Swal.fire({
-                                title: "<span style='color: red;'>payment filed</span>",
-                                html:response.error.reason,
-                                icon: "error",
-                                timer: 3000
-                            });
-                            
-
-
-                            
-
-                    
+                    Swal.fire({
+                        title: "<span style='color: red;'>payment filed</span>",
+                        html: response.error.reason,
+                        icon: "error",
+                        timer: 3000
+                    });
                 });
-
-
                 rzp1.open();
-
-
             }
 
 
 
 
+            ////////////////////////REMOVE ORDER ITEM ////////////////////////////
+
             function removeItem(itemId) {
-
-
                 Swal.fire({
                     title: "<span style='color: red;'>Are you Sure</span>",
                     html: "<span style='color: black;'>Do you want to remove this item</span>",
-
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
@@ -680,15 +826,12 @@
                     confirmButtonText: "Yes, delete it!"
                 }).then((result) => {
                     if (result.value == true) {
-
                         $.ajax({
                             url: "/removeItem",
                             method: "get",
                             data: {
                                 itemId: itemId,
-
                             }, success: (response) => {
-
                                 if (response.status == true) {
                                     Swal.fire({
                                         title: "<span style='color: red;'>Removed</span>",
@@ -700,16 +843,9 @@
                                 setTimeout(() => {
                                     location.href = "/checkOut"
                                 }, 1200);
-
                             }
-
                         })
                     }
-
-
                 });
-
-
             }
-
         </script>

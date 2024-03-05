@@ -1,3 +1,29 @@
+<style>
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .card {
+        flex: calc(50% - 10px);
+        border: 1px solid #0c0808;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .card-body {
+        padding: 10px;
+    }
+</style>
 <%- include ("../partilas/userheader") -%>
     <div class="mobile-header-active mobile-header-wrapper-style">
         <div class="mobile-header-wrapper-inner">
@@ -157,7 +183,7 @@
                         <a href="page-contact.html"> Our location </a>
                     </div>
                     <div class="single-mobile-header-info">
-                        <a href="/login">Log In / Sign Up </a>
+                        <a href="page-login-register.html">Log In / Sign Up </a>
                     </div>
                     <div class="single-mobile-header-info">
                         <a href="#">(+01) - 2345 - 6789 </a>
@@ -179,90 +205,96 @@
             <div class="container">
                 <div class="breadcrumb">
                     <a href="/" rel="nofollow">Home</a>
-                    <a href="/shop"> <span></span> Shop</a>
+                    <span></span> Pages
+                    <span></span> Account
                 </div>
             </div>
         </div>
-        <section class="mt-50 mb-50">
+        <section class="pt-150 pb-150">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-lg-10 m-auto">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="dashboard-menu">
+                                    <ul class="nav flex-column" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="dashboard-tab" href="/profile">Dashboard</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="orders-tab">Orders</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="track-orders-tab" href="/profile">Track Your
+                                                Order</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="track-orders-tab" href="/coupons">My
+                                                Coupons</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="address-tab" href="/profile">My Address</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="account-detail-tab" href="/profile">Change
+                                                Password</a>
+                                        </li>
+                                        <li class="nav-item text-danger">
+                                            <a class="nav-link text-danger" href="/logout"><i
+                                                    class="fi-rs-sign-out mr-10 text-danger"></i>Logout</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="tab-content dashboard-content">
 
 
-                        <div class="product-grid-3 row">
-                            <% if (product&&product.length>0) { %>
-                                <% product.items.forEach(element=> { %>
-                                    <div id="<%= element.productId._id %>" class="col-lg-3 col-md-4">
-                                        <div class="product-cart-wrap mb-30" style=" width: 250px; 
-                                        height: 470px;">
-                                            <div class="product-img-action-wrap">
-                                                <div class="product-img product-img-zoom">
-                                                    <a href="/shopProduct?id=<%= element.productId._id %>">
-                                                        <img class="default-img"
-                                                            src="../../uploads/products/<%= element.productId.image[0] %>"
-                                                            alt="">
-                                                        <img class="hover-img"
-                                                            src="../../uploads/products/<%= element.productId.image[2] %>"
-                                                            alt="">
-                                                    </a>
-                                                </div>
-                                                <div class="product-action-1">
-                                                    <!-- <a aria-label="Quick view" class="action-btn hover-up"
-                                                        data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
-                                                            class="fi-rs-search"></i></a> -->
-                                                    <!-- <a aria-label="Add To Wishlist" class="action-btn hover-up"
-                                                        href="/wishList?productId=
-                                                            class="fi-rs-heart"></i></a> -->
-                                                    <!-- <a aria-label="Compare" class="action-btn hover-up"
-                                                        href="shop-compare.html"><i class="fi-rs-shuffle"></i></a> -->
-                                                </div>
-                                                <div class="product-badges product-badges-position product-badges-mrg">
-                                                    <span class="hot">Hot</span>
-                                                </div>
-                                            </div>
-                                            <div class="product-content-wrap">
-                                                <div class="product-category">
-                                                    <h1>
-                                                        <!-- <a href="shop-grid-right.html">
-                                                          
-                                                        </a> -->
-                                                    </h1>
-
-                                                </div>
-                                                <h2><a href="shop-product-right.html">
-                                                        <%= element.productId.productName %>
-                                                    </a></h2>
-                                                <div class="rating-result" title="90%">
-                                                    <span><span>90%</span></span>
-                                                </div>
-                                                <div class="product-price">
-                                                    <span>RS <%= element.productId.sellingPrice %> </span>
-                                                    <span class="old-price">
-                                                        <%= element.productId.price %>
-                                                    </span>
-                                                </div>
-                                                <div class="action" data-title="Remove">
-                                                    <a href="#"
-                                                        onclick="removeFromWishList('<%=element.productId._id %>')"
-                                                        style="margin-left: 200px;" class="text-muted"><i
-                                                            class="fi-rs-trash"></i></a>
-                                                </div>
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Your Coupons</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <% if (couponData && couponData.length> 0) { %>
+                                                    <div class="card-container">
+                                                        <% couponData.forEach(function(coupon) { %>
+                                                            <div class="card">
+                                                                <div class="card-header">
+                                                                    Coupon Code: <%= coupon.couponCode %>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <p>Expiry Date: <%= coupon.expiryDate.toLocaleDateString() %>
+                                                                    </p>
+                                                                    <p>Coupon Discount: <%= coupon.couponDiscount %>%
+                                                                    </p>
+                                                                    <p>Maximum Discount: <%= coupon.maximumDiscount %>
+                                                                    </p>
+                                                                    <p>Minimum Price: <%= coupon.minimumPrice %>
+                                                                    </p>
+                                                                  
+                                                                    
+                                                                </div>
+                                                            </div>
+                                                            <% }); %>
+                                                    </div>
+                                                    <% } else { %>
+                                                        <p>No more coupons available right now. Keep in touch with us!
+                                                        </p>
+                                                        <% } %>
                                             </div>
                                         </div>
                                     </div>
-                                    <% }) %>
+                                    <div>
 
 
 
-
-                                      <% } else { %>
-                                        <p class="text-center">No products in Wishlist</p>
-                                        <% } %>
-                                         
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </section>
     </main>
     <footer class="main">
@@ -370,7 +402,7 @@
                 </div>
                 <div class="col-lg-6">
                     <p class="float-md-left font-sm text-muted mb-0">&copy; 2022, <strong
-                            class="text-brand">D&K</strong> - HTML Ecommerce Template </p>
+                            class="text-brand">D&K</strong> - HTML Ecommerce </p>
                 </div>
                 <div class="col-lg-6">
                     <p class="text-lg-end text-start font-sm text-muted mb-0">
@@ -397,8 +429,6 @@
         </div>
     </div>
     <!-- Vendor JS-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>
@@ -418,59 +448,11 @@
     <script src="assets/js/plugins/scrollup.js"></script>
     <script src="assets/js/plugins/jquery.vticker-min.js"></script>
     <script src="assets/js/plugins/jquery.theia.sticky.js"></script>
-    <script src="assets/js/plugins/jquery.elevatezoom.js"></script>
     <!-- Template  JS -->
-    <script src="./assets/js/main.js?v=3.4"></script>
-    <script src="./assets/js/shop.js?v=3.4"></script>
 
-    <script>
-        function removeFromWishList(id) {
-            Swal.fire({
-                title: "<span style='color: red;'>Are you Sure</span>",
-                html: "<span style='color: black;'>Do you want to remove this item</span>",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, Remove it!"
-            }).then((result) => {
-                alert("hio")
-                if (result.value == true) {
-                   
-                    $.ajax({
-                        url: '/removeFromWishList',
-                        method: "post",
-                        data: {
-                            productId: id
-                        }, success: (response) => {
-                            if (response.status = true) {
-                                $(`#${id}`).remove();
-                                const Toast = Swal.mixin({
-                                    toast: true,
-                                    position: "top",
-                                    showConfirmButton: false,
-                                    timer: 2000,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.onmouseenter = Swal.stopTimer;
-                                        toast.onmouseleave = Swal.resumeTimer;
-                                    }
-                                });
-                                Toast.fire({
-                                    icon: "success",
-                                    title: "Product has been removed"
-                                })
-                            }
-                        }, error: (error) => {
-                            alert("Error")
-                        }
-                    })
-                }
-            })
-        }
-    </script>
+    <script src="./assets/js/main.js?v=3.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
 
     </body>
-
 
     </html>

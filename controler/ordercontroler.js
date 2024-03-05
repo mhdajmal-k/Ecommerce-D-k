@@ -4,6 +4,7 @@ const cart = require("../model/cart_model");
 const address = require("../model/address_model");
 const User = require("../model/user_model");
 const Product = require("../model/product_model");
+const coupon=require("../model/coupon")
 const generateOrderNumber = require("./helper/orderId");
 const Order = require("../model/order_model");
 const Razorpay = require("razorpay");
@@ -26,13 +27,26 @@ const load_checkout = async (req, res) => {
         model: "categories",
       },
     });
+
     const items = userCart.items.length;
+    const userCartTOtal=userCart.total
+    console.log(userCartTOtal,"its total");
+    console.log( typeof userCartTOtal,"its total");
     if (items > 0) {
       const userAddress = await address.find({ user: user });
+      const coupons = await coupon.find({
+        $and: [
+          { listed: true },
+          { user: { $nin: [user] } },
+          { minimumPrice: { $lte: parseFloat(userCartTOtal) } }
+        ]
+      });
+      console.log(coupons,"its coupkon");
       res.render("checkout", {
         userCart: userCart,
         userAddress: userAddress,
         user: user,
+        coupons:coupons
       });
     } else {
       res.redirect("/cart");
@@ -49,6 +63,7 @@ const place_Order = async (req, res) => {
     const userId = req.session.userId;
     const user = await User.findById(userId);
     const { cartId, addressId, paymentOption } = req.body;
+    const cartIdforPassing=cartId
     const userCart = await cart
       .findById({ _id: cartId })
       .populate("items.productId");
@@ -126,10 +141,11 @@ const place_Order = async (req, res) => {
       return;
     }
     if (paymentOption === "razorPay") {
+ 
 
     const generateRazor=await generateRazorPay(createOrder.totalAmount,createOrder.orderNumber)
     console.log(generateRazor);
-    res.json({status:"razorPay",generateRazor,user,userOrder:createOrder})
+    res.json({status:"razorPay",generateRazor,user,userOrder:createOrder,cartIdforPassing})
     }
   } catch (error) {
     console.log(error.message);
@@ -167,7 +183,8 @@ function generateRazorPay(orderAmount,orderId){
 const razorPaymentVerify=async(req,res)=>{
   try {
 
-    const {userOrder}=req.body
+    const {userOrder,cartId}=req.body
+    console.log(cartId,"its cartdId");
     const { razorpay_payment_id,razorpay_order_id,razorpay_signature}=req.body.response
     const userOrderData=await Order.findByIdAndUpdate(userOrder._id)
    
@@ -175,6 +192,7 @@ const razorPaymentVerify=async(req,res)=>{
     hmac.update(razorpay_order_id+"|"+razorpay_payment_id)
     hmac=hmac.digest("hex")
     if(hmac===razorpay_signature){
+      await cart.findByIdAndDelete({ _id: cartId });
       for (const orderedProduct of userOrderData.items) {
         const orderedProductId = orderedProduct.product;
         const orderedQuantity = orderedProduct.quantity;
@@ -327,7 +345,34 @@ const cancelOrder = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-};
+}
+const applycoupon=async(req,res)=>{
+  try {
+    console.log(req.body);
+    const {couponId}=req.body
+    
+    const {userId}=req.session
+    console.log(userId);
+    const couponData=await coupon.findById({_id:couponId})
+console.log(couponData,"its coupendata");
+const couponDiscount=couponData.couponDiscount
+const maximumDiscount=couponData.maximumDiscount
+console.log(maximumDiscount,"maximumDiscount");
+console.log(couponDiscount,"maximumDiscountAmount");
+const userCart=await cart.findOne({userId:userId})
+console.log(userCart,"hhhhhhhhhhhhhhhhhhhhhhhhhh");
+const cartTotal=userCart.total
+const couponDiscountApply=cartTotal*couponDiscount/100
+console.log("couponDiscounted:",couponDiscountApply);
+const checkMaximumAmount=cartTotal-maximumDiscount
+console.log("checkMaximum:",checkMaximumAmount);
+console.log(cartTotal,"it total");
+} catch (error) {
+    console.log(error.message)
+  }
+}
+
+
 module.exports = {
   load_checkout,
   place_Order,
@@ -335,5 +380,7 @@ module.exports = {
   viewOrderDeatails,
   cancelOneProduct,
   cancelOrder,
-  razorPaymentVerify
+  razorPaymentVerify,
+  applycoupon
+  
 };

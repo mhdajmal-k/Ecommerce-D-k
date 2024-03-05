@@ -6,6 +6,7 @@ const { session } = require("passport");
 const { json } = require("express");
 const securePassword=require("../controler/helper/securingPassword");
 const bcrypt=require("bcrypt")
+const coupon=require("../model/coupon")
 
 // 
 
@@ -284,10 +285,24 @@ const changePassword = async (req, res) => {
   }
 };
 
-module.exports = {
-  changePassword
-};
-
+const load_coupons=async(req,res)=>{
+  try {
+    console.log("hi");
+    const {userId}=req.session
+    console.log(userId);
+    const coupons = await coupon.find({
+      $and: [
+        { listed: true },
+        { user: { $nin: [userId] } } 
+      ]
+    });
+    
+    console.log(coupons);
+    res.render("coupons",{couponData:coupons})
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 module.exports = {
   load_profile,
@@ -299,5 +314,6 @@ module.exports = {
   load_editProfile,
   editProfile,
   changePassword,
-  load_order
+  load_order,
+  load_coupons
 };

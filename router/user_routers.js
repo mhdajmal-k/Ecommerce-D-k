@@ -39,7 +39,8 @@ const {
   removeReview,
   add_ToWishlist,
   removeFromWishList,
-  averageRating
+  averageRating,
+  searchProduct
 
 } = userController;
 
@@ -56,7 +57,8 @@ const {
   load_editProfile,
   editProfile,
   changePassword,
-  load_order
+  load_order,
+  load_coupons
   }=profileController
 
 const {load_cart,addCart,removeItem,changeQuantity}=cartController
@@ -68,7 +70,9 @@ const {
   viewOrderDeatails,
   cancelOneProduct,
   cancelOrder,
-  razorPaymentVerify}=orderController
+  razorPaymentVerify,
+  applycoupon
+}=orderController
 
 
 
@@ -104,6 +108,7 @@ user_router.get("/",isBlocked,landing_page)
 .post("/removeReview",isBlocked,removeReview)
 .post("/removeFromWishList",isBlocked,removeFromWishList)
 .get("/averageRating",isBlocked,averageRating)
+.get("/searchProducts",isBlocked,searchProduct)
 
 
 // user_router.get('/auth/google', 
@@ -134,6 +139,7 @@ user_router
 .post("/editProfile", isBlocked,isLogin, editProfile)
 .post("/resetPassword",isBlocked, isLogin, changePassword)
 .get('/order',isBlocked,isLogin,load_order)
+.get("/coupons",isBlocked,isLogin,load_coupons)
 
 
 
@@ -158,6 +164,7 @@ user_router
 .post('/cancelOrder',isBlocked,isLogin,cancelOrder)
 .post('/cancelOneProduct',isBlocked,isLogin,cancelOneProduct)
 .post('/razorPayVerify',razorPaymentVerify)
+.post("/applycoupon",isBlocked,isLogin,applycoupon)
 
 
 

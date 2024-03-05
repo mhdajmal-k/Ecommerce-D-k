@@ -626,6 +626,16 @@ const submitReview = async (req, res) => {
 };
 
 
+
+const searchProduct=async(req,res)=>{
+  try {
+    console.log("hi");
+    console.log(req.body.product);
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 module.exports = {
   landing_page,
   load_login,
@@ -653,5 +663,6 @@ module.exports = {
   submitReview,
   removeReview,
   removeFromWishList,
-  averageRating
+  averageRating,
+  searchProduct
 };

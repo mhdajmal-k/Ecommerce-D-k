@@ -52,6 +52,7 @@
                             <input type="checkbox" class="form-check-input" id="listed" name="listed" checked>
                             <label class="form-check-label" for="listed">Listed</label>
                         </div> -->
+                        <button class="btn btn-secondary" id="calcel"> cancel</button>
                                 <button type="submit" class="btn btn-primary">Add Coupon</button>
                 </form>
             </div>
@@ -196,7 +197,9 @@
 
 
 
-
+document.getElementById("cancel").addEventListener("click",()=>{
+    window.history.back()
+})
         document.getElementById("deleteCoupon").addEventListener("click", () => {
             const id = '<%= couponData._id %>'
 

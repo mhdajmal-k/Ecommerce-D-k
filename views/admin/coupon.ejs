@@ -40,10 +40,10 @@
                                             <%= coupon.minimumPrice %>
                                         </td>
                                         <td class="text-center">
-                                            <%= coupon.staringDate %>
+                                            <%= coupon.staringDate.toLocaleDateString() %>
                                         </td>
                                         <td class="text-center">
-                                            <%= coupon.expiryDate %>
+                                            <%= coupon.expiryDate.toLocaleDateString() %>
                                         </td>
                                         <td class="text-center" id="status">
                                             <%= coupon.listed %>
