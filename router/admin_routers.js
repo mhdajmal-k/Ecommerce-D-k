@@ -16,7 +16,9 @@ verify_login,
 Dashboard_load,
 userLoad,
 userBlockUnblock,
-logout}=admin_controller
+logout,
+load_saleReport
+}=admin_controller
 
 
 const {load_products,
@@ -41,7 +43,8 @@ const {load_category,
 
 const {load_orders,
     load_ordersDetails,
-    changeOrderStatus}=adminOrderController
+    changeOrderStatus
+}=adminOrderController
 
 const {load_coupon,
     addCoupons,
@@ -73,7 +76,9 @@ admin_router.get("/",login_load)
 .get("/dashboard",sessionChecker,Dashboard_load)
 .get("/userLoad",sessionChecker,userLoad)
 .post('/block_user',sessionChecker,userBlockUnblock)
+.get('/salereport',sessionChecker,load_saleReport)
 .get('/logout',logout)
+
 
 //==================================  product admin controller================================
 

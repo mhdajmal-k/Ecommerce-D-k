@@ -1,6 +1,7 @@
 
 const user=require('../model/user_model')
 const admin_model = require('../model/admin_model')
+const Order=require("../model/order_model")
 const session = require('express-session')
 
 
@@ -85,8 +86,25 @@ const Dashboard_load=async (req,res)=>{
     }
   }
 
-  //logout
 
+const load_saleReport=async(req,res)=>{
+  try {
+    console.log("hi");
+    const salereport = await Order.find({ status: { $in: ["Delivered"] } })
+    .populate("userId")
+    .populate("items.product");
+
+
+  console.log(salereport,"its wind");
+res.render("salereport",{salereport})
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+
+  //logout
 
   const logout=async(req,res)=>{
     try {
@@ -105,5 +123,6 @@ module.exports = {
   Dashboard_load,
   userLoad,
   userBlockUnblock,
-  logout
+  logout,
+  load_saleReport
 };

@@ -8,6 +8,7 @@ const path = require("path");
 const { isLogin, isLogout,isBlocked} = require("../middleware/userAuth");
 const cartController=require("../controler/cartcontroler")
 const orderController=require("../controler/ordercontroler")
+const wallet_control=require("../controler/wallet_control")
 
 
 // isBlocked()
@@ -71,11 +72,19 @@ const {
   cancelOneProduct,
   cancelOrder,
   razorPaymentVerify,
-  applycoupon
+  applycoupon,
+  returnRequest
 }=orderController
 
 
 
+
+
+const {
+  load_wallet,
+  addToWallet,
+  walletRazorPayVerify
+}=wallet_control
 
 
 user_router.set("view engine", "ejs");
@@ -108,7 +117,7 @@ user_router.get("/",isBlocked,landing_page)
 .post("/removeReview",isBlocked,removeReview)
 .post("/removeFromWishList",isBlocked,removeFromWishList)
 .get("/averageRating",isBlocked,averageRating)
-.get("/searchProducts",isBlocked,searchProduct)
+.post("/searchProducts",isBlocked,searchProduct)
 
 
 // user_router.get('/auth/google', 
@@ -165,7 +174,13 @@ user_router
 .post('/cancelOneProduct',isBlocked,isLogin,cancelOneProduct)
 .post('/razorPayVerify',razorPaymentVerify)
 .post("/applycoupon",isBlocked,isLogin,applycoupon)
+.post("/return-request",isBlocked,isLogin,returnRequest)
 
+////////////////////////wallet///////////////
+user_router
+.get("/wallet",isBlocked,isLogin,load_wallet)
+.post("/addToWallet",isBlocked,isLogin,addToWallet)
+.post("/walletRazorPayVerify",walletRazorPayVerify)
 
 
 

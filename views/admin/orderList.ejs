@@ -45,8 +45,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <% if (orders && orders.length > 0) { %>
-                                        <% orders.forEach(orderData => { %>
+                                    <%
+                                    if (orders && orders.length > 0) {
+                                        for (let i = orders.length - 1; i >= 0; i--) {
+                                            const orderData = orders[i];
+                                %>
                                             <tr>
                                                 <td><%= orderData.orderNumber %></td>
                                                 <td><b><%= orderData.userId.username %></b></td>
@@ -56,24 +59,25 @@
                                                 <td><%= orderData.orderDate %></td>
                                                 <td><%= orderData.payment %></td>
                                                 <td class="text-end">
+                                                    <a href="/admin/orderDetails?orderId=<%=orderData._id%>">
+                                                        <button class="btn btn-secondary" type="button"  data-bs-toggle="dropdown" aria-expanded="false">
+                                                            Details
+                                                        </button>
+                                                    </a>
                                                 
-                                                        <a href="/admin/orderDetails?orderId=<%=orderData._id%>"><button class="btn btn-secondary" type="button"  data-bs-toggle="dropdown" aria-expanded="false">
-                                                       Details
-                                                        </button></a>
-                                                        <!-- <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            <li><a class="dropdown-item" href="#">View Detail</a></li>
-                                                            <li><a class="dropdown-item" href="#">Edit Info</a></li>
-                                                            
-                                                        </ul> -->
-                                                    
                                                 </td>
                                             </tr>
-                                        <% }) %>
-                                    <% } else { %>
+                                <%
+                                        }
+                                    } else {
+                                %>
                                         <tr>
                                             <td colspan="7">No orders found</td>
                                         </tr>
-                                    <% } %>
+                                <%
+                                    }
+                                %>
+                                
                                 </tbody>
                             </table>
                         </div>

@@ -627,14 +627,25 @@ const submitReview = async (req, res) => {
 
 
 
-const searchProduct=async(req,res)=>{
+const searchProduct = async (req, res) => {
   try {
-    console.log("hi");
-    console.log(req.body.product);
+  const { productData } = req.body;
+      if (productData && productData.length > 0) {
+          const searchingProduct = await product.find({ productName: { $regex: new RegExp(productData, 'i') } });
+          if (searchingProduct && searchingProduct.length > 0) {
+              res.json({ status: true, searchingProduct });
+          } else {
+              res.json({ status: false, messageNoProduct: "No matching products found" });
+          }
+      } else {
+          res.json({ status: false, message: "NO PRODUCT" });
+      }
   } catch (error) {
-    console.log(error)
+      console.error("Error:", error);
+      res.status(500).json({ status: false, message: "Internal server error" });
   }
-}
+};
+
 
 module.exports = {
   landing_page,

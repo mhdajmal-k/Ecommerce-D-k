@@ -47,13 +47,17 @@ const order_schema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  couponDiscount:{
+    type:Number,
+    default:0
+  },
   orderDate: {
     type: Date,
     default: Date.now,
   },
   status: {
     type: String,
-    enum: ["pending", "Confirmed", "shipped", "Delivered","Canceled","Payment "],
+    enum: ["pending", "Confirmed", "shipped", "Delivered","Canceled","Payment","Returned","Pending Return Request"],
     default: "pending",
   },
   shippingAddress: {

@@ -28,6 +28,32 @@
 .stars:hover {
     color: gold;
 }
+
+.search-results {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    padding: 10px;
+}
+
+.product {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.product:hover {
+    background-color: #f0f0f0;
+}
+
+.search-error {
+    color: red;
+    padding: 10px;
+}
+
    </style>
     
 </head>
@@ -234,15 +260,9 @@
                         <a href="/"><span style="font-size: 40px; font-weight: bolder; color:#095a40;">Duck & wave</span></a>
                     </div>
                     <div class="header-right">
-                        <div class="search-style-2">
-                            <form action="#">
-                                <select class="select-active">
-                                    <option>Men's</option>
-                                    
-                                </select>
-                                <input type="text" id="searchProduct" placeholder="Search for items...">
-                            </form>
-                        </div>
+                        <input type="text" id="searchProduct" placeholder="Search for items...">
+                    </div>
+                    
                         <div class="header-action-right">
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
@@ -297,9 +317,12 @@
                             </div>
                         </div>
                     </div>
+                    <div id="searchResult" class="search-results"  style="display: none;"
+                    ></div>
                 </div>
             </div>
         </div>
+      
         <div class="header-bottom header-bottom-bg-color sticky-bar">
             <div class="container">
                 <div class="header-wrap header-space-between position-relative">
@@ -373,9 +396,9 @@
                                     <li><a class="active" href="/">Home</a>
                         
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <a href="page-about.html">About</a>
-                                    </li>
+                                    </li> -->
                                     <li><a href="/shop">Shop </a>
             
                                     </li>
@@ -504,20 +527,81 @@
     </header>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded",()=>{
-            const searchProduct=document.getElementById("searchProduct")
-            searchProduct.addEventListener("input",()=>{
-                alert(searchProduct.value)
-                const product=searchProduct.value
-                alert(product)
-                $.ajax({
-                    url:"/searchProducts",
-                    method:"get",
-                    data:{
-                        product:product
-                    }
+       $(document).ready(function() {
+    const searchProductInput = $("#searchProduct");
 
-                })
-            })
-        })
+    function debounce(func, delay) {
+        let timer;
+        return function() {
+            const context = this;
+            const args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function() {
+                func.apply(context, args);
+            }, delay);
+        };
+    }
+
+    function searchProduct(product) {
+        $.ajax({
+            url: "/searchProducts",
+            method: "post",
+            data: {
+                productData: product
+            },
+            success: function(response) {
+                if(response.status) {
+                   
+                    displaySearchProduct(response.searchingProduct);
+                } else {
+                    displaySearchError(response.message);
+                    setTimeout(() => {
+                        
+                        document.getElementById("searchResult").style.display="none"
+                    }, 2000);
+                }
+            },
+            error: function(xhr, status, error) {
+                displaySearchError("Error fetching products");
+            }
+        });
+    }
+
+    function displaySearchProduct(products) {
+        let resultHtml = '';
+        if (products.length > 0) {
+            products.forEach(function(product) {
+
+                resultHtml += '<div class="product" data-id="' + product._id + '">' + product.productName + '</div>';
+            });
+            $('#searchResult').html(resultHtml).show();
+        } else {
+            resultHtml = "<div>No products found</div>";
+            // $('#searchResult').html(resultHtml).hide()
+setTimeout(() => {
+    
+    document.getElementById("searchResult").style.display="none"
+}, 2000);
+        }
+        
+        $('#searchResult').html(resultHtml);
+        
+    }
+
+    function displaySearchError(message) {
+        $('#searchResult').html('<div class="search-error">' + message + '</div>');
+    }
+
+    $(document).on('click', '.product', function() {
+        var productId = $(this).data('id');
+        window.location.href = "/shopProduct?id=" + productId;
+    });
+
+    const debounceSearchProduct = debounce(searchProduct, 300);
+
+    searchProductInput.on("keyup", function() {
+        debounceSearchProduct($(this).val());
+    });
+});
+
     </script>
