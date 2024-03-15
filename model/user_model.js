@@ -32,7 +32,10 @@ const user_schema = new Schema({
   is_verified:{
     type:Number,
     default:0
-  }
+  },
+  referral:{
+      type:String
+    }
 });
 
 const user=mongoose.model("users",user_schema)

@@ -1,0 +1,44 @@
+<%- include ("../partilas/admin") -%>
+<div class="container mt-4">
+    <h1>Ratings</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Product ID</th>
+                    <th>User ID</th>
+                    <th>Rating</th>
+                    <th>Review</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% review.forEach(function(rating) { %>
+                    <tr>
+                        <td><%= rating.productId.productName %></td>
+                        <td>
+                            <% if (rating.userId && rating.userId.username) { %>
+                                <%= rating.userId.username %>
+                            <% } else { %>
+                                N/A
+                            <% } %>
+                        </td>
+                        <td><%= rating.rating %></td>
+                        <td><%= rating.review %></td>
+                        <td><%= rating.createdAt.toLocaleString() %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+            
+        </table>
+    </div>
+</div>
+<script src="/asset/js/vendors/jquery-3.6.0.min.js"></script>
+<script src="/asset/js/vendors/bootstrap.bundle.min.js"></script>
+<script src="/asset/js/vendors/select2.min.js"></script>
+<script src="/asset/js/vendors/perfect-scrollbar.js"></script>
+<script src="/asset/js/vendors/jquery.fullscreen.min.js"></script>
+<!-- Main Script -->
+<script src="/asset/js/main.js" type="text/javascript"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

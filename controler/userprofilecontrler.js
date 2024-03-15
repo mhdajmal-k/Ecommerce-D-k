@@ -256,7 +256,7 @@ const changePassword = async (req, res) => {
           return res.status(404).json({ error: "User not found" });
       }
 
-      // Check if the current password provided by the user matches the stored password
+      
       const passwordMatch = await bcrypt.compare(currentPassword, userData.password);
       console.log(passwordMatch,":currentPassword");
 
@@ -265,15 +265,15 @@ const changePassword = async (req, res) => {
           return res.json({ status: "invalid password" });
       }
 
-      // Hash the new password
+  
       const hashedPassword = await securePassword(newPassword);
 
       if (hashedPassword) {
-          // Update the user's password with the new hashed password
+
           userData.password = hashedPassword;
           await userData.save();
           
-          // Clear session data
+      
           req.session.userId = null;
           req.session.user = false;
 

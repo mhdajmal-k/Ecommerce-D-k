@@ -3,23 +3,30 @@
   <div class="container">
     <h2 class="mt-4 mb-4 text-center">Sales Report</h2>
     <div class="flex mb-30" style="display: flex; justify-content: space-evenly; align-items: center;">
-      <p>Stating-Date <input type="date">
-      </p>
-      <p>Ending-Date <input type="date">
-      </p>
+      <div>
+        
+        <p>Custom Date <input type="date" id="customDate">
+        </p> 
+        <BUtton class="btn btn-success ml-100" id="costomDateSubmit" >Submit</BUtton>
+      </div>
 
-      <p class="btn btn-light">
+     
+
+      <p class="btn btn-light" id="today">
         Today Sales
       </p>
-      <p class="btn btn-light">
+      <p class="btn btn-light" id="weekly">
         Weekly
       </p>
-      <p class="btn btn-light">
+      <p class="btn btn-light" id="Monthly">
+       Monthly
+      </p>
+      <p class="btn btn-light" id="year">
         year
       </p>
     </div>
-    <div class="table-responsive container">
-      <table class="table table-striped">
+    <div class="table-responsive container" id="salesTableResposive">
+      <table class="table table-striped" id="salesTable">
         <thead>
           <tr>
             <th>Date</th>
@@ -32,7 +39,7 @@
             <th>Total Sales (Rs)</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="salesTableBody">
           <% if (salereport && salereport.length> 0) { %>
             <% salereport.forEach(order=> { %>
               <% order.items.forEach(item=> { %>
@@ -72,11 +79,11 @@
         </tbody>
       </table>
       <div class="container mb-30"  style="display: flex; justify-content:end; ">
-      <div >
-        <button class="btn btn-success" style="margin-right: 80px;"> Download PDF </button>
-        <button class="btn btn-success"> Download to Excel </button>
       </div>
-    </div>
+    </div> 
+    <div class="text-end" >
+      <button class="btn btn-success" style="margin-right: 80px;" id="pdfButton"> Download PDF </button>
+      <!-- <button class="btn btn-success"> Download to Excel </button> -->
     </div>
   </div>
 
@@ -88,4 +95,170 @@
   <script src="/asset/js/vendors/chart.js"></script>
   <!-- Main Script -->
   <script src="/asset/js/main.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
   <script src="/asset/js/custom-chart.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script>
+    
+    const today=document.getElementById("today")
+    today.addEventListener("click",()=>{
+      axios({
+  method: 'get',
+  url: '/admin/sortSalesReport?sortby=today',
+  
+})
+  .then(function (response) {
+
+  console.log(response.data.saleData);
+  const data=response.data.saleData
+  appendingData(data)
+
+  
+  }).catch((error)=>{
+    console.log(error);
+  })
+    })
+
+
+    const weeklyButton = document.getElementById("weekly");
+    weeklyButton.addEventListener("click", () => {
+        axios({
+            method: 'get',
+            url: '/admin/sortSalesReport?sortby=weekly',
+        })
+        .then(function (response) {
+            const data = response.data.saleData;
+            appendingData(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    });
+
+    const MonthlyButton = document.getElementById("Monthly");
+    MonthlyButton.addEventListener("click", () => {
+        axios({
+            method: 'get',
+            url: '/admin/sortSalesReport?sortby=Monthly',
+        })
+        .then(function (response) {
+            const data = response.data.saleData;
+            appendingData(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    });
+
+    const yearlyButton = document.getElementById("year");
+    yearlyButton.addEventListener("click", () => {
+        axios({
+            method: 'get',
+            url: '/admin/sortSalesReport?sortby=yearly',
+        })
+        .then(function (response) {
+            const data = response.data.saleData;
+            appendingData(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    });
+
+    const customButton = document.getElementById("customDate");
+   customButton.addEventListener("click", () => {
+        axios({
+            method: 'get',
+            url: '/admin/sortSalesReport?sortby=yearly',
+        })
+        .then(function (response) {
+            const data = response.data.saleData;
+            appendingData(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    });
+
+    const costomDateSubmit=document.getElementById("costomDateSubmit")
+    costomDateSubmit.addEventListener("click",()=>{
+    
+      const date=customDate.value
+      if(date==""){
+        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top",
+                            showConfirmButton: false,
+                            timer: 1000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "warning",
+                            title: "invalid date"
+                        });
+                      
+      }else{
+         axios({
+            method: 'get',
+            url: `/admin/sortSalesReport?sortby=customDate&date=${date}`,
+        })
+        .then(function (response) {
+            const data = response.data.saleData;
+            appendingData(data);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+      }
+    })
+    
+
+
+
+const pdfButton=document.getElementById("pdfButton")
+pdfButton.addEventListener("click",()=>{
+  console.log("hihihihih");
+  const salesTableResposive=document.getElementById("salesTableResposive")
+  console.log(salesTableResposive,"it table data")
+  html2pdf().from(salesTableResposive).save();
+
+})
+
+
+
+
+
+    function appendingData(data) {
+ 
+        const tableBody = document.getElementById('salesTableBody');
+        tableBody.innerHTML = ''; 
+
+        if (data && data.length > 0) {
+            data.forEach(order => {
+                order.items.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${new Date(order.orderDate).toLocaleDateString()}</td>
+                        <td>${order.orderNumber}</td>
+                        <td>${order.userId.username}</td>
+                        <td>${item.product.productName}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.price}</td>
+                        <td>${order.couponDiscount}</td>
+                        <td>${item.quantity * item.price}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            });
+        } else {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="8" class="text-center">No sales data</td>'; 
+            tableBody.appendChild(row);
+        }
+    }
+  </script>

@@ -283,7 +283,7 @@
 
                                         </div>
                                         <div class="product-price">
-                                            <strong style="font-size: xx-large;"> RS-<%= products.sellingPrice %>
+                                            <strong style="font-size: xx-large;"> RS    <%= products.sellingPrice %>
                                             </strong>
                                             <span class="old-price " style="text-decoration: line-through">
                                                 <%= products.price %>
@@ -315,7 +315,7 @@
                                                     <%= products.size[J].size %>: Out of stock
                                                 </p>
                                                 <% } else if(products.size[J].quantity<10) { %>
-                                                    <%= products.size[J].size %>: <span style="color: red;">Low Stock (
+                                                    <%= products.size[J].size %>: <span style="color: rgb(113, 183, 0);">Low Stock (
                                                             <%= products.size[J].quantity %>)</span>
 
                                                         <% } %>
@@ -779,7 +779,7 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            let selectedRating = 0; // Variable to store the selected rating
+            let selectedRating = 0; 
 
             const stars = document.querySelectorAll('.stars');
             const feedbackDiv = document.getElementById('feedback');

@@ -190,7 +190,7 @@
 
 
                         <div class="product-grid-3 row">
-                            <% if (product&&product.length>0) { %>
+                            <% if (product&&product.items.length>0) { %>
                                 <% product.items.forEach(element=> { %>
                                     <div id="<%= element.productId._id %>" class="col-lg-3 col-md-4">
                                         <div class="product-cart-wrap mb-30" style=" width: 250px; 

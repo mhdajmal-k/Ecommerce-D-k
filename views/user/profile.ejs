@@ -1,4 +1,5 @@
-﻿<%- include ("../partilas/userheader") -%>
+﻿
+<%- include ("../partilas/userheader") -%>
     <div class="mobile-header-active mobile-header-wrapper-style">
         <div class="mobile-header-wrapper-inner">
             <div class="mobile-header-top">
@@ -263,6 +264,12 @@
                                                 <a href="#">recent orders</a> -->
                                             </div>
                                         </div>
+                                    </div>
+                                    <div id="container card" style="margin-top: 50px;">
+                                        <h6 class="card-header">Referral Code</h6>
+                                        <input type="text" width="500px" style="font-size: xx-large;" readonly id="referral-code" value="<%= user.referral %>">
+                                        <button class="btn btn-secondary mt-10" id="copy-button">Copy to Click board</button>
+                                        <h6 class="p-30">Refer your friends to get a chance to win wallet amount RS 500!</h6>
                                     </div>
                                     <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                                         <div class="card">
@@ -631,6 +638,33 @@
     <script>
 
         document.getElementById("submitId").addEventListener("click", resetPassword);
+
+
+        function copyReferralCode() {
+            var referralCodeInput = document.getElementById("referral-code");
+            referralCodeInput.select();
+            referralCodeInput.setSelectionRange(0,6)
+            document.execCommand("copy");
+            const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: "top",
+                                    showConfirmButton: false,
+                                    timer: 2000,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.onmouseenter = Swal.stopTimer;
+                                        toast.onmouseleave = Swal.resumeTimer;
+                                    }
+                                });
+                                Toast.fire({
+                                    icon: "success",
+                                    title: "Copied to Click board"
+                                })
+        }
+
+        document.getElementById("copy-button").addEventListener("click", copyReferralCode);
+
+
 
         function resetPassword() {
 

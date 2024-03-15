@@ -15,7 +15,7 @@ const path = require("path");
 const load_products = async (req, res) => {
   try {
     const productData = await product.find({}).populate("categoryId");
-    
+
     res.render("productList", { products: productData });
   } catch (error) {
     console.log(error.message);
@@ -246,8 +246,7 @@ const delete_product = async (req, res) => {
   }
 };
 
-
-//delete image 
+//delete image
 const delete_image = async (req, res) => {
   try {
     const { imageId, productId } = req.body;
@@ -255,7 +254,7 @@ const delete_image = async (req, res) => {
       $pull: { image: imageId },
     });
     const imagePath = path.join("uploads", "products", imageId);
-    console.log("IMAGE pATH:",imagePath);
+    console.log("IMAGE pATH:", imagePath);
     await unlinkAsync(imagePath);
     if (products) {
       res.json({ status: true });

@@ -11,7 +11,7 @@ const orderController=require("../controler/ordercontroler")
 const wallet_control=require("../controler/wallet_control")
 
 
-// isBlocked()
+
 //=============================user controller
 const {
   load_login,
@@ -42,7 +42,6 @@ const {
   removeFromWishList,
   averageRating,
   searchProduct
-
 } = userController;
 
 //=============================
@@ -73,7 +72,8 @@ const {
   cancelOrder,
   razorPaymentVerify,
   applycoupon,
-  returnRequest
+  returnRequest,
+  generatePdf
 }=orderController
 
 
@@ -89,11 +89,16 @@ const {
 
 user_router.set("view engine", "ejs");
 user_router.set("views", "./views/user");
+   
+
+
+//==================================  user controller================================
+
 
 user_router.get("/",isBlocked,landing_page)
 .get("/login",isBlocked, isLogout, load_login)
 .get("/signup",isBlocked, isLogout,load_signup)
-.post("/signup", isLogout, submit_signup)
+.post("/signup",isBlocked, isLogout, submit_signup)
 .get("/otp_verification", isLogout,otp_verification)
 .post("/otp_verification", isLogout, otp_submit)
 .get("/resendOtp", isLogout,resendOtp)
@@ -131,10 +136,11 @@ user_router.get("/",isBlocked,landing_page)
 
 
 
-//////////////user profile///////////////////
 
 
 
+
+//==================================  userprofile controller================================
 
 
 user_router
@@ -153,8 +159,7 @@ user_router
 
 
 
-//////////////////// cart ///////////////
-
+//==================================  cart controller================================
 
 user_router
 .get("/cart",isBlocked,isLogin,load_cart)
@@ -162,8 +167,7 @@ user_router
 .get("/removeItem",isBlocked,isLogin,removeItem)
 .post("/decrementQuantity",isBlocked,isLogin,changeQuantity)
 
-
-///////////////order //////////////
+//==================================  order controller================================
 
 user_router
 .get('/checkOut',isBlocked,isLogin,load_checkout)
@@ -175,8 +179,9 @@ user_router
 .post('/razorPayVerify',razorPaymentVerify)
 .post("/applycoupon",isBlocked,isLogin,applycoupon)
 .post("/return-request",isBlocked,isLogin,returnRequest)
+.post("/generate-pdf",isBlocked,isLogin,generatePdf)
+//==================================  wallet controller================================
 
-////////////////////////wallet///////////////
 user_router
 .get("/wallet",isBlocked,isLogin,load_wallet)
 .post("/addToWallet",isBlocked,isLogin,addToWallet)

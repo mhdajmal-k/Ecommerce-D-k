@@ -12,11 +12,12 @@ const compression = require('compression')
 
 
 // const passport=require("passport")
+
 dbConnect()
 
 
 
-//session
+////////session
 app.use(session({
    secret:process.env.session,
     resave:false,
@@ -32,12 +33,13 @@ app.use(nocache())
 app.use(express.json())
 app.use(flash())
 app.use(express.urlencoded({extended:true}))
+app.use(morgan("dev"))
 
 
 //static files
 app.use(express.static(path.join(__dirname,'public')));
 app.use("/uploads",express.static(path.join(__dirname,'/uploads')));
-app.use(morgan("dev"))
+
 
 
 //routers
@@ -56,15 +58,14 @@ app.use("/*",(req,res)=>{
  
 })
 
-//error
-
+///////Error Handling Middleware
 app.use((err, req, res, next) => {
     console.error('An error occurred:', err);
     res.status(500).send('Internal Server Error');
 });
 
 
-//port
+///////port
  const port=process.env.port||3001
 app.listen(port,()=>{
     console.log(`server is ready${port}`)

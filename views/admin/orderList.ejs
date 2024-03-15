@@ -1,25 +1,25 @@
 <%- include ("../partilas/admin") %>
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title text-center" >Order List </h2>
-                   
-                </div>
-                
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title text-center">Order List </h2>
+
             </div>
-            <div class="card mb-4">
-                <header class="card-header">
-                    <div class="row gx-3">
-                       
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
-                            </select>
-                        </div>
-                        <!-- <div class="col-lg-2 col-6 col-md-3">
+
+        </div>
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row gx-3">
+
+                    <div class="col-lg-2 col-6 col-md-3">
+                        <select class="form-select">
+                            <option>Status</option>
+                            <option>Active</option>
+                            <option>Disabled</option>
+                            <option>Show all</option>
+                        </select>
+                    </div>
+                    <!-- <div class="col-lg-2 col-6 col-md-3">
                             <select class="form-select">
                                 <option>Show 20</option>
                                 <option>Show 30</option>
@@ -27,91 +27,145 @@
                             </select>
                         </div>
                     </div> -->
-                </header> <!-- card-header end// -->
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Total</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">payment</th>
-                                        <th scope="col" class="text-end">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <%
-                                    if (orders && orders.length > 0) {
-                                        for (let i = orders.length - 1; i >= 0; i--) {
-                                            const orderData = orders[i];
-                                %>
-                                            <tr>
-                                                <td><%= orderData.orderNumber %></td>
-                                                <td><b><%= orderData.userId.username %></b></td>
-                                                <td><%= orderData.userId.email %></td>
-                                                <td><%= orderData.totalAmount %></td>
-                                                <td><span class="badge bg-warning text-dark"><%= orderData.status %></span></td>
-                                                <td><%= orderData.orderDate %></td>
-                                                <td><%= orderData.payment %></td>
-                                                <td class="text-end">
-                                                    <a href="/admin/orderDetails?orderId=<%=orderData._id%>">
-                                                        <button class="btn btn-secondary" type="button"  data-bs-toggle="dropdown" aria-expanded="false">
-                                                            Details
-                                                        </button>
-                                                    </a>
-                                                
-                                                </td>
-                                            </tr>
-                                <%
-                                        }
-                                    } else {
-                                %>
+            </header> <!-- card-header end// -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">payment</th>
+                                    <th scope="col" class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (orders && orders.length> 0) {
+                                    for (let i = 0; i <orders.length; i++) { const orderData=orders[i]; %>
                                         <tr>
-                                            <td colspan="7">No orders found</td>
+                                            <td>
+                                                <%= orderData.orderNumber %>
+                                            </td>
+                                            <td><b>
+                                                    <%= orderData.userId.username %>
+                                                </b></td>
+                                            <td>
+                                                <%= orderData.userId.email %>
+                                            </td>
+                                            <td>
+                                                <%= orderData.totalAmount %>
+                                            </td>
+
+                                            <% if (orderData.status=="pending" ) { %>
+                                                <td><span class="badge bg-warning text-dark">Pending</span></td>
+                                                <% } else if (orderData.status=="Confirmed" ) { %>
+                                                    <td><span class="badge bg-primary">Confirmed</span></td>
+                                                    <% } else if (orderData.status=="shipped" ) { %>
+                                                        <td><span class="badge bg-info text-white">Shipped</span></td>
+                                                        <% } else if (orderData.status=="Delivered" ) { %>
+                                                            <td><span class="badge bg-success">Delivered</span></td>
+                                                            <% } else if (orderData.status=="pending" ) { %>
+                                                                <td><span
+                                                                        class="badge bg-warning text-dark">Pending</span>
+                                                                </td>
+                                                                <% } else if (orderData.status=="Returned" ) { %>
+                                                                    <td><span
+                                                                            class="badge bg-secondary text-white">Returned</span>
+                                                                    </td>
+                                                                    <% } else if (orderData.status=="Canceled" ) { %>
+                                                                        <td><span
+                                                                                class="badge bg-danger">Canceled</span>
+                                                                        </td>
+                                                                    <% } else if (orderData.status=="shipped" ) { %>
+                                                                        <td><span
+                                                                                class="badge bg-light">Shipped</span>
+                                                                        </td>
+                                                                        <% } else { %>
+                                                                            <td><span
+                                                                                    class="badge bg-secondary text-white">Pending
+                                                                                    Return Request</span></td>
+                                                                            <% } %>
+
+
+
+                                                                                <td>
+                                                                                    <%= orderData.orderDate %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= orderData.payment %>
+                                                                                </td>
+                                                                                <td class="text-end">
+                                                                                    <a
+                                                                                        href="/admin/orderDetails?orderId=<%=orderData._id%>">
+                                                                                        <button
+                                                                                            class="btn btn-secondary"
+                                                                                            type="button"
+                                                                                            data-bs-toggle="dropdown"
+                                                                                            aria-expanded="false">
+                                                                                            Details
+                                                                                        </button>
+                                                                                    </a>
+
+                                                                                </td>
                                         </tr>
-                                <%
-                                    }
-                                %>
-                                
-                                </tbody>
-                            </table>
-                        </div>
+                                        <% } } else { %>
+                                            <tr>
+                                                <td colspan="7">No orders found</td>
+                                            </tr>
+                                            <% } %>
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                
-                
-            <div class="pagination-area mt-15 mb-50">
+            </div>
+
+
+            <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
                 <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-start">
-                        <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                        <li class="page-item"><a class="page-link" href="#">02</a></li>
-                        <li class="page-item"><a class="page-link" href="#">03</a></li>
-                        <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#">16</a></li>
-                        <li class="page-item"><a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a></li>
+                    <ul class="pagination justify-content-center">
+
+                        <% if (currentPage> 1) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="/admin/listOrders?page=<%= currentPage - 1 %>"
+                                    aria-label="Previous">
+                                    < <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <% } %>
+
+                                <% for (let i=1; i <=totalPage; i++) { %>
+                                    <li class="page-item <%= i == currentPage ? 'active' : '' %>">
+                                        <a class="page-link" href="/admin/listOrders?page=<%= i %>">
+                                            <%= i %>
+                                        </a>
+                                    </li>
+                                    <% } %>
+
+
                     </ul>
                 </nav>
             </div>
-        </section> <!-- content-main end// -->
-        <footer class="main-footer font-xs">
-            <div class="row pb-30 pt-15">
-                <div class="col-sm-6">
-                    <script>
+    </section> <!-- content-main end// -->
+    <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+            <div class="col-sm-6">
+                <script>
                     document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end">
-                        All rights reserved
-                    </div>
+                </script> ©, Evara - HTML Ecommerce Template .
+            </div>
+            <div class="col-sm-6">
+                <div class="text-sm-end">
+                    All rights reserved
                 </div>
             </div>
-        </footer>
+        </div>
+    </footer>
     </main>
     <script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
@@ -120,6 +174,6 @@
     <script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="assets/js/main.js" type="text/javascript"></script>
-</body>
+    </body>
 
-</html>
+    </html>

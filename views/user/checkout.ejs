@@ -407,15 +407,16 @@
                         </div>
 
                         <button class="btn btn-fill-out btn-block mt-30" id="placeOrderButton"
-                            style="text-align: center; display: flex; justify-content: center; width: 100%; font-size:larger;">Place
+                            style=" display: flex;margin-left: 25%; border-radius: 10px;
+                            justify-content: center; width: 50%; font-size:larger;">Place
                             Order</button>
                     </div>
                 </div>
                 <!-- <div class="row"> -->
-                <div>
+                <div class="container">
                     <a href="/addAddress" class="btn mt-10">New Address</a>
-                </div>
-                <div class="row p-30 mt-5">
+             
+                <div class="row">
                     <% if (userAddress) { %>
                         <% for (let i=0; i < userAddress.length; i++) { %>
                             <div class="col-lg-6 mt-50">
@@ -468,6 +469,7 @@
                             <% } %>
                                 <% } %>
                 </div>
+            </div>
             </div>
 
 
@@ -529,11 +531,11 @@
 
             //////////////////////////////////// PALACE ORDER///////////////////////////////////////////
             document.getElementById("placeOrderButton").addEventListener("click",async () => {
-    let id; // Declare id outside the if block
+    let id; 
     if(localStorage.getItem("coupon")){
         const couponData = localStorage.getItem("coupon");
         const couponId = JSON.parse(couponData);
-        id = couponId.id; // Assign id here
+        id = couponId.id; 
     }
     const userCartId = "<%= userCart._id %>";
     if (userCartId && id){
@@ -566,16 +568,9 @@
     } else {
     
         const totalAmount=orderTotal.innerHTML.trim()
-        alert(totalAmount)
         placeOrder(userCartId,totalAmount);
     }
 })
-
-          
-
-
-
-
             //////////////////////////////////APPLYING COUPON////////////////////////////////////////////
 
             function applyCoupon(id, couponDiscount, maximumDiscount, index) {
@@ -768,7 +763,7 @@
                                 timer: 3000
                             });
                             setTimeout(() => {
-                                location.reload()
+                                location.href="/cart"
                             }, 3100);
                         } else if (response.status == "order placed") {
                             localStorage.removeItem('coupon');
