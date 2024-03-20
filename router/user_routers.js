@@ -179,7 +179,8 @@ user_router
 .post('/razorPayVerify',razorPaymentVerify)
 .post("/applycoupon",isBlocked,isLogin,applycoupon)
 .post("/return-request",isBlocked,isLogin,returnRequest)
-.post("/generate-pdf",isBlocked,isLogin,generatePdf)
+.get("/generate-invoice",isBlocked,isLogin,generatePdf)
+
 //==================================  wallet controller================================
 
 user_router

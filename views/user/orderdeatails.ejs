@@ -37,7 +37,11 @@
             </div>
           </div>
           <div>
-            <a href="" class="btn btn-light" id="downloadInvoiceBtn">Download Invoice</a>
+         
+              <a   class="btn btn-success" href="/generate-invoice?id=<%= userOrder._id %>">View Invoice</a>
+          
+          
+            
           </div>
         </div>
         <% } %>
@@ -56,7 +60,7 @@
             </thead>
             <tbody>
               <% if (userOrder && userOrder.items.length> 0) { %> <% if (userOrder.status=="Delivered" ||
-                  userOrder.status=="Returned" || userOrder.status=="Canceled"  ) { %>
+                  userOrder.status=="Returned" || userOrder.status=="Canceled" || userOrder.status=="Pending Return Request" ) { %>
                   
                   <% } else { %>
                     <button class="btn btn-danger" onclick="cancelOrder('<%= userOrder._id %>')">
@@ -86,11 +90,7 @@
                         <td>
                           <%= item.price %>
                         </td>
-                        
-          
                         <td>
-                        
-                    
                           <% if (item.isCancelled == true) { %>
   Canceled
 <% } else if (userOrder.status == "Delivered") { %>
@@ -101,19 +101,14 @@
     Cancelled
   <% } else { %>
   Confirmed
-<% } %>
-
-          
-                              
-                        </td>
-                      
+<% } %>                        
+                        </td>                     
                         <td>
                           <%= userOrder.payment %>
                         </td>
                         <% if (item.isCancelled==true) { %>
 
-                          <% } else if (userOrder.status == "Canceled") { %>
-    Cancelled
+                          <% } else if (userOrder.status == "Canceled"||userOrder.status == "Pending Return Request"||userOrder.status == "Returned") { %>
                           <% } else { %>
                             <td class="action" data-title="Remove">
                               <a href="#"
@@ -350,34 +345,6 @@
         });
       }
 
-      function generatePDF() {
-        const invoiceHTML = document.querySelector('.table-responsive').outerHTML; // Extracting HTML content from the invoice table
-        $.ajax({
-          url: '/generate-pdf',
-          method: 'POST',
-          contentType: 'application/json',
-          data: JSON.stringify({ htmlContent: invoiceHTML }),
-          success: function (response) {
-            // Handle success response
-            if (response.success) {
-              // Optionally, you can provide a link to download the PDF
-              const downloadLink = document.createElement('a');
-              downloadLink.href = response.pdfUrl;
-              downloadLink.download = 'invoice.pdf';
-              downloadLink.click();
-            } else {
-              // Handle error response
-              console.error(response.error);
-            }
-          },
-          error: function (xhr, status, error) {
-            // Handle AJAX error
-            console.error(error);
-          }
-        });
-      }
 
-      // Event listener for generating PDF invoice
-      const downloadInvoiceBtn = document.getElementById('downloadInvoiceBtn');
-      downloadInvoiceBtn.addEventListener('click', generatePDF);
+
     </script>

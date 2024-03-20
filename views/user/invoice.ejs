@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duck & wave</title>
+
+    <!-- Favicon -->
+    
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="css/invoice.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<style>
+    .downloadbtn {
+        background-color: black;
+        color: white;
+        gap: 10px;
+        padding-left: 15px;
+        padding-right: 15px;
+        border-radius: 50px;
+    }
+
+    .backbtn {
+        background-color: rgb(255, 255, 255);
+        color: rgb(0, 0, 0);
+        border: 1px solid black;
+        padding-left: 15px;
+        padding-right: 15px;
+        border-radius: 50px;
+    }
+</style>
+
+<body>
+    <% if (userOrder) { %>
+        <div class="d-flex justify-content-between" style="margin: 50px;">
+            <button style="display: flex; align-items: center;" class="backbtn" onclick="back()">Back</button>
+            <button style="display: flex; align-items: center;" class="downloadbtn" onclick="download()">Download
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512">
+                    <path fill="#ffffff"
+                        d="M256 464a208 208 0 1 1 0-416 208 208 0 1 1 0 416zM256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM376.9 294.6c4.5-4.2 7.1-10.1 7.1-16.3c0-12.3-10-22.3-22.3-22.3H304V160c0-17.7-14.3-32-32-32l-32 0c-17.7 0-32 14.3-32 32v96H150.3C138 256 128 266 128 278.3c0 6.2 2.6 12.1 7.1 16.3l107.1 99.9c3.8 3.5 8.7 5.5 13.8 5.5s10.1-2 13.8-5.5l107.1-99.9z" />
+                </svg>
+            </button>
+        </div>
+
+
+
+        <section id="invoice" style="margin-top: -100px;">
+            <div class="container my-5 py-5">
+
+                <div class="text-center pb-5">
+                    <span style="font-size: 40px; font-weight: bolder; color:#095a40;">Duck & wave</span>
+                </div>
+
+                <div class="d-md-flex justify-content-between my-5">
+                    <div class="mt-5 mt-md-0">
+                        <p class="fw-bold " style="color:#095a40;">Invoice From</p>
+                        <h4>duck& wave</h4>
+                        <ul class="list-unstyled m-0">
+                            <li>Duck% wave </li>
+                            <li>duck123@gamil.com</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <!-- Update the 'Invoice To' section -->
+                        <p class="fw-bold " style="color:#095a40;">Invoice To</p>
+                        <h4>
+                            <%= userOrder.userId.username %>
+                        </h4>
+                        <ul class="list-unstyled m-0">
+                            <li>
+                                <%= userOrder.userId.email %>
+                            </li>
+                            <li>
+                                <%= userOrder.userId.mobile %>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+
+                <div
+                    class=" d-md-flex justify-content-between align-items-center border-top border-bottom border-primary">
+                    <h2 class="display-6 fw-bold m-0">Invoice</h2>
+
+                </div>
+
+                <div class="py-1">
+                    <table class="table table-striped border my-5">
+                        <thead>
+                            <tr>
+                                <th class="text-center" scope="col">Product name</th>
+                                <th class="text-center" scope="col">Price</th>
+                                <th class="text-center" scope="col">Quantity</th>
+                                <th class="text-center" scope="col">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <!-- Loop through items -->
+                            <% let subtotal = 0; %>
+<% userOrder.items.forEach(item => { %>
+    <tr class="text-center">
+        <td class="image product-thumbnail">
+            <img style="width: 50px;" src="/uploads/products/<%= item.product.image[1] %>" alt="#" />
+            <%= item.product.productName %>
+        </td>
+        <td>₹<%= item.price %>.00</td>
+        <td>
+            <%= item.quantity %>
+            <p>Size: <%= item.size %></p>
+        </td>
+        <% const total = item.price ; %>
+        <td>₹<%= total %>.00</td>
+    </tr>
+    <% subtotal += total; %>
+<% }); %>
+
+<tr class="text-center">
+    <td></td>
+    <td></td>
+    <td class="">Sub-Total</td>
+    <td>₹<%= subtotal %>.00</td>
+</tr>
+
+                                    <% if ( userOrder.couponDiscount !=0) { %>
+                                        <tr class="text-center">
+                                            <td></td>
+                                            <td></td>
+                                            <td class="">Coupon offer</td>
+                                            <td>₹<%= userOrder.couponDiscount %>.00</td>
+                                        </tr>
+                                        <% } %>
+                                            <tr class="text-center">
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-primary fs-5 fw-bold">Grand-Total</td>
+                                                <td class="text-primary fs-5 fw-bold">₹<%= userOrder.totalAmount %>.00
+                                                </td>
+                                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="d-md-flex justify-content-between my-5">
+
+                    <div>
+                        <h5 class="fw-bold my-4">Other Info</h5>
+                        <ul class="list-unstyled">
+                            <li><span class="fw-semibold">Order ID: </span>
+                                <%= userOrder.orderNumber %>
+                            </li>
+                            <li><span class="fw-semibold">Address: </span>
+                                <%= userOrder.shippingAddress.address %> , <%= userOrder.shippingAddress.locality %> ,
+                                        <%= userOrder.shippingAddress.state %> ,<%= userOrder.shippingAddress.pinCode %>
+                            </li>
+                            <li><span class="fw-semibold">Contact number: </span>
+                                <%= userOrder.shippingAddress.mobile %>
+                            </li>
+                            <li><span class="fw-semibold">Payment method: </span>
+                                <%= userOrder.payment %>
+                            </li>
+
+
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h5 class="fw-bold my-4">Contact Us</h5>
+                        <ul class="list-unstyled">
+                            <li><iconify-icon class="social-icon text-primary fs-5 me-2" icon="mdi:location"
+                                    style="vertical-align:text-bottom"></iconify-icon> Duck&wave</li>
+                            <li><iconify-icon class="social-icon text-primary fs-5 me-2" icon="solar:phone-bold"
+                                    style="vertical-align:text-bottom"></iconify-icon> +91 0000000000</li>
+                            <li><iconify-icon class="social-icon text-primary fs-5 me-2" icon="ic:baseline-email"
+                                    style="vertical-align:text-bottom"></iconify-icon> duck123@gmail.com</li>
+                        </ul>
+                    </div>
+
+
+                </div>
+
+                <div id="footer-bottom">
+                    <div class="container border-top border-primary">
+                        <div class="row mt-3">
+                            <div class="col-md-12 copyright text-center">
+                                <p>© duck&wave <a target="_blank" class="text-decoration-none text-black-50">Terms &
+                                        Conditions</a> </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <% } %>
+
+
+
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+                crossorigin="anonymous"></script>
+            <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+</body>
+<script>
+    function back() {
+        window.history.back()
+    }
+    function download() {
+        const data = document.getElementById("invoice");
+        html2pdf().from(data).save();
+    }
+</script>
+
+</html>

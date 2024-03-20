@@ -18,7 +18,11 @@ const {
   logout,
   load_saleReport,
   sortSalesReport,
-  load_review
+  load_review,
+  notificationViewed,
+  loadChart,
+
+ 
 } = admin_controller;
 
 //////////////////////////////////////////////////////
@@ -90,11 +94,13 @@ admin_router
   .get("/", login_load)
   .post("/", verify_login)
   .get("/dashboard", sessionChecker, Dashboard_load)
+  .post("/dashboard",sessionChecker,loadChart)
   .get("/userLoad", sessionChecker, userLoad)
   .post("/block_user", sessionChecker, userBlockUnblock)
   .get("/salereport", sessionChecker, load_saleReport)
   .get("/sortSalesReport", sessionChecker, sortSalesReport)
   .get("/Reviews",sessionChecker,load_review)
+  .post("/notificationViewed",sessionChecker,notificationViewed)
   .get("/logout", logout)
 
 //==================================  product admin controller================================

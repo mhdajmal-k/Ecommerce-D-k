@@ -36,6 +36,8 @@ const user_schema = new Schema({
   referral:{
       type:String
     }
+  
+    
 });
 
 const user=mongoose.model("users",user_schema)

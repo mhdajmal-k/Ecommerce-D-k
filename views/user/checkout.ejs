@@ -721,6 +721,18 @@
                     return;
                 }
                 const paymentOption = selectedPayment.value;
+                
+                    if(total>5000 &&paymentOption=="cod"){
+                        Swal.fire({
+                                title: "<span style='color: red;'>Cash On Delivery NO Available</span>",
+                                html: "<span style='color: BLACK;'>COD AVAILABLE ONLY RS  5000</span>",
+                                icon: "error",
+                                timer: 3000
+                            });
+                            return  
+                    }
+                   
+               
                 $.ajax({
                     url: "/placeOrder",
                     method: "post",

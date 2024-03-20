@@ -144,6 +144,48 @@
             <div class="col-nav">
                 <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
                 <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon" href="#" data-toggle="modal" data-target="#notificationModal">
+                            <i class="material-icons md-notifications animation-shake" id="notifications"></i>
+                            <% if (locals.notification) { %>
+                                <span class="badge rounded-pill"> <%=notification.length %></span>
+                            <% } %>
+                        </a>
+                    </li>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <% if (locals.notification && locals.notification.length > 0) { %>
+                                        <ul>
+                                            <% locals.notification.forEach(function(notification) { %>
+                                                <% notification.messages.forEach(function(message) { %>
+                                                    <li><%= message.message %></li>
+                                                    <input type="hidden" class="orderId" value="<%= message.orderId %>">
+                                                    <button class="btn btn-light notificatonViewd" data-notification-id="<%= notification._id %>" data-message-id="<%= message._id %>">View</button>
+                                                <% }); %>
+                                            <% }); %>
+                                        </ul>
+                                    <% } else { %>
+                                        <p>No notifications</p>
+                                    <% } %>
+                                </div>
+                                
+                                
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <li class="nav-item">
                         <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
@@ -163,15 +205,39 @@
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/asset/imgs/people/avatar2.jpg" alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
-                            <div class="dropdown-divider"></div>
+            
                             <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
                 </ul>
             </div>
         </header>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+     const notificationButtons = document.querySelectorAll(".notificatonViewd");
+
+notificationButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        const notificationId = button.getAttribute("data-notification-id");
+        const messageId = button.getAttribute("data-message-id");
+        const orderId = button.previousElementSibling.value; 
+
+        $.ajax({
+            url: "/admin/notificationViewed",
+            method: "POST",
+            data: { notificationId: notificationId, messageId: messageId },
+            success: function(response) {
+                if (response.status == true) {
+                    window.location.href = `/admin/orderDetails?orderId=${orderId}`;
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+});
+</script>

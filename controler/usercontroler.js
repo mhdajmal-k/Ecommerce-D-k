@@ -65,18 +65,22 @@ const landing_page = async (req, res) => {
         createdAt: -1,
       })
       .limit(4);
+      const categoryData= await category.find({})
+      console.log(categoryData,"it the category");
     if (user) {
       res.render("landing_page", {
         products: products,
         user: user,
         newArrival: newArrival,
         cartCount,
+        categoryData
       });
     } else {
       res.render("landing_page", {
         products: products,
         newArrival: newArrival,
         cartCount,
+        categoryData
       });
     }
     // if (products&&user) res.render("landing_page", { products: products,user:user });

@@ -6,6 +6,8 @@ const Category = require("../model/category");
 const Reviews=require("../model/rating_model")
 const session = require("express-session");
 const { render } = require("../router/admin_routers");
+const category = require("../model/category");
+const Notification=require("../model/notification")
 
 ////////////login page
 
@@ -50,6 +52,8 @@ const verify_login = async (req, res) => {
 
 const Dashboard_load = async (req, res) => {
   try {
+    let ordersCountForCurrentWeekByDay = {};
+
     const orders = await Order.find({
       status: { $in: ["Delivered", "shipped", "Confirmed"] },
     }).countDocuments();
@@ -66,7 +70,6 @@ const Dashboard_load = async (req, res) => {
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
-
     const endOfMonth = new Date();
     endOfMonth.setMonth(endOfMonth.getMonth() + 1);
     endOfMonth.setDate(0);
@@ -85,17 +88,143 @@ const Dashboard_load = async (req, res) => {
         },
       },
     ]);
+
+    let bestSellingProduct = [];
+
+    //best selling Product
+    const bestSellingProductData = await Order.aggregate([
+      {
+        $match: { status: "Delivered" },
+      },
+      {
+        $unwind: "$items",
+      },
+      {
+        $group: {
+          "_id": "$items.product",
+          "sum": { "$sum": "$items.quantity" }
+        }
+      },
+      { "$sort": { "sum": -1 } },
+      {
+        $group: {
+          _id: null,
+          "topSellingProduct": { $push: "$_id" }
+        }
+      }, {
+        $limit: 10
+      }
+    ]);
+
+    if (bestSellingProductData.length > 0) {
+      bestSellingProduct = bestSellingProductData[0].topSellingProduct;
+    }
+
+    const productDetails = await Product.find({ _id: { $in: bestSellingProduct } }).populate("categoryId");
+
+    //top selling category
+    const topSellingCategories = await Product.aggregate([
+      {
+        $match: {
+          _id: { $in: bestSellingProduct }
+        }
+      },
+      {
+        $group: {
+          _id: "$categoryId",
+          totalQuantity: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { totalQuantity: -1 }
+      },
+      {
+        $limit: 5
+      }
+    ]);
+
+    // Weekly chart
+    const notification = await Notification.find({});
+    console.log(notification, "its notifications");
+  
+
+    const topCategory = await category.find({ _id: topSellingCategories });
     res.render("adminDashboard", {
       orders,
       productCont,
       categories,
       totalSale,
       monthlySales,
+      productDetails,
+      topCategory,
+      notification
     });
   } catch (error) {
     console.log(error.message);
   }
 };
+
+
+const loadChart = async(req,res)=>{
+  try {
+    
+    
+let newOrder = await Order.find({});
+
+
+function countOrdersByDay(orders) {
+  const ordersCountByDay = {
+      "Sunday": 0,
+      "Monday": 0,
+      "Tuesday": 0,
+      "Wednesday": 0,
+      "Thursday": 0,
+      "Friday": 0,
+      "Saturday": 0
+  };
+
+  orders.forEach(order => {
+      const orderDate = new Date(order.orderDate);
+      const dayOfWeek = orderDate.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+      switch (dayOfWeek) {
+          case 0:
+              ordersCountByDay["Sunday"]++;
+              break;
+          case 1:
+              ordersCountByDay["Monday"]++;
+              break;
+          case 2:
+              ordersCountByDay["Tuesday"]++;
+              break;
+          case 3:
+              ordersCountByDay["Wednesday"]++;
+              break;
+          case 4:
+              ordersCountByDay["Thursday"]++;
+              break;
+          case 5:
+              ordersCountByDay["Friday"]++;
+              break;
+          case 6:
+              ordersCountByDay["Saturday"]++;
+              break;
+          default:
+              break;
+      }
+  });
+
+  return ordersCountByDay;
+}
+
+// Count of orders for each day of the week
+ ordersCountForCurrentWeekByDay = countOrdersByDay(newOrder);
+console.log("ordersCountForCurrentWeekByDay: ", ordersCountForCurrentWeekByDay);
+
+res.status(200).json({data:ordersCountForCurrentWeekByDay})
+  } catch (error) {
+    
+  }
+}
 
 ///////////////////////////////////
 
@@ -272,6 +401,41 @@ const logout = async (req, res) => {
 };
 ////////////////////////////
 
+const notificationViewed=async(req,res)=>{
+  try {
+    console.log(req.body);
+const {notificationId,messageId}=req.body
+    const notification = await Notification.findById(notificationId);
+    if (!notification) {
+      console.log("Notification not found");
+      return;
+    }
+
+    const messageIndex = notification.messages.findIndex(message => message._id.toString() === messageId);
+    if (messageIndex === -1) {
+      console.log("Message not found in the notification");
+      return;
+    }
+
+    notification.messages.splice(messageIndex, 1);
+    if (notification.messages.length === 0) {
+      await Notification.findByIdAndDelete(notificationId);
+      console.log("Notification removed as it had no messages");
+    } else {
+      await notification.save();
+      console.log("Message removed successfully from the notification");
+    }
+
+    console.log("Message removed successfully from the notification");
+    
+    res.json({status:true})
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+
 module.exports = {
   login_load,
   verify_login,
@@ -281,5 +445,8 @@ module.exports = {
   logout,
   load_saleReport,
   sortSalesReport,
-  load_review
+  load_review,
+  notificationViewed,
+  loadChart
+
 };

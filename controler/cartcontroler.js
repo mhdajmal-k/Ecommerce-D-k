@@ -64,7 +64,7 @@ const addCart = async (req, res) => {
   try {
     const maximumQuantityToBuy = 5;
     const { productId, size, quantity } = req.body;
-    const users = req.session.userId;
+    const users = req.session.userId; 
     if (!users) {
       return res.json({ status: false });
     }

@@ -146,7 +146,6 @@ const editProduct = async (req, res) => {
       description,
       categories,
     } = req.body;
-
     if (req.files && req.files.length > 0) {
       const images = req.files.map((file) => file.filename);
 

@@ -11,6 +11,10 @@ const crypto = require("crypto");
 const Wallet=require("../model/wallet")
 const{ Transaction}=require("../model/transaction")
 const { log } = require("console");
+const easyinvoice = require('easyinvoice');
+const fs = require('fs');
+const Notification=require("../model/notification")
+const path=require("path")
 
 ////////////////////////RAZORpAY INSTANCE CREATION/////////////////////////////
 
@@ -455,36 +459,57 @@ const applycoupon = async (req, res) => {
 
 ///////////////////////return//////////////////
 
+
 const returnRequest = async (req, res) => {
   try {
     const { reason, userOrder } = req.body;
-    const userOrderData = await Order.findById(userOrder);
-    console.log(userOrderData);
+    const userId = req.session.userId;
+
+    // Update the order status and reason for cancellation
+    const userOrderData = await Order.findById(userOrder).populate('userId');
     userOrderData.reasonForCancel = reason;
     userOrderData.status = "Pending Return Request";
     await userOrderData.save();
+
+  
+    const notificationMessage = `One order (${userOrderData.userId.email}) has a pending return request due to ${reason}`;
+
+    const newNotification = new Notification({
+      userId: userId, 
+      messages: [{
+        orderId: userOrder,
+        message: notificationMessage,
+        topic: "Return Request"
+      }]
+    });
+    await newNotification.save();
     res.json({ status: true });
+
   } catch (error) {
     console.log(error.message);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
+  
 
 
-const generatePdf=async(req,res)=>{
-  console.log(req.body);
-  const { htmlContent } = req.body;
-    const fileName = 'invoice.pdf'; // Name of the PDF file
 
-    pdf.create(htmlContent).toFile(fileName, (err, result) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ success: false, error: 'Failed to generate PDF' });
-        }
+async function generatePdf(req, res) {
+  try {
+    console.log("hi");
+    console.log(req.query);
+    const {id}=req.query
+    const userOrder=await Order.findById({_id:id}).populate("userId").populate("items.product")
+    console.log(userOrder);
+    res.render("invoice",{userOrder})
 
-       
-        res.status(200).json({ success: true, pdfUrl: pdfUrl });
-    });
+    // res.render("invoice")
+  } catch (error) {
+    console.log(error.message)
+  }
+  
 }
+
 
 ////////////////////////////////////
 module.exports = {

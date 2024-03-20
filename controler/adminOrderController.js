@@ -30,6 +30,7 @@ const load_orders = async (req, res) => {
 const load_ordersDetails = async (req, res) => {
   try {
     const { orderId } = req.query;
+    console.log("hi");
     const orderData = await order
       .findById({ _id: orderId })
       .populate("userId")
