@@ -7,6 +7,7 @@ const { json } = require("express");
 const securePassword=require("../controler/helper/securingPassword");
 const bcrypt=require("bcrypt")
 const coupon=require("../model/coupon")
+const Wallet=require("../model/wallet")
 
 // 
 
@@ -304,6 +305,23 @@ const load_coupons=async(req,res)=>{
   }
 }
 
+const load_transactions = async (req, res) => {
+  try {
+    const { userId } = req.session;
+    const wallet = await Wallet.findOne({ user: userId }).populate("transactions");
+    if (wallet) {
+      res.render("transactions", { wallet: wallet });
+    } else {
+      res.render("transactions", { wallet: null });
+    }
+  } catch (error) {
+    console.log(error.message);
+    // Handle error
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+
 module.exports = {
   load_profile,
   load_addAddress,
@@ -315,5 +333,6 @@ module.exports = {
   editProfile,
   changePassword,
   load_order,
-  load_coupons
+  load_coupons,
+  load_transactions
 };

@@ -83,7 +83,7 @@
     </div> 
     <div class="text-end" >
       <button class="btn btn-success" style="margin-right: 80px;" id="pdfButton"> Download PDF </button>
-      <!-- <button class="btn btn-success"> Download to Excel </button> -->
+      <button class="btn btn-success" id="toExcel"> Download to Excel </button>
     </div>
   </div>
 
@@ -99,6 +99,7 @@
   <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
   <script src="/asset/js/custom-chart.js" type="text/javascript"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
   <script>
     
     const today=document.getElementById("today")
@@ -261,4 +262,31 @@ pdfButton.addEventListener("click",()=>{
             tableBody.appendChild(row);
         }
     }
+        
+    document.querySelector("#toExcel").addEventListener("click", () => {
+    const table = document.getElementById("salesTable");
+    const headers = [];
+    const headerCells = table.querySelectorAll("th");
+    headerCells.forEach(cell => {
+        headers.push(cell.textContent.trim());
+    });
+    console.log(headers,"it headers")
+    const rows = table.querySelectorAll("tr");
+    const data = [];
+    rows.forEach(row => {
+        const rowData = [];
+        row.querySelectorAll("td").forEach(cell => {
+            rowData.push(cell.textContent.trim());
+        });
+        data.push(rowData);
+    });
+ 
+    data.unshift(headers); // Add headers as the first row of data
+    
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Data');
+    XLSX.writeFile(workbook, 'sales_data.xlsx');
+}); 
+
   </script>

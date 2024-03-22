@@ -1,0 +1,39 @@
+<%- include ("../partilas/userheader") -%>
+<h1 class="main-heading p-5 text-center">Transaction History</h1>
+<% if (wallet && wallet.transactions.length > 0) { %>
+    <div class="table-responsive container m-5">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% wallet.transactions.forEach(function(transaction) { %>
+                    <tr>
+                        <td><%= transaction.type %></td>
+                        <td><%= transaction.description %></td>
+                        <td>
+                            <% if (transaction.type === 'Purchased') { %>
+                                <span class="text-danger">- <%= transaction.amount %>  (debit) </span>
+                            <% } else { %>
+                                <span class="text-success">+ <%= transaction.amount %>  (credit)</span>
+                            <% } %>
+                        </td>
+                        <td><%= transaction.createdAt.toLocaleString() %></td>
+                    </tr>
+                <% }); %>
+                <tr>
+                    <td> Wallet Balance</td>
+                    <td colspan="3"><%= wallet.balance %></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+<% } else { %>
+    <p>No transactions found.</p>
+<% } %>
+<%- include ("../partilas/userfooter") -%>

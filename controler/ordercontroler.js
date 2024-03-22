@@ -37,6 +37,7 @@ const load_checkout = async (req, res) => {
         model: "categories",
       },
     });
+
     const items = userCart.items.length;
     const userCartTOtal = userCart.total;
     if (items > 0) {
@@ -51,11 +52,18 @@ const load_checkout = async (req, res) => {
           { expiryDate: { $gte: currentDate } },
         ],
       });
+      const wallet=await Wallet.findOne({user:user})
+      if(wallet){
+        var walletBalance=wallet.balance
+      }else{
+         var walletBalance=0
+      }
       res.render("checkout", {
         userCart: userCart,
         userAddress: userAddress,
         user: user,
         coupons: coupons,
+        balance:walletBalance
       });
     } else {
       res.redirect("/cart");
@@ -161,6 +169,56 @@ const place_Order = async (req, res) => {
         });
         product.size = updatedSizes;
         await product.save();
+      }
+      if (req.session.couponID) {
+        const couponId = req.session.couponID;
+        const { userId } = req.session;
+        const couponData = await coupon.findById(couponId);
+        couponData.user.push(userId);
+        await couponData.save();
+        delete req.session.couponID;
+        delete req.session.couponAmount;
+      }
+      res.json({ status: "order placed" });
+      return;
+    }if(paymentOption=="wallet"){
+      console.log("inside");
+      const wallet=await Wallet.findOne({user:userId})
+      console.log(wallet)
+      if(!wallet){
+        res.json({status:"no wallet"})
+        return
+      }
+      if(createOrder.totalAmount>wallet.balance){
+        res.json({status:"low balance"})
+return 
+      }
+      await cart.findByIdAndDelete({ _id: cartId });
+      for (const orderedProduct of createOrder.items) {
+        const orderedProductId = orderedProduct.product;
+        const orderedQuantity = orderedProduct.quantity;
+        const orderedProductSize = orderedProduct.size;
+        const product = await Product.findById(orderedProductId);
+        const updatedSizes = product.size.map((size) => {
+          if (size.size === orderedProductSize) {
+            size.quantity -= orderedQuantity;
+          }
+          return size;
+        });
+        product.size = updatedSizes;
+        await product.save();
+       
+        wallet.balance -= createOrder.totalAmount;
+       
+        const transaction = new Transaction({
+          user:userId,
+          amount: createOrder.totalAmount,
+          type: "Purchased",
+          description: "product ordered",
+        });
+        wallet.transactions.push(transaction._id);
+        await Promise.all([transaction.save(), wallet.save()]);
+
       }
       if (req.session.couponID) {
         const couponId = req.session.couponID;
@@ -327,7 +385,7 @@ const cancelOneProduct = async (req, res) => {
     const quantity = userOrders.items[productIndex].quantity;
     userOrders.totalAmount -= price;
     await userOrders.save();
-    if(userOrders.payment=="razorPay"){
+    if(userOrders.payment=="razorPay"||userOrders.payment=="wallet"){
       const user=userOrders.userId
       let UserWallet = await Wallet.findOne({user:user});
       if (!UserWallet) {
@@ -373,7 +431,7 @@ const cancelOrder = async (req, res) => {
       { $set: { status: "Canceled" } },
       { new: true }
     );
-    if(orderData.payment=="razorPay"){
+    if(orderData.payment=="razorPay"||orderData.payment=="wallet"){
       console.log(orderData.userId);
       const user=orderData.userId
       let UserWallet = await Wallet.findOne({user:user});

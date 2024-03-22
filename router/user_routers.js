@@ -58,7 +58,8 @@ const {
   editProfile,
   changePassword,
   load_order,
-  load_coupons
+  load_coupons,
+  load_transactions
   }=profileController
 
 const {load_cart,addCart,removeItem,changeQuantity}=cartController
@@ -155,6 +156,7 @@ user_router
 .post("/resetPassword",isBlocked, isLogin, changePassword)
 .get('/order',isBlocked,isLogin,load_order)
 .get("/coupons",isBlocked,isLogin,load_coupons)
+.get("/transactions",isBlocked,isLogin,load_transactions)
 
 
 

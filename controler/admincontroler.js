@@ -3,11 +3,11 @@ const admin_model = require("../model/admin_model");
 const Order = require("../model/order_model");
 const Product = require("../model/product_model");
 const Category = require("../model/category");
-const Reviews=require("../model/rating_model")
+const Reviews = require("../model/rating_model");
 const session = require("express-session");
 const { render } = require("../router/admin_routers");
 const category = require("../model/category");
-const Notification=require("../model/notification")
+const Notification = require("../model/notification");
 
 ////////////login page
 
@@ -101,52 +101,54 @@ const Dashboard_load = async (req, res) => {
       },
       {
         $group: {
-          "_id": "$items.product",
-          "sum": { "$sum": "$items.quantity" }
-        }
+          _id: "$items.product",
+          sum: { $sum: "$items.quantity" },
+        },
       },
-      { "$sort": { "sum": -1 } },
+      { $sort: { sum: -1 } },
       {
         $group: {
           _id: null,
-          "topSellingProduct": { $push: "$_id" }
-        }
-      }, {
-        $limit: 10
-      }
+          topSellingProduct: { $push: "$_id" },
+        },
+      },
+      {
+        $limit: 10,
+      },
     ]);
 
     if (bestSellingProductData.length > 0) {
       bestSellingProduct = bestSellingProductData[0].topSellingProduct;
     }
 
-    const productDetails = await Product.find({ _id: { $in: bestSellingProduct } }).populate("categoryId");
+    const productDetails = await Product.find({
+      _id: { $in: bestSellingProduct },
+    }).populate("categoryId");
 
     //top selling category
     const topSellingCategories = await Product.aggregate([
       {
         $match: {
-          _id: { $in: bestSellingProduct }
-        }
+          _id: { $in: bestSellingProduct },
+        },
       },
       {
         $group: {
           _id: "$categoryId",
-          totalQuantity: { $sum: 1 }
-        }
+          totalQuantity: { $sum: 1 },
+        },
       },
       {
-        $sort: { totalQuantity: -1 }
+        $sort: { totalQuantity: -1 },
       },
       {
-        $limit: 5
-      }
+        $limit: 5,
+      },
     ]);
 
     // Weekly chart
     const notification = await Notification.find({});
     console.log(notification, "its notifications");
-  
 
     const topCategory = await category.find({ _id: topSellingCategories });
     res.render("adminDashboard", {
@@ -157,87 +159,177 @@ const Dashboard_load = async (req, res) => {
       monthlySales,
       productDetails,
       topCategory,
-      notification
+      notification,
     });
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
-const loadChart = async(req,res)=>{
+const loadChart = async (req, res) => {
   try {
-    
-    
-let newOrder = await Order.find({});
+    let newOrder = await Order.find({});
+    function countOrdersByDay(orders) {
+      const ordersCountByDay = {
+        Sunday: 0,
+        Monday: 0,
+        Tuesday: 0,
+        Wednesday: 0,
+        Thursday: 0,
+        Friday: 0,
+        Saturday: 0,
+      };
 
-
-function countOrdersByDay(orders) {
-  const ordersCountByDay = {
-      "Sunday": 0,
-      "Monday": 0,
-      "Tuesday": 0,
-      "Wednesday": 0,
-      "Thursday": 0,
-      "Friday": 0,
-      "Saturday": 0
-  };
-
-  orders.forEach(order => {
-      const orderDate = new Date(order.orderDate);
-      const dayOfWeek = orderDate.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
-      switch (dayOfWeek) {
+      orders.forEach((order) => {
+        const orderDate = new Date(order.orderDate);
+        console.log(orderDate,"it orderDate")
+        const dayOfWeek = orderDate.getDay();
+        console.log(dayOfWeek,"it dayofWeek"); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+        switch (dayOfWeek) {
           case 0:
-              ordersCountByDay["Sunday"]++;
-              break;
+            ordersCountByDay["Sunday"]++;
+            break;
           case 1:
-              ordersCountByDay["Monday"]++;
-              break;
+            ordersCountByDay["Monday"]++;
+            break;
           case 2:
-              ordersCountByDay["Tuesday"]++;
-              break;
+            ordersCountByDay["Tuesday"]++;
+            break;
           case 3:
-              ordersCountByDay["Wednesday"]++;
-              break;
+            ordersCountByDay["Wednesday"]++;
+            break;
           case 4:
-              ordersCountByDay["Thursday"]++;
-              break;
+            ordersCountByDay["Thursday"]++;
+            break;
           case 5:
-              ordersCountByDay["Friday"]++;
-              break;
+            ordersCountByDay["Friday"]++;
+            break;
           case 6:
-              ordersCountByDay["Saturday"]++;
-              break;
+            ordersCountByDay["Saturday"]++;
+            break;
           default:
-              break;
-      }
-  });
+            break;
+        }
+      });
 
-  return ordersCountByDay;
-}
+      return ordersCountByDay;
+    }
+    ordersCountForCurrentWeekByDay = countOrdersByDay(newOrder);
+    console.log(
+      "ordersCountForCurrentWeekByDay: ",
+      ordersCountForCurrentWeekByDay
+    );
+    function countOrdersByMonth(orders) {
+      const ordersCountByMonth = {
+        January: 0,
+        February: 0,
+        March: 0,
+        April: 0,
+        May: 0,
+        June: 0,
+        July: 0,
+        August: 0,
+        September: 0,
+        October: 0,
+        November: 0,
+        December: 0,
+      };
 
-// Count of orders for each day of the week
- ordersCountForCurrentWeekByDay = countOrdersByDay(newOrder);
-console.log("ordersCountForCurrentWeekByDay: ", ordersCountForCurrentWeekByDay);
+      orders.forEach((order) => {
+        const orderDate = new Date(order.orderDate);
+        console.log(orderDate,"it orderDate");
+        const monthName = new Intl.DateTimeFormat("en-US", {
+          month: "long",
+        }).format(orderDate);
+         // Get month name
+         console.log(monthName,"it monthName");
 
-res.status(200).json({data:ordersCountForCurrentWeekByDay})
-  } catch (error) {
-    
-  }
-}
+        // Increment the count for the month
+        ordersCountByMonth[monthName]++;
+      });
+
+      return ordersCountByMonth;
+    }
+
+    // Count of orders for each month
+
+    // Count of orders for each month
+    const ordersCountForCurrentYearByMonth = countOrdersByMonth(newOrder);
+    console.log(
+      "ordersCountForCurrentYearByMonth: ",
+      ordersCountForCurrentYearByMonth
+    );
+
+    function calculateRevenueByMonth(orders) {
+      const revenueByMonth = {
+        January: 0,
+        February: 0,
+        March: 0,
+        April: 0,
+        May: 0,
+        June: 0,
+        July: 0,
+        August: 0,
+        September: 0,
+        October: 0,
+        November: 0,
+        December: 0,
+      };
+
+      orders.forEach((order) => {
+        const orderDate = new Date(order.orderDate);
+        const monthName = new Intl.DateTimeFormat("en-US", {
+          month: "long",
+        }).format(orderDate); // Get month name
+
+        // Check if the order is delivered
+        if (order.status === "Delivered") {
+          // Add the total amount to the revenue for the month
+          revenueByMonth[monthName] += order.totalAmount;
+        }
+      });
+
+      return revenueByMonth;
+    }
+
+    // Revenue of orders delivered for each month
+    const revenueForCurrentYearByMonth = calculateRevenueByMonth(newOrder);
+    console.log("revenueForCurrentYearByMonth: ", revenueForCurrentYearByMonth);
+
+    // Count of orders for each day of the week
+
+    res
+      .status(200)
+      .json({
+        dataCurrentWeek: ordersCountForCurrentWeekByDay,
+        dataCurrentYear: ordersCountForCurrentYearByMonth,
+        revenueCurrentYear: revenueForCurrentYearByMonth,
+      });
+  } catch (error) {}
+};
 
 ///////////////////////////////////
 
 ///////////////////////users list
-
 const userLoad = async (req, res) => {
   try {
-    const userData = await user.find({});
-    res.render("usersList", { users: userData });
+    const userCount = await user.countDocuments();
+    const page = parseInt(req.query.page) || 1;
+    const size = 10; // Number of users per page
+    const skip = (page - 1) * size;
+    const totalPage = Math.ceil(userCount / size);
+    const userData = await user.find({}).skip(skip).limit(size);
+
+    res.render("usersList", {
+      users: userData,
+      currentPage: page,
+      totalPage: totalPage,
+    });
   } catch (error) {
     console.log(error.message);
   }
 };
+
 ///////////////////////////////////////
 
 ////////////////////////userBlock and unblock
@@ -377,16 +469,18 @@ const sortSalesReport = async (req, res) => {
 
 /////////////load_review
 
-const load_review=async(req,res)=>{
+const load_review = async (req, res) => {
   try {
     console.log("hi");
-    const review=await Reviews.find({}).populate('productId').populate("userId")
-    console.log(review,"it reviwe");
-    res.render("reviews",{review})
+    const review = await Reviews.find({})
+      .populate("productId")
+      .populate("userId");
+    console.log(review, "it reviwe");
+    res.render("reviews", { review });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
 //////////////////////////logout
 
@@ -401,17 +495,19 @@ const logout = async (req, res) => {
 };
 ////////////////////////////
 
-const notificationViewed=async(req,res)=>{
+const notificationViewed = async (req, res) => {
   try {
     console.log(req.body);
-const {notificationId,messageId}=req.body
+    const { notificationId, messageId } = req.body;
     const notification = await Notification.findById(notificationId);
     if (!notification) {
       console.log("Notification not found");
       return;
     }
 
-    const messageIndex = notification.messages.findIndex(message => message._id.toString() === messageId);
+    const messageIndex = notification.messages.findIndex(
+      (message) => message._id.toString() === messageId
+    );
     if (messageIndex === -1) {
       console.log("Message not found in the notification");
       return;
@@ -427,14 +523,12 @@ const {notificationId,messageId}=req.body
     }
 
     console.log("Message removed successfully from the notification");
-    
-    res.json({status:true})
+
+    res.json({ status: true });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
-
-
+};
 
 module.exports = {
   login_load,
@@ -447,6 +541,5 @@ module.exports = {
   sortSalesReport,
   load_review,
   notificationViewed,
-  loadChart
-
+  loadChart,
 };

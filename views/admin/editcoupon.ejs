@@ -1,6 +1,6 @@
 <%- include("../partilas/admin") %>
     <section class="container mt-4">
-        
+
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <button class="btn btn-center btn-danger" id="deleteCoupon">Delete</button>
@@ -52,9 +52,9 @@
                             <input type="checkbox" class="form-check-input" id="listed" name="listed" checked>
                             <label class="form-check-label" for="listed">Listed</label>
                         </div> -->
-                        <button class="btn btn-secondary" id="calcel"> cancel</button>
                                 <button type="submit" class="btn btn-primary">Add Coupon</button>
                 </form>
+                <button class="btn btn-secondary" id="calncel"> cancel</button>
             </div>
         </div>
     </section>
@@ -155,8 +155,8 @@
 
                 if (maximumDiscountValue == "") {
                     maximumDiscountError.textContent = "Maximum discount must be a valid number";
-                } else if (maximumDiscountValue < 0) {
-                    maximumDiscountError.textContent = "Maximum discount cannot be negative";
+                } else if (maximumDiscountValue < 0 &&maximumDiscountValue>5000) {
+                    maximumDiscountError.textContent = "Maximum discount invalid";
                 }
                 else {
                     maximumDiscountError.textContent = ""
@@ -188,67 +188,78 @@
                 if (couponCodeError.textContent || minimumPurchaseError.textContent || maximumDiscountError.textContent || couponDiscountError.textContent || expiryDateError.textContent || couponCodeError.textContent) {
                     e.preventDefault()
                 } else {
-                    alert("ooh yey")
+
                 }
+
+
+
+
+            });
+            document.getElementById("calncel").addEventListener("click", () => {
+             
+                window.history.back()
             })
+            const deleteCoupon = document.getElementById("deleteCoupon")
+            deleteCoupon.addEventListener("click", () => {
+               
+                const id = '<%= couponData._id %>'
+                
 
-        });
+                Swal.fire({
+                    title: "<span style='color: red;'>Are you Sure</span>",
+                    html: "<span style='color: black;'>Do you want to remove this item</span>",
 
-
-
-
-document.getElementById("cancel").addEventListener("click",()=>{
-    window.history.back()
-})
-        document.getElementById("deleteCoupon").addEventListener("click", () => {
-            const id = '<%= couponData._id %>'
-
-            Swal.fire({
-                title: "<span style='color: red;'>Are you Sure</span>",
-                html: "<span style='color: black;'>Do you want to remove this item</span>",
-
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, delete it!"
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
 
 
-            }).then((result) => {
-                if (result.isConfirmed) {
+                }).then((result) => {
+                    if (result.isConfirmed) {
 
-                    $.ajax({
-                        url: "/admin/delete-coupon",
-                        method: "delete",
-                        data: {
-                            Id: id,
+                        $.ajax({
+                            url: "/admin/delete-coupon",
+                            method: "delete",
+                            data: {
+                                Id: id,
 
-                        }, success: ((response) => {
-                            if (response.status == true) {
-
-
-                                Swal.fire({
-                                    title: "<span style='color: red;'>Success</span>",
-                                    html: "<span style='color: black;'>This coupon has been success fully deleted</span>",
-
-                                    icon: "success",
-                                    
+                            }, success: ((response) => {
+                                if (response.status == true) {
 
 
-                                })
-                                setTimeout(() => {
-                                    window.history.back()
-                                }, 1000);
-                            }
-                            else {
+                                    Swal.fire({
+                                        title: "<span style='color: red;'>Success</span>",
+                                        html: "<span style='color: black;'>This coupon has been success fully deleted</span>",
+
+                                        icon: "success",
+
+
+
+                                    })
+                                    setTimeout(() => {
+                                        window.history.back()
+                                    }, 1000);
+                                }
+                                else {
                                     // Deletion failed, show error message or perform any other action
                                     Swal.fire("Failed to delete coupon", "", "error");
                                 }
+                            })
                         })
-                    })
-                }
+                    }
+                })
             })
         })
+
+
+
+
+
+
+
+
 
     </script>
     </body>

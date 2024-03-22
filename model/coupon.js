@@ -24,9 +24,9 @@ const coupon_Schema = new mongoose.Schema({
     default:0
 
   },
-  staringDate: {
+  startingDate: {
     type: Date,
-    default:Date.now()
+   
     
   },
   listed: {

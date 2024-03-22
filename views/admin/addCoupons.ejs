@@ -140,8 +140,8 @@ function validateCouponDiscount() {
              
                 if (maximumDiscountValue=="") {
                     maximumDiscountError.textContent = "Maximum discount must be a valid number";
-                } else if (maximumDiscountValue < 0) {
-                    maximumDiscountError.textContent = "Maximum discount cannot be negative";
+                } else if (maximumDiscountValue < 0&&maximumDiscountValue>5000) {
+                    maximumDiscountError.textContent = "Maximum discount is invalid";
                 }
                  else {
                     maximumDiscountError.textContent = ""
@@ -152,8 +152,8 @@ function validateCouponDiscount() {
             function validateMinimumPurchase() {
                 const minimumPurchaseValue = minimumPurchase.value.trim();
         
-                 if (minimumPurchaseValue < 0) {
-                    minimumPurchaseError.textContent = "Minimum purchase cannot be negative";
+                 if (minimumPurchaseValue < 0 &&minimumPurchaseValue>100000) {
+                    minimumPurchaseError.textContent = "Minimum purchase error";
                 } else {
                     minimumPurchaseError.textContent = ""
                 }

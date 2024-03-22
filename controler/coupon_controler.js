@@ -30,45 +30,54 @@ const CreateCoupons = async (req, res) => {
   try {
     const {
       couponCode,
-      expiryDate,
       couponDiscount,
       maximumDiscount,
       minimumPurchase,
     } = req.body;
+
+    // Calculate the expiry date based on the creation time
+    const startingDate = new Date();
+    const expiryDate = new Date(startingDate);
+    expiryDate.setDate(expiryDate.getDate() + 1); // Assuming the coupon is valid for 1 day
+
     const couponName = couponCode.toUpperCase();
     const existingCoupon = await coupon.findOne({ couponCode: couponName });
     if (existingCoupon) {
       res.render("addCoupons", { message: "already exist" });
       return;
     }
+
+    let couponData; 
     if (minimumPurchase) {
-      const couponData = new coupon({
+      couponData = new coupon({
         couponCode: couponCode.toUpperCase(),
         expiryDate: expiryDate,
         couponDiscount: couponDiscount.toUpperCase(),
         minimumPrice: minimumPurchase,
         maximumDiscount: maximumDiscount,
+        startingDate: startingDate,
       });
-      if (couponData) {
-        await couponData.save();
-        res.redirect("/admin/coupon");
-      }
     } else {
-      const couponData = new coupon({
+      couponData = new coupon({
         couponCode: couponCode.toUpperCase(),
         expiryDate: expiryDate,
         couponDiscount: couponDiscount.toUpperCase(),
         maximumDiscount: maximumDiscount,
+        startingDate: startingDate,
       });
-      if (couponData) {
-        await couponData.save();
-        res.redirect("/admin/coupon");
-      }
     }
+
+    if (couponData) {
+      await couponData.save();
+      res.redirect("/admin/coupon");
+    }
+    // Create TTL index on startingDate field
+    await coupon.createIndex({ "startingDate": 1 }, { expireAfterSeconds: 0 });
   } catch (error) {
     console.log(error);
   }
 };
+
 ////////////////////////////////
 
 ///////////////edit page  coupons /////////////////////////

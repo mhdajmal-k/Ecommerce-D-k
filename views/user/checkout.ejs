@@ -395,6 +395,26 @@
                                 </div>
                                 <div class="custome-radio">
                                     <div class="custome-radio">
+                                        <input class="form-check-input payment" type="radio" value="wallet"
+                                            name="selectedPayment" id="wallet">
+                                        <label class="form-check-label" for="wallet" data-bs-toggle="collapse"
+                                            data-target="#wallet" aria-controls="CashOnDelivey">Wallet
+                                            
+                                        </label>
+                                        <h6 id="balance">Check balance?</h6>
+                                        <p id="showbalance" style="display: none;">
+                                            <% if (balance) { %>
+                                                Wallet balance: <%= balance %>
+                                            <% } %>
+                                        </p>
+                                    </div>
+                                    
+
+                                    
+                                    
+                                </div>
+                                <div class="custome-radio">
+                                    <div class="custome-radio">
                                         <input class="form-check-input payment" type="radio" value="razorPay"
                                             name="selectedPayment" id="razorPay">
                                         <label class="form-check-label" for="razorPay" data-bs-toggle="collapse"
@@ -777,7 +797,22 @@
                             setTimeout(() => {
                                 location.href="/cart"
                             }, 3100);
-                        } else if (response.status == "order placed") {
+                        }else if(response.status =='no wallet'){
+                            Swal.fire({
+                                title: "<span style='color: red;'>No wallet!</span>",
+                                html: "<span style='color: blue;'>Please to up you wallet for the placing order</span>",
+                                icon: "warning",
+                                timer: 3000
+                            });
+                        }else if(response.status =="low balance"){
+                            Swal.fire({
+                                title: "<span style='color: red;'>Low balance!</span>",
+                                html: "<span style='color: blue;'>Please to up you wallet for the placing order</span>",
+                                icon: "warning",
+                                timer: 3000
+                            });
+                        }
+                         else if (response.status == "order placed") {
                             localStorage.removeItem('coupon');
                             couponApplied=false
                             Swal.fire({
@@ -943,4 +978,17 @@
                     }
                 });
             }
+
+            const balance = document.getElementById("balance");
+
+balance.addEventListener("click", () => {
+    const show = document.getElementById("showbalance");
+    if (show.style.display === 'block') {
+        show.style.display = 'none'; // Hide the balance if it's currently visible
+    } else {
+        show.style.display = 'block'; // Show the balance if it's currently hidden
+    }
+});
+
+
         </script>

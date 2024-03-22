@@ -41,7 +41,7 @@ const addCategory = async (req, res) => {
           categoryTitle: categoryName,
           description: Description,
         });
-        savedCategory = await savingCategory.save();
+        const savedCategory = await savingCategory.save();
         if (savedCategory) {
           res.redirect("/admin/category");
         } else {
