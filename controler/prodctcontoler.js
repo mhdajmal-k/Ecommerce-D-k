@@ -9,6 +9,8 @@ const { promisify } = require("util");
 const randomId = require("../controler/helper/randomId");
 const unlinkAsync = promisify(fs.unlink);
 const path = require("path");
+const { log } = require("console");
+const { render } = require("../router/admin_routers");
 
 //product page
 
@@ -263,6 +265,92 @@ const delete_image = async (req, res) => {
   }
 };
 
+const productOffer=async(req,res)=>{
+  try {
+    console.log("hi");
+    const allProduct=await product.find({isBlocked:false})
+   res.render("productOffer",{allProduct})
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const addingOffer = async (req, res) => {
+  try {
+      const { productId, offerPrice } = req.body;
+      
+      if (!productId || !offerPrice || isNaN(offerPrice) || offerPrice < 0) {
+        console.log("hi");
+          return res.json({message: "Invalid input" });
+      }
+      const productData = await product.findById(productId);
+      if (!productData) {
+          return res.status(404).json({  message: "Product not found" });
+      }
+      const maximum=productData.price*60/100
+      console.log(maximum);
+      if (offerPrice > productData.price) {
+          return res.json({  message: "Offer price should not exceed regular price" });
+      }
+      if (offerPrice < maximum) {
+
+          return res.json({  message: "maximum offer exceed you have to limit(500) fo regular price" });
+      }
+      const updatedProduct = await product.findByIdAndUpdate(productId, { $set: { sellingPrice: offerPrice } });
+      if (updatedProduct) {
+          return res.json({ status: true, message: "Offer activated successfully" });
+      } else {
+          return res.status(500).json({ status: false, message: "Failed to activate offer" });
+      }
+  } catch (error) {
+      console.error(error.message);
+      return res.status(500).json({  message: "Internal server error" });
+  }
+}
+
+const categoryOffer = async (req, res) => {
+  try {
+    const categories = await category.find({ isList: true });
+    
+
+    res.render("categoryOffer", { categories });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal server error");
+  }
+};
+
+
+const applyCategoryOffer = async (req, res) => {
+  try {
+    console.log(req.body); 
+    const { categoryId, offerPrice } = req.body;
+    const categoryData = await category.findById(categoryId);
+    if (!categoryData) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+    categoryData.offerPrice = offerPrice;
+    await categoryData.save();
+    
+    const products = await product.find({ categoryId: categoryId });
+    for (const product of products) {
+      const categoryPercentage = product.price * (1 - offerPrice / 100);
+      product.sellingPrice = categoryPercentage;
+      product.offerApplied = true;
+      await product.save();
+    }
+    return res.status(200).json({ message: 'Category offer applied successfully' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+
+
+
+
 module.exports = {
   add_ProductLoad,
   add_Product,
@@ -272,4 +360,9 @@ module.exports = {
   listAndUnListProduct,
   delete_product,
   delete_image,
+  productOffer,
+  addingOffer,
+  categoryOffer,
+  applyCategoryOffer
+
 };

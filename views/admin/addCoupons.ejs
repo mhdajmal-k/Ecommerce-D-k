@@ -127,7 +127,10 @@ function validateCouponDiscount() {
 
     if (isNaN(couponDiscountValue)) {
         couponDiscountError.textContent = 'Coupon discount is required';
-    } else if (couponDiscountValue <= 0 || couponDiscountValue > 100) {
+    } else if (couponDiscountValue <= 0) {
+        couponDiscountError.textContent = "Coupon discount must be between 0 and 100";
+   
+    } else if (couponDiscountValue >= 100) {
         couponDiscountError.textContent = "Coupon discount must be between 0 and 100";
     } else {
         couponDiscountError.textContent = "";
@@ -140,7 +143,10 @@ function validateCouponDiscount() {
              
                 if (maximumDiscountValue=="") {
                     maximumDiscountError.textContent = "Maximum discount must be a valid number";
-                } else if (maximumDiscountValue < 0&&maximumDiscountValue>5000) {
+                } else if (maximumDiscountValue < 0) {
+                    maximumDiscountError.textContent = "Maximum discount is invalid";
+                
+                } else if (maximumDiscountValue >= 5000) {
                     maximumDiscountError.textContent = "Maximum discount is invalid";
                 }
                  else {
@@ -173,7 +179,7 @@ function validateCouponDiscount() {
                 if (couponCodeError.textContent || minimumPurchaseError.textContent || maximumDiscountError.textContent || couponDiscountError.textContent || expiryDateError.textContent || couponCodeError.textContent) {
                     e.preventDefault()
                 } else {
-                    alert("ooh yey")
+                    
                 }
             })
 

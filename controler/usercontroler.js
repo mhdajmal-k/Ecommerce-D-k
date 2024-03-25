@@ -79,7 +79,6 @@ const landing_page = async (req, res) => {
       res.render("landing_page", {
         products: products,
         newArrival: newArrival,
-        cartCount,
         categoryData
       });
     }
@@ -288,6 +287,7 @@ const load_shop = async (req, res) => {
     console.log(error.message);
   }
 };
+
 ////////////////////////////////////////////////////
 
 /////////////////////low to High

@@ -54,16 +54,16 @@
                     </a>
                  
                 </li>
-                <!-- <li class="menu-item has-submenu">
-                    <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
-                        <span class="text">Sellers</span>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="/admin/Dashboard"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Offer's</span>
                     </a>
                     <div class="submenu">
-                        <a href="page-sellers-cards.html">Sellers cards</a>
-                        <a href="page-sellers-list.html">Sellers list</a>
-                        <a href="page-seller-detail.html">Seller profile</a>
+                        <a href="/admin/product-Offer">Product Offer</a>
+                        <a href="/admin/category-Offer">Category Offer</a>
+                     
                     </div>
-                </li> -->
+                </li>
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/addproduct"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">Add product</span>
@@ -147,7 +147,11 @@
                         <a class="nav-link btn-icon" href="#" data-toggle="modal" data-target="#notificationModal">
                             <i class="material-icons md-notifications animation-shake" id="notifications"></i>
                             <% if (locals.notification) { %>
-                                <span class="badge rounded-pill"> <%=notification.length %></span>
+                                <span class="badge rounded-pill"> <%= notification.length %></span>
+                              <% if (notification.length>0) { %>
+                               
+                                <textarea id="textToSpeech" readonly>you have new <%= notification.length %> notification</textarea>
+                              <% } %>
                             <% } %>
                         </a>
                     </li>
@@ -217,6 +221,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
      const notificationButtons = document.querySelectorAll(".notificatonViewd");
+    
+ 
+        const textToSpeech = document.getElementById("textToSpeech");
+        textToSpeech.addEventListener("click", () => {
+            let speech = new SpeechSynthesisUtterance(textToSpeech.value);
+            window.speechSynthesis.speak(speech);
+        });
+    
+
 
 notificationButtons.forEach(button => {
     button.addEventListener("click", () => {

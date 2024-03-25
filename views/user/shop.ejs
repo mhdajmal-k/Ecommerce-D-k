@@ -309,10 +309,14 @@
                                                 <h2><a href="shop-product-right.html">
                                                         <%= product[i].productName %>
                                                     </a></h2>
-                                                <div class="rating-result" title="90%">
-                                                    <span><span>90%</span></span>
-                                                </div>
+                                                <!-- <div class="rating-result" title="90%">
+                                                    <% if (product[i].offerApplied==true) { %>
+                                                     
+                                                        <span><span><%product[i].categoryId.offerPrice  %>%</span></span>
+                                                    <% } %>
+                                                </div> -->
                                                 <div class="product-price">
+                                    
                                                     <span>RS <%=product[i].sellingPrice %> </span>
                                                     <span class="old-price">
                                                         <%= product[i].price%>

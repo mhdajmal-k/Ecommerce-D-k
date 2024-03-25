@@ -39,6 +39,10 @@ type:String
         quantity: { type: Number, default: 0 }
     }
 ],
+offerApplied:{
+  type:Boolean,
+  default:false
+},
   quantity: {
     type: Number,
     require: true,

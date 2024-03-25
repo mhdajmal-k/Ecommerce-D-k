@@ -42,7 +42,7 @@ const addToWallet = async (req, res) => {
         if (isNaN(numericAmount)) {
             return res.json({ status: "invalid amount" });
         }
-        if (numericAmount > 3000 || numericAmount < 0) {
+        if (numericAmount > 5000 || numericAmount < 0) {
             return res.json({ status: "maximum add limit exceeded" });
         }
         const generateRazor = await generateRazorPay(numericAmount);

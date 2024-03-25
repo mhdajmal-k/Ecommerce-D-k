@@ -13,6 +13,10 @@ const category_schema=new mongoose.Schema({
         type:Date,
         default: Date.now,
     },
+    offerPrice: {
+        type: Number,
+        default: 0 // Set a default value if needed
+    },
     isList:{
         type:Boolean,
         default:true

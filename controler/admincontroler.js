@@ -55,15 +55,16 @@ const Dashboard_load = async (req, res) => {
     let ordersCountForCurrentWeekByDay = {};
 
     const orders = await Order.find({
-      status: { $in: ["Delivered", "shipped", "Confirmed"] },
+      status: { $in: ["Delivered", "Confirmed"] },
     }).countDocuments();
+    console.log(orders,"it orderssssssssssssssssssss");
     const productCont = await Product.find({
       isBlocked: "false",
     }).countDocuments();
     const categories = await Category.find({ isList: "true" }).countDocuments();
     const totalSale = await Order.aggregate([
       {
-        $match: { status: "Delivered" },
+        $match: { status:  { $in: ["Delivered", "Confirmed"] } },
       },
       { $group: { _id: null, total: { $sum: "$totalAmount" } } },
     ]);
@@ -77,7 +78,7 @@ const Dashboard_load = async (req, res) => {
     const monthlySales = await Order.aggregate([
       {
         $match: {
-          status: "Delivered",
+          status:  { $in: ["Delivered", "Confirmed"] },
           orderDate: { $gte: startOfMonth, $lte: endOfMonth },
         },
       },
@@ -148,7 +149,6 @@ const Dashboard_load = async (req, res) => {
 
     // Weekly chart
     const notification = await Notification.find({});
-    console.log(notification, "its notifications");
 
     const topCategory = await category.find({ _id: topSellingCategories });
     res.render("adminDashboard", {
@@ -168,7 +168,7 @@ const Dashboard_load = async (req, res) => {
 
 const loadChart = async (req, res) => {
   try {
-    let newOrder = await Order.find({});
+    let newOrder = await Order.find({ status:{ $in: ["Delivered", "Confirmed"] }});
     function countOrdersByDay(orders) {
       const ordersCountByDay = {
         Sunday: 0,
@@ -182,9 +182,9 @@ const loadChart = async (req, res) => {
 
       orders.forEach((order) => {
         const orderDate = new Date(order.orderDate);
-        console.log(orderDate,"it orderDate")
+
         const dayOfWeek = orderDate.getDay();
-        console.log(dayOfWeek,"it dayofWeek"); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+
         switch (dayOfWeek) {
           case 0:
             ordersCountByDay["Sunday"]++;
@@ -215,10 +215,6 @@ const loadChart = async (req, res) => {
       return ordersCountByDay;
     }
     ordersCountForCurrentWeekByDay = countOrdersByDay(newOrder);
-    console.log(
-      "ordersCountForCurrentWeekByDay: ",
-      ordersCountForCurrentWeekByDay
-    );
     function countOrdersByMonth(orders) {
       const ordersCountByMonth = {
         January: 0,
@@ -237,7 +233,6 @@ const loadChart = async (req, res) => {
 
       orders.forEach((order) => {
         const orderDate = new Date(order.orderDate);
-        console.log(orderDate,"it orderDate");
         const monthName = new Intl.DateTimeFormat("en-US", {
           month: "long",
         }).format(orderDate);
@@ -255,11 +250,6 @@ const loadChart = async (req, res) => {
 
     // Count of orders for each month
     const ordersCountForCurrentYearByMonth = countOrdersByMonth(newOrder);
-    console.log(
-      "ordersCountForCurrentYearByMonth: ",
-      ordersCountForCurrentYearByMonth
-    );
-
     function calculateRevenueByMonth(orders) {
       const revenueByMonth = {
         January: 0,
@@ -294,9 +284,6 @@ const loadChart = async (req, res) => {
 
     // Revenue of orders delivered for each month
     const revenueForCurrentYearByMonth = calculateRevenueByMonth(newOrder);
-    console.log("revenueForCurrentYearByMonth: ", revenueForCurrentYearByMonth);
-
-    // Count of orders for each day of the week
 
     res
       .status(200)

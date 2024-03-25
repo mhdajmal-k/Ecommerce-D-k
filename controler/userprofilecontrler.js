@@ -286,29 +286,34 @@ const changePassword = async (req, res) => {
   }
 };
 
-const load_coupons=async(req,res)=>{
+const load_coupons = async (req, res) => {
   try {
-    console.log("hi");
-    const {userId}=req.session
-    console.log(userId);
+    const { userId } = req.session;
+    const currentDate = new Date();
     const coupons = await coupon.find({
       $and: [
         { listed: true },
-        { user: { $nin: [userId] } } 
+        { user: { $nin: [userId] } },
+        { expiryDate: { $gt: currentDate } } 
       ]
     });
-    
     console.log(coupons);
-    res.render("coupons",{couponData:coupons})
+    res.render("coupons", { couponData: coupons });
   } catch (error) {
-    console.error(error)
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
-}
+};
+
 
 const load_transactions = async (req, res) => {
   try {
     const { userId } = req.session;
-    const wallet = await Wallet.findOne({ user: userId }).populate("transactions");
+    const wallet = await Wallet.findOne({ user: userId }).populate({
+      path: "transactions",
+      options: { sort: { createdAt: -1 } }
+    });
+
     if (wallet) {
       res.render("transactions", { wallet: wallet });
     } else {
@@ -320,6 +325,7 @@ const load_transactions = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 }
+
 
 
 module.exports = {

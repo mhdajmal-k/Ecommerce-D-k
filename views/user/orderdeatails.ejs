@@ -37,11 +37,11 @@
             </div>
           </div>
           <div>
-         
-              <a   class="btn btn-success" href="/generate-invoice?id=<%= userOrder._id %>">View Invoice</a>
-          
-          
-            
+
+            <a class="btn btn-success" href="/generate-invoice?id=<%= userOrder._id %>">View Invoice</a>
+
+
+
           </div>
         </div>
         <% } %>
@@ -60,8 +60,9 @@
             </thead>
             <tbody>
               <% if (userOrder && userOrder.items.length> 0) { %> <% if (userOrder.status=="Delivered" ||
-                  userOrder.status=="Returned" || userOrder.status=="Canceled" || userOrder.status=="Pending Return Request" ) { %>
-                  
+                  userOrder.status=="Returned" || userOrder.status=="Canceled" ||
+                  userOrder.status=="Pending Return Request" ) { %>
+
                   <% } else { %>
                     <button class="btn btn-danger" onclick="cancelOrder('<%= userOrder._id %>')">
                       Cancel Order <% } %>
@@ -91,33 +92,34 @@
                           <%= item.price %>
                         </td>
                         <td>
-                          <% if (item.isCancelled == true) { %>
-  Canceled
-<% } else if (userOrder.status == "Delivered") { %>
-  Delivered
-  <% } else if (userOrder.status == "pending") { %>
-    Pending
-  <% } else if (userOrder.status == "Canceled") { %>
-    Cancelled
-  <% } else { %>
-  Confirmed
-<% } %>                        
-                        </td>                     
+                          <% if (item.isCancelled==true) { %>
+                            Canceled
+                            <% } else if (userOrder.status=="Delivered" ) { %>
+                              Delivered
+                              <% } else if (userOrder.status=="pending" ) { %>
+                                Pending
+                                <% } else if (userOrder.status=="Canceled" ) { %>
+                                  Cancelled
+                                  <% } else { %>
+                                    Confirmed
+                                    <% } %>
+                        </td>
                         <td>
                           <%= userOrder.payment %>
                         </td>
                         <% if (item.isCancelled==true) { %>
 
-                          <% } else if (userOrder.status == "Canceled"||userOrder.status == "Pending Return Request"||userOrder.status == "Returned") { %>
-                          <% } else { %>
-                            <td class="action" data-title="Remove">
-                              <a href="#"
-                                onclick="cancelOneProduct('<%=item.product._id%>','<%=userOrder.userId._id%>','<%= userOrder._id%>')"
-                                class="text-muted"><i class="fi-rs-trash"></i>
-                              </a>
-                            </td>
+                          <% } else if (userOrder.status=="Canceled" ||userOrder.status=="Pending Return Request"
+                            ||userOrder.status=="Returned" ) { %>
+                            <% } else { %>
+                              <td class="action" data-title="Remove">
+                                <a href="#"
+                                  onclick="cancelOneProduct('<%=item.product._id%>','<%=userOrder.userId._id%>','<%= userOrder._id%>')"
+                                  class="text-muted"><i class="fi-rs-trash"></i>
+                                </a>
+                              </td>
 
-                            <% } %>
+                              <% } %>
                       </tr>
                       <% }); %>
                         <tr>
@@ -203,11 +205,11 @@
                         title: "<span style='color: red;'>success</span>",
                         html: "<span style='color: blue;'>Your Return Request Placed</span>",
                         icon: "success",
-                        timer: 1000,
+                        timer: 2000,
                       });
                       setTimeout(() => {
                         window.history.back();
-                      }, 1010);
+                      }, 2000);
                     }
                   },
                 });
@@ -323,7 +325,7 @@
                   Swal.fire({
                     title: "<span style='color: green;'>canceled</span>",
                     html: "<span style='color: blue;'>your order has been canceled</span>",
-                    icon: "success",
+                    icon: "success",  
                     timer: 1000,
                   });
                 }

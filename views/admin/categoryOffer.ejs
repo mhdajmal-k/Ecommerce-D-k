@@ -1,0 +1,89 @@
+<%- include ("../partilas/admin") %>
+<div class="container">
+    <h1 class="mt-5 mb-4">Category Offers</h1>
+    <% if (categories.length > 0) { %>
+        <div class="row">
+            <% categories.forEach(category => { %>
+                <div class="col-md-4 mb-10">
+                    <div class="card mb-4 h-100 "> <!-- Added 'h-100' class for fixed height -->
+                        <div class="card-body">
+                            <h2 class="card-title"><%= category.categoryTitle %></h2>
+                            <!-- Form to set up offer for this category -->
+                            <form class="offer-form" method="post" onsubmit="ApplyOffer(event, '<%= category._id %>')">
+                                <input type="hidden" name="categoryId" value="<%= category._id %>">
+
+                                <div class="form-group">
+                                    <label for="offerPrice_<%= category._id %>">Offer Price %:</label>
+                                    <input type="number" class="form-control" value="<%= category.offerPrice %>" name="offerPrice" id="offerPrice_<%= category._id %>" >
+                                </div>
+                                <button type="submit" class="btn btn-primary">Set Offer</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    <% } else { %>
+        <p>No categories found.</p>
+    <% } %>
+</div>
+
+<!-- Bootstrap JS (optional, only if you need JavaScript features from Bootstrap) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+<script>
+function ApplyOffer(event, categoryId){
+
+    event.preventDefault();
+
+    const offerPriceInput = document.getElementById("offerPrice_" + categoryId);
+    const offerPrice = offerPriceInput.value.trim();
+    
+
+    if(offerPrice === ""){
+        Swal.fire({
+            title: "<span style='color: red;'>Invalid offer</span>",
+            html: "<span style='color: blue;'>Offer is required</span>",
+            icon: "warning",
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return;
+    } else if(offerPrice < 0 || offerPrice > 100 || isNaN(offerPrice)){
+        Swal.fire({
+            title: "<span style='color: red;'>Invalid offer</span>",
+            html: "<span style='color: blue;'>Offer should be between 0% and 100%</span>",
+            icon: "warning",
+            timer: 2000,
+            showConfirmButton: false
+        });
+        return;
+    }
+
+    $.ajax({
+        url:"/admin/applyCategoryOffer",
+        method:"post",
+        data:{
+            categoryId:categoryId,
+            offerPrice:offerPrice
+        },success:(response)=>{
+            if(response.message="Category offer applied successfully"){
+                Swal.fire({
+                        title: "<span style='color: red;'>Offer Applied</span>",
+                        html: "<span style='color: blue;'>Your offer has been applied</span>",
+                        icon: "success",
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+            }
+
+        },error:(xhr,status,error)=>{
+            alert(error)
+        }
+    })
+
+    // Your AJAX call to submit the offer with categoryId and offerPrice
+}
+</script>

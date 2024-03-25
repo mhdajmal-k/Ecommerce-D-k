@@ -65,6 +65,7 @@ const changeOrderStatus = async (req, res) => {
       const user = userOrder.userId;
       const totalAmount = userOrder.totalAmount;
       let UserWallet = await Wallet.findOne({ user: user });
+      console.log(UserWallet);
       if (!UserWallet) {
         UserWallet = new Wallet({
           user: user,
@@ -72,7 +73,7 @@ const changeOrderStatus = async (req, res) => {
           transactions: [],
         });
       } else {
-        UserWallet.amount += totalAmount;
+        UserWallet.balance += totalAmount;
       }
       const transaction = new Transaction({
         user: user,

@@ -40,6 +40,11 @@ const {
   listAndUnListProduct,
   editProduct,
   delete_image,
+  productOffer,
+  addingOffer,
+  categoryOffer,
+  applyCategoryOffer
+  
 } = product_controller;
 
 
@@ -115,7 +120,13 @@ admin_router
   .post("/editProduct", sessionChecker, upload.array("images", 5), editProduct)
   .post("/productListAndUnList", sessionChecker, listAndUnListProduct)
   .get("/blockProducts/:id", sessionChecker, delete_product)
-  .post("/deleteImage", sessionChecker, delete_image);
+  .post("/deleteImage", sessionChecker, delete_image)
+  .get("/product-Offer",sessionChecker,productOffer)
+  .post("/product-Offer",sessionChecker,addingOffer)
+  .get("/category-Offer",sessionChecker,categoryOffer)
+  .post("/applyCategoryOffer",sessionChecker,applyCategoryOffer)
+
+
 
 //==================================  product controller================================
 
