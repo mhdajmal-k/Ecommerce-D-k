@@ -100,8 +100,9 @@
                                     <tr>
                                         <th>Product</th>
                                         <th>Product Name</th>
-                                        <th>Unit Price</th>
+                                        <th>Unite Price</th>
                                         <th>Quantity</th>
+                                        <th>SubTotal</th>
                                         <th>Size</th>
                                         <th>Total</th>
                                     </tr>
@@ -113,8 +114,9 @@
                                                 <img src="/uploads/products/<%= item.product.image[1] %>" width="80px" alt="Product Image">
                                             </td>
                                             <td class="text-center"><%= item.product.productName %></td>
-                                            <td class="text-center"><%= item.price %></td>
+                                            <td class="text-center"><%= item.product.sellingPrice%></td>
                                             <td class="text-center"><%= item.quantity %></td>
+                                            <td class="text-center"><%= item.price %></td>
                                             <td class="text-center"><%= item.size %></td>
                                             <td class="text-center"><%= item.price * item.quantity %></td>
                                         </tr>

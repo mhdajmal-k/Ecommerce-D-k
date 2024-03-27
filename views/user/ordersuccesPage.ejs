@@ -1,11 +1,17 @@
 <%- include ("../partilas/userheader") -%>
 
-    <div class="container" style="margin: 150px; text-align: center;">
-        <h1>Order Placed Successfully!</h1>
-        <p>Thank you for your order. Your order has been successfully placed.</p>
-        <p>Your order will be processed shortly.</p>
-        <a href="/order" class="button">View order</a>
-        <a href="/" class="button">Continue Shopping</a>
+<div class="container" style="margin: 150px auto; text-align: center;">
+    <h1>Order Placed Successfully!</h1>
+    <p>Thank you for your order. Your order has been successfully placed.</p>
+    <p>Your order will be processed shortly.</p>
+    <div class="row">
+        <div class="col-md-6">
+            <a href="/order" class="btn btn-primary btn-lg btn-block">View Order</a>
+        </div>
+        <div class="col-md-6 mt-15">
+            <a href="/" class="btn btn-secondary btn-lg btn-block">Continue Shopping</a>
+        </div>
     </div>
+</div>
 
 <%- include ("../partilas/userfooter") -%>

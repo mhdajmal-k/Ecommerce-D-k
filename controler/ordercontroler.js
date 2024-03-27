@@ -111,48 +111,24 @@ const place_Order = async (req, res) => {
     }));
     const userAddress = await address.findById(addressId);
     const orderNumber = generateOrderNumber();
-    let order;
-    if (req.session.couponAmount) {
-      const couponDiscount = req.session.couponAmount;
-      const orderTotal = userCart.total - couponDiscount;
-
-      order = {
-        userId: user._id,
-        orderNumber: orderNumber,
-        items: orderProducts,
-        totalAmount: orderTotal,
-        couponDiscount: couponDiscount,
-        shippingAddress: {
-          address: userAddress.address,
-          pinCode: userAddress.pinCode,
-          state: userAddress.state,
-          locality: userAddress.locality,
-          landmark: userAddress.landmark,
-          mobile: user.mobile,
-          alternatePhone: userAddress.alternatePhone,
-          district: userAddress.district,
-        },
-        payment: paymentOption,
-      };
-    } else {
-      order = {
-        userId: user._id,
-        orderNumber: orderNumber,
-        items: orderProducts,
-        totalAmount: userCart.total,
-        shippingAddress: {
-          address: userAddress.address,
-          pinCode: userAddress.pinCode,
-          state: userAddress.state,
-          locality: userAddress.locality,
-          landmark: userAddress.landmark,
-          mobile: user.mobile,
-          alternatePhone: userAddress.alternatePhone,
-          district: userAddress.district,
-        },
-        payment: paymentOption,
-      };
-    }
+    let order = {
+      userId: user._id,
+      orderNumber,
+      items: orderProducts,
+      totalAmount: req.session.couponAmount ? Math.ceil(userCart.total - req.session.couponAmount) : userCart.total,
+      couponDiscount: req.session.couponAmount || 0,
+      shippingAddress: {
+        address: userAddress.address,
+        pinCode: userAddress.pinCode,
+        state: userAddress.state,
+        locality: userAddress.locality,
+        landmark: userAddress.landmark,
+        mobile: user.mobile,
+        alternatePhone: userAddress.alternatePhone,
+        district: userAddress.district,
+      },
+      payment: paymentOption,
+    };
     const createOrder = await Order.create(order);
     if (paymentOption === "cod") {
       await cart.findByIdAndDelete({ _id: cartId });
@@ -179,6 +155,7 @@ const place_Order = async (req, res) => {
         delete req.session.couponID;
         delete req.session.couponAmount;
       }
+      
       res.json({ status: "order placed" });
       return;
     }if(paymentOption=="wallet"){
@@ -207,8 +184,8 @@ return
         });
         product.size = updatedSizes;
         await product.save();
-       
-        wallet.balance -= createOrder.totalAmount;
+      }
+      wallet.balance -= createOrder.totalAmount;
        
         const transaction = new Transaction({
           user:userId,
@@ -218,8 +195,6 @@ return
         });
         wallet.transactions.push(transaction._id);
         await Promise.all([transaction.save(), wallet.save()]);
-
-      }
       if (req.session.couponID) {
         const couponId = req.session.couponID;
         const { userId } = req.session;
@@ -229,6 +204,8 @@ return
         delete req.session.couponID;
         delete req.session.couponAmount;
       }
+      createOrder.status="Confirmed"
+      await createOrder.save()
       res.json({ status: "order placed" });
       return;
     }
@@ -383,7 +360,7 @@ const cancelOneProduct = async (req, res) => {
     const price = userOrders.items[productIndex].price;
     const orderedSize = userOrders.items[productIndex].size;
     const quantity = userOrders.items[productIndex].quantity;
-    userOrders.totalAmount -= price;
+    // userOrders.totalAmount -= price;
     await userOrders.save();
     if(userOrders.payment=="razorPay"||userOrders.payment=="wallet"){
       const user=userOrders.userId
@@ -568,6 +545,69 @@ async function generatePdf(req, res) {
   
 }
 
+const returnOneProduct=async(req,res)=>{
+  try {
+    console.log(req.body);
+    const user=req.session.userId
+    const {userOrder,itemProductId,reason}=req.body
+    const findOrder=await Order.findById(userOrder)
+    const findIndex=findOrder.items.findIndex((item)=>item.product._id.toString()==itemProductId.toString())
+findOrder.items[findIndex].isReturned=true
+findOrder.items[findIndex].reason=reason
+const quantity=findOrder.items[findIndex].quantity
+const returnProductSize=findOrder.items[findIndex].size
+const price=findOrder.items[findIndex].price
+const productId=findOrder.items[findIndex].product
+findOrder.save()
+const productData = await Product.findById(productId);
+
+const updatedSizes = productData.size.map((size) => {
+  if (size.size === returnProductSize) {
+
+    size.quantity += quantity;
+
+  }
+  return size;
+});
+console.log(updatedSizes,"its updated size");
+productData.size = updatedSizes;
+await productData.save();
+if(findOrder.payment=="razorPay"||findOrder.payment=="wallet"){
+  console.log("inside");
+  const totalOrderProduct=findOrder.items.length
+  console.log(totalOrderProduct);
+  let amountToRefund=price
+  if(findOrder.couponDiscount){
+    const discountPerProduct = Math.ceil(findOrder.couponDiscount / totalOrderProduct);
+
+    amountToRefund-=discountPerProduct
+  }
+  const user=findOrder.userId
+      let UserWallet = await Wallet.findOne({user:user});
+      if (!UserWallet) {
+        UserWallet = new Wallet({
+          user: findOrder.userId,
+          balance: amountToRefund,
+          transactions: [],
+        });
+      } else {
+        UserWallet.balance += amountToRefund;
+      }
+      const transaction = new Transaction({
+        user: findOrder.userId,
+        amount:amountToRefund,
+        type: "refund",
+        description: "refund money for you Return  Order",
+      });
+      UserWallet.transactions.push(transaction._id);
+      await Promise.all([transaction.save(), UserWallet.save()]);
+}
+res.status(200).json({status:true})
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
 
 ////////////////////////////////////
 module.exports = {
@@ -580,6 +620,7 @@ module.exports = {
   razorPaymentVerify,
   applycoupon,
   returnRequest,
-  generatePdf
+  generatePdf,
+  returnOneProduct
 
 };

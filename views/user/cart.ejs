@@ -223,7 +223,7 @@
                                                 <td class="text-center" data-title="Stock">
 
                                                     <button class="btn btn-sm increment-button" style="width: 1px;"
-                                                    onclick="decrementQuantity('<%= cart.items[i].subTotal %>','<%= cart.items[i].quantity %>','<%= cart.items[i]._id %>',-1,'<%= cart.userId %>','<%= cart.items[i].productId._id %>','<%=cart.items[i].size %>','<%=i%>','<%=cart.items[i]?.productId.sellingPrice %>')">-</button>
+                                                        onclick="decrementQuantity('<%= cart.items[i].subTotal %>','<%= cart.items[i].quantity %>','<%= cart.items[i]._id %>',-1,'<%= cart.userId %>','<%= cart.items[i].productId._id %>','<%=cart.items[i].size %>','<%=i%>','<%=cart.items[i]?.productId.sellingPrice %>')">-</button>
                                                     <span class="qty-val" id="incrementnewQuantity<%=i%>">
                                                         <%= cart.items[i]?.quantity %>
                                                     </span>
@@ -247,17 +247,17 @@
                                             <% } %>
                                                 <% } else { %>
 
-                                                    
-                                                        <td colspan="7" class="text-center">No products in the cart.
-                                                            Please shop.</td>
 
-                                                    
-       
+                                                    <td colspan="7" class="text-center">No products in the cart.
+                                                        Please shop.</td>
+
+
+
 
 
 
                                                     <% } %>
-                                                        <P class="text-center">keep shop  <a href="/shop"> here</a></P>
+                                                        <P class="text-center">keep shop <a href="/shop"> here</a></P>
                                 </tbody>
                             </table>
                         </div>
@@ -374,11 +374,13 @@
                                                         </div>
                                                         <div class="product-action-1">
                                                             <a aria-label="Quick view" class="action-btn small hover-up"
-                                                                data-bs-toggle="modal" data-bs-target="#quickViewModal"><i
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#quickViewModal"><i
                                                                     class="fi-rs-search"></i></a>
                                                             <a aria-label="Add To Wishlist"
-                                                                class="action-btn small hover-up" href="shop-wishlist.html"
-                                                                tabindex="0"><i class="fi-rs-heart"></i></a>
+                                                                class="action-btn small hover-up"
+                                                                href="shop-wishlist.html" tabindex="0"><i
+                                                                    class="fi-rs-heart"></i></a>
                                                             <a aria-label="Compare" class="action-btn small hover-up"
                                                                 href="shop-compare.html" tabindex="0"><i
                                                                     class="fi-rs-shuffle"></i></a>
@@ -407,15 +409,15 @@
                                                 </div>
                                             </div>
                                             <% } %>
-                                    <% } %>
-                                  
+                                                <% } %>
+
                                 </div>
 
                             </div>
-                             
+
 
     </main>
-    
+
     <%- include ("../partilas/userfooter") -%>
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>

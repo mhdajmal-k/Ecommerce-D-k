@@ -2,6 +2,17 @@
   input[type="radio"] {
     transform: scale(0.4);
   }
+
+  .return-reason {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .return-reason input[type="radio"] {
+    margin-right: 5px;
+  }
 </style>
 <%- include ("../partilas/userheader") -%>
   <div class="container">
@@ -12,27 +23,27 @@
             <button class="mb-15 btn btn-secondary" id="returnButton">
               Return Order
             </button>
-            <div id="returnReasons" style="margin-bottom: 80px; display: none">
-              <div>
-                <input class="radio" type="radio" name="returnReason" id="productDamaged" value="Product Damaged" />
+            <div id="returnReasons" style=" display: none">
+              <div class="return-reason">
+                <input class="radio" type="radio" name="returnReason" id="productDamaged" value="Product Damaged">
                 <label for="productDamaged">Product Damaged</label>
               </div>
-              <div>
-                <input class="radio" type="radio" name="returnReason" id="wrongSize" value="Wrong Size" />
+              <div class="return-reason">
+                <input class="radio" type="radio" name="returnReason" id="wrongSize" value="Wrong Size">
                 <label for="wrongSize">Wrong Size</label>
               </div>
-              <div>
-                <input class="radio" type="radio" name="returnReason" id="wrongProduct" value="Wrong Product" />
+              <div class="return-reason">
+                <input class="radio" type="radio" name="returnReason" id="wrongProduct" value="Wrong Product">
                 <label for="wrongProduct">Wrong Product</label>
               </div>
-              <div>
-                <input class="radio" type="radio" name="returnReason" id="otherReason" value="Other" />
+              <div class="return-reason">
+                <input class="radio" type="radio" name="returnReason" id="otherReason" value="Other">
                 <label for="otherReason">Other</label>
-                <!-- <input type="text" id="otherReasonText" placeholder="Type reason for the return"
-                            style="width: 50%; display: none;"> -->
+                <input type="text" id="otherReasonText" placeholder="Type reason for the return"
+                  style="width: 50%; display: none;">
               </div>
-              <div id="requestReturnButton">
-                <button class="btn">request Return</button>
+              <div style="margin-top: 20px;">
+                <button class="btn" id="requestReturnButton">Request Return</button>
               </div>
             </div>
           </div>
@@ -52,10 +63,17 @@
                 <th scope="col">Order ID</th>
                 <th scope="col">Image</th>
                 <th scope="col">Product</th>
-                <th scope="col">Price</th>
+                <th scope="col">Unite Price</th>
+                <th scope="col">Subtotal</th>
                 <th scope="col">Status</th>
                 <th scope="col">payment</th>
-                <th scope="col">cancel</th>
+                <% if (userOrder.status) { %>
+
+                  <th scope="col">Return </th>
+                  <% } else { %>
+
+                    <th scope="col">cancel</th>
+                    <% } %>
               </tr>
             </thead>
             <tbody>
@@ -89,17 +107,25 @@
                           </p>
                         </td>
                         <td>
+                          <%= item.product.sellingPrice %>
+                        </td>
+                        <td>
                           <%= item.price %>
                         </td>
                         <td>
                           <% if (item.isCancelled==true) { %>
                             Canceled
+                            
+                            <% } else if (userOrder.items.isReturned==true ) { %>
+                             Returned
                             <% } else if (userOrder.status=="Delivered" ) { %>
                               Delivered
                               <% } else if (userOrder.status=="pending" ) { %>
                                 Pending
                                 <% } else if (userOrder.status=="Canceled" ) { %>
                                   Cancelled
+                                <% } else if (userOrder.status=="Returned" ) { %>
+                                  Returned
                                   <% } else { %>
                                     Confirmed
                                     <% } %>
@@ -109,17 +135,24 @@
                         </td>
                         <% if (item.isCancelled==true) { %>
 
-                          <% } else if (userOrder.status=="Canceled" ||userOrder.status=="Pending Return Request"
-                            ||userOrder.status=="Returned"||userOrder.status=="Delivered" ) { %>
-                            <% } else { %>
-                              <td class="action" data-title="Remove">
-                                <a href="#"
-                                  onclick="cancelOneProduct('<%=item.product._id%>','<%=userOrder.userId._id%>','<%= userOrder._id%>')"
-                                  class="text-muted"><i class="fi-rs-trash"></i>
-                                </a>
-                              </td>
+                          <% } else if (userOrder.status=="Delivered" ) { %>
+                            <td>
+                              <button class="btn btn-secondary" id="requestReturnOneProduct" onclick="returnOneProduct('<%=item.product._id%>')">return
+                              </button>
+                            </td>
+                            <% } else if (userOrder.status=="Canceled" ||userOrder.status=="Pending Return Request"
+                              ||userOrder.status=="Returned" ) { %>
 
-                              <% } %>
+
+                              <% } else { %>
+                                <td class="action" data-title="Remove">
+                                  <a href="#"
+                                    onclick="cancelOneProduct('<%=item.product._id%>','<%=userOrder.userId._id%>','<%= userOrder._id%>')"
+                                    class="text-muted"><i class="fi-rs-trash"></i>
+                                  </a>
+                                </td>
+
+                                <% } %>
                       </tr>
                       <% }); %>
                         <tr>
@@ -301,7 +334,7 @@
       }
 
       function cancelOrder(orderId) {
-        alert(orderId);
+
 
         Swal.fire({
           title: "<span style='color: red;'>Are you Sure</span>",
@@ -325,7 +358,7 @@
                   Swal.fire({
                     title: "<span style='color: green;'>canceled</span>",
                     html: "<span style='color: blue;'>your order has been canceled</span>",
-                    icon: "success",  
+                    icon: "success",
                     timer: 1000,
                   });
                 }
@@ -346,7 +379,55 @@
           }
         });
       }
+  
+      function returnOneProduct(orderItemId) {
+        // alert(orderItemId)
+        Swal.fire({
+          title: "Reason",
+          input: "text",
+          inputLabel: "Please state the reason for your return",
+          inputValue: "",
+          showCancelButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const userOrderId = "<%= userOrder._id%>";
 
+            const ReasonValue = result.value;
+            console.log("Other reason:",ReasonValue);
+            $.ajax({
+              url: "/returnOneProduct",
+              method: "post",
+              data: {
+                reason: ReasonValue,
+                userOrder: userOrderId,
+                itemProductId:orderItemId
+              },
+              success: (response) => {
+                if (response.status==true) {
+                  Swal.fire({
+                    title: "<span style='color: red;'>success</span>",
+                    html: "<span style='color: blue;'>Your Return Request Placed</span>",
+                    icon: "success",
+                    timer: 2000,
+                  });
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 2000);
+                }
+              },error:(xhr,status,error)=>{
+                Swal.fire({
+                  title: "<span style='color: red;'>Error</span>",
+                  html: "<span style='color: blue;'>An error occurred while returning the order</span>",
+                  icon: "error",
+                  timer: 2000,
+                });
+              }
+            });
+          }
+
+        })
+      }
+      
 
 
     </script>

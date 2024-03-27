@@ -282,6 +282,7 @@ const load_shop = async (req, res) => {
       totalPage,
       currentPage: page,
       categories,
+      category:''
     });
   } catch (error) {
     console.log(error.message);
@@ -290,76 +291,7 @@ const load_shop = async (req, res) => {
 
 ////////////////////////////////////////////////////
 
-/////////////////////low to High
-const lowtohigh = async (req, res) => {
-  try {
-    console.log("hello");
-    const { skip, page, pageSize, totalPage } = await pagination(req, res);
-    const lowToHigh = await product
-      .find()
-      .sort({ sellingPrice: 1 })
-      .skip(skip)
-      .limit(pageSize);
-    const categories = await category.find();
-    res.render("shop", {
-      product: lowToHigh,
-      totalPage,
-      currentPage: page,
-      categories,
-    });
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).send("Internal Server Error");
-  }
-};
-//////////////////////////////////////////////
 
-//////////////////high to low
-const highToLow = async (req, res) => {
-  try {
-    const { skip, page, pageSize, totalPage } = await pagination(req, res);
-    const lowToHighProduct = await product
-      .find()
-      .sort({ sellingPrice: -1 })
-      .skip(skip)
-      .limit(pageSize);
-    const categories = await category.find();
-    res.render("shop", {
-      product: lowToHighProduct,
-      totalPage,
-      currentPage: page,
-      categories,
-    });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-//////////////////////////////////////////////
-
-///////////////////////new arrival
-
-const newArrival = async (req, res) => {
-  try {
-    const { skip, page, pageSize, totalPage } = await pagination(req, res);
-    const newArrival = await product
-      .find()
-      .sort({
-        createdAt: -1,
-      })
-      .skip(skip)
-      .limit(pageSize);
-    const categories = await category.find();
-    res.render("shop", {
-      product: newArrival,
-      totalPage,
-      currentPage: page,
-      categories,
-    });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-///////////////////////////////////////////////////
 
 ////////////////////////one product details
 const shopProduct = async (req, res) => {
@@ -400,7 +332,7 @@ const shopProduct = async (req, res) => {
     }
   } catch (error) {
     console.log(error.message);
-    res.status(500).send("Internal Server Error");
+    res.status(500).render("serverError")
   }
 };
 //////////////////////////////////////
@@ -502,77 +434,103 @@ const resetPassword = async (req, res) => {
 const browsCategory = async (req, res) => {
   try {
     console.log(req.query);
-    const { categoryId } = req.query;
+    const { categoryId,filter } = req.query;
     const { skip, page, pageSize, totalPage } = await pagination(req, res);
-    const categorySort = await product.find({ categoryId: categoryId });
+    let categorySort
+    if(filter != ""&&categoryId!=""){ 
+      if(filter == 'lowtohigh'){
+        categorySort = await product.find({ categoryId: categoryId }).sort({ sellingPrice: 1 })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'highToLow'){
+        categorySort = await product.find({ categoryId: categoryId }).sort({ sellingPrice: -1 })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'highToLow'){
+        categorySort = await product.find({ categoryId: categoryId }).sort({ sellingPrice: -1 })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'newArrival'){
+        categorySort = await product.find({ categoryId: categoryId }).sort({
+          createdAt: -1,
+        })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'averageRating'){
+        categorySort = await product.find({ categoryId: categoryId }).sort({rating:-1})
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'accedingOrder'){
+        categorySort = await product.find({ categoryId: categoryId }).sort({ productName: 1 })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'descendingOrder'){
+        categorySort = await product.find({ categoryId: categoryId }) .sort({ productName: -1 })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      else{
+        categorySort = await product.find({ categoryId: categoryId })
+      }
+    }else{
+      if(filter == 'lowtohigh'){
+        categorySort = await product.find().sort({ sellingPrice: 1 })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'highToLow'){
+        categorySort = await product.find().sort({ sellingPrice: -1 })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'highToLow'){
+        categorySort = await product.find().sort({ sellingPrice: -1 })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'newArrival'){
+        categorySort = await product.find().sort({
+          createdAt: -1,
+        })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'averageRating'){
+        categorySort = await product.find().sort({rating:-1})
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'accedingOrder'){
+        categorySort = await product.find().sort({ productName: 1 })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+      if(filter == 'descendingOrder'){
+        categorySort = await product.find() .sort({ productName: -1 })
+        .skip(skip)
+        .limit(pageSize);;
+      }
+    }
     const categories = await category.find();
     res.render("shop", {
       product: categorySort,
       totalPage,
       currentPage: page,
       categories,
+      category:categoryId
     });
   } catch (error) {
     console.log(error);
   }
 };
 
-/////////////////////////////////////////////
-const accedingOrder = async (req, res) => {
-  try {
-    const accedingOrderProduct = await product
-      .find({})
-      .sort({ productName: 1 });
-    const { skip, page, pageSize, totalPage } = await pagination(req, res);
-    const categories = await category.find();
-    res.render("shop", {
-      product: accedingOrderProduct,
-      totalPage,
-      currentPage: page,
-      categories,
-    });
-  } catch (error) {
-    console.error(error.message);
-  }
-};
 
-////////////////////////////////////////////////
-const descendingOrder = async (req, res) => {
-  try {
-    const accedingOrderProduct = await product
-      .find({})
-      .sort({ productName: -1 });
-    const { skip, page, pageSize, totalPage } = await pagination(req, res);
-    const categories = await category.find();
-    res.render("shop", {
-      product: accedingOrderProduct,
-      totalPage,
-      currentPage: page,
-      categories,
-    });
-  } catch (error) {
-    console.error(error.message);
-  }
-};
-/////////////////////////////////////////////////////
-
-const averageRating=async(req,res)=>{
-  try {
-    console.log("hi ");
-    const averageRatingProduct=await product.find({}).sort({rating:-1})
-    console.log(averageRatingProduct,"ok");
-       const { skip, page, pageSize, totalPage } = await pagination(req, res);
-    const categories = await category.find();
-    res.render("shop", {
-      product: averageRatingProduct,
-      totalPage,
-      currentPage: page,
-      categories,
-    });
-  } catch (error) {
-    console.log(error)
-  }
-}
 
 //////////////////////////////////////////
 
@@ -728,9 +686,6 @@ module.exports = {
   otp_submit,
   verify_login,
   load_shop,
-  lowtohigh,
-  highToLow,
-  newArrival,
   shopProduct,
   resendOtp,
   logout,
@@ -739,13 +694,10 @@ module.exports = {
   verify_forgotPassword,
   resetPassword,
   browsCategory,
-  accedingOrder,
-  descendingOrder,
   Load_WishList,
   add_ToWishlist,
   submitReview,
   removeReview,
   removeFromWishList,
-  averageRating,
   searchProduct
 };

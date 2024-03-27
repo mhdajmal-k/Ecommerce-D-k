@@ -346,10 +346,6 @@ const applyCategoryOffer = async (req, res) => {
       }else{
       
         product.sellingPrice = product.productOffer??product.price
-
-        // console.log(product.sellingPrice,"it selling price");
-        // console.log(categoryPercentage,"it is the categoryOffee");
-        // product.sellingPrice = categoryPercentage;
         product.offerApplied = true;
         await product.save();
       }

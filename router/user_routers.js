@@ -23,9 +23,6 @@ const {
   resendOtp,
   verify_login,
   load_shop,
-  lowtohigh,
-  highToLow,
-  newArrival,
   shopProduct,
   logout,
   load_forgotPassword,
@@ -33,14 +30,11 @@ const {
   verify_forgotPassword,
   resetPassword,
   browsCategory,
-  accedingOrder,
-  descendingOrder,
   Load_WishList,
   submitReview,
   removeReview,
   add_ToWishlist,
   removeFromWishList,
-  averageRating,
   searchProduct
 } = userController;
 
@@ -74,7 +68,8 @@ const {
   razorPaymentVerify,
   applycoupon,
   returnRequest,
-  generatePdf
+  generatePdf,
+  returnOneProduct
 }=orderController
 
 
@@ -105,9 +100,6 @@ user_router.get("/",isBlocked,landing_page)
 .get("/resendOtp", isLogout,resendOtp)
 .post("/login",verify_login)
 .get("/shop",load_shop)
-.get("/lowtohigh",lowtohigh)
-.get("/highToLow",highToLow)
-.get("/newArrival",newArrival)
 .get("/shopProduct",shopProduct)
 .get("/logout", logout)
 .get("/forgotPassword", isLogout, load_forgotPassword)
@@ -115,14 +107,11 @@ user_router.get("/",isBlocked,landing_page)
 .get("/forgotPassword_verify", isLogout, verify_forgotPassword)
 .post("/forgotPassword_verify", isLogout, resetPassword)
 .get('/browse',isBlocked,browsCategory)
-.get("/accedingOrder",isBlocked,accedingOrder)
-.get("/descendingOrder",isBlocked,descendingOrder)
 .get("/wishList",isBlocked,isLogin,Load_WishList)
 .post("/addToWishlist",isBlocked,add_ToWishlist)
 .post("/submitReview",isBlocked,submitReview)
 .post("/removeReview",isBlocked,removeReview)
 .post("/removeFromWishList",isBlocked,removeFromWishList)
-.get("/averageRating",isBlocked,averageRating)
 .post("/searchProducts",isBlocked,searchProduct)
 
 
@@ -182,6 +171,7 @@ user_router
 .post("/applycoupon",isBlocked,isLogin,applycoupon)
 .post("/return-request",isBlocked,isLogin,returnRequest)
 .get("/generate-invoice",isBlocked,isLogin,generatePdf)
+.post("/returnOneProduct",isBlocked,isLogin,returnOneProduct)
 
 //==================================  wallet controller================================
 

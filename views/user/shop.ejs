@@ -202,7 +202,7 @@
                                         </div>
                                     </div>
                                     <div class="sort-by-dropdown">
-                                        <ul>
+                                        <ul> 
                                             <% categories.forEach(category => { %>
                                                 <li><a href="/browse?categoryId=<%= category.id %>"><%= category.categoryTitle %></a></li>
                                             <% }) %>
@@ -226,12 +226,12 @@
                                     </div>
                                     <div class="sort-by-dropdown">
                                         <ul>
-                                            <li><a href="/lowtohigh">Price: Low to High</a></li>
-                                            <li><a href="/highToLow">Price: High to Low</a></li>
-                                            <li><a href="/newArrival">newArrival</a></li>
-                                            <li><a href="/averageRating">Avg. Rating</a></li>
-                                            <li><a href="/accedingOrder">aA - zZ</a></li>
-                                            <li><a href="/descendingOrder">zZ - aA </a></li>
+                                            <li><a href="/browse?categoryId=<%= category ? category : '' %>&filter=lowtohigh">Price: Low to High</a></li>
+                                            <li><a href="/browse?categoryId=<%= category ? category : '' %>&filter=highToLow" >Price: High to Low</a></li>
+                                            <li><a href="/browse?categoryId=<%= category ? category : '' %>&filter=newArrival" >newArrival</a></li>
+                                            <li><a href="/browse?categoryId=<%= category ? category : '' %>&filter=averageRating">Avg. Rating</a></li>
+                                            <li><a href="/browse?categoryId=<%= category ? category : '' %>&filter=accedingOrder">aA - zZ</a></li>
+                                            <li><a href="/browse?categoryId=<%= category ? category : '' %>&filter=descendingOrder">zZ - aA </a></li>
                                         </ul>
                                            
                                             <!-- <li><a href="#">100</a></li>

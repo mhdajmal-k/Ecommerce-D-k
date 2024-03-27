@@ -54,14 +54,15 @@ app.use('/',user_router)
 
 //404 page
 app.use("/*",(req,res)=>{
-   res.status(404).json("page not found!")
+res.sendFile(path.join(__dirname,"404.html"))
+   
  
 })
 
 ///////Error Handling Middleware
 app.use((err, req, res, next) => {
     console.error('An error occurred:', err);
-    res.status(500).send('Internal Server Error');
+    res.sendFile(path.join(__dirname,"500.html"))
 });
 
 

@@ -40,6 +40,8 @@ const order_schema = new mongoose.Schema({
       },isReturned:{
         type:Boolean,
         default:false
+      },reason:{
+        type:String
       }
     },
   ],

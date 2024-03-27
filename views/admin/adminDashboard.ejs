@@ -130,57 +130,33 @@
             </div>
              <canvas id="myChart11"></canvas>
       
-        <div class="container mt-50">
-            <h2 style="text-align: center;">Top Selling Products</h2>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Product ID</th>
-                            <th>Product Name</th>
-                            <th>Image</th>
-                            <th>Color</th>
-                            <th>Price</th>
-                            <th>Selling Price</th>
-                            <th>Category ID</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Loop through productDetails array and generate table rows -->
-                        <% if (locals.productDetails.length>0) { %>
-
-                            <% productDetails.forEach(product=> { %>
-                                <tr>
-                                    <td>
-                                        <%= product.productId %>
-                                    </td>
-                                    <td>
-                                        <%= product.productName %>
-                                    </td>
-                                    <td><img src="/uploads/products/<%= product.image[1] %>" class="img-thumbnail"
-                                            alt="Product Image" style="max-width: 50px; height: auto;"></td>
-                                    <td>
-                                        <%= product.color %>
-                                    </td>
-                                    <td>
-                                        <%= product.price %>
-                                    </td>
-                                    <td>
-                                        <%= product.sellingPrice %>
-                                    </td>
-                                    <td>
-                                        <%= product.categoryId.categoryTitle %>
-                                    </td>
-                                </tr>
-                                <% }); %>
-                                    <% } else { %>
-                                        <TD>No Data available</TD>
-                                        <% } %>
-
-                    </tbody>
-                </table>
+             <div class="container mt-50">
+                <h2 style="text-align: center;">Top Selling Products</h2>
+                <% if (locals.productDetails.length > 0) { %>
+                    <div class="row">
+                        <% productDetails.forEach(product => { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <img src="/uploads/products/<%= product.image[1] %>" class="card-img-top" alt="Product Image">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><%= product.productName %></h5>
+                                        <p class="card-text">Product ID: <%= product.productId %></p>
+                                        <p class="card-text">Color: <%= product.color %></p>
+                                        <p class="card-text">Price: <%= product.price %></p>
+                                        <p class="card-text">Selling Price: <%= product.sellingPrice %></p>
+                                        <p class="card-text">Category: <%= product.categoryId.categoryTitle %></p>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="alert alert-warning" role="alert">
+                        No Data available
+                    </div>
+                <% } %>
             </div>
-        </div>
+            
         <div class="container" style="margin-top: 10px;">
             <h1 class="mt-4" style="text-align: center; ">Top Category</h1>
 
