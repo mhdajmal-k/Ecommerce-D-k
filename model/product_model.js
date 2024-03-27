@@ -42,6 +42,8 @@ type:String
 offerApplied:{
   type:Boolean,
   default:false
+},productOffer:{
+  type:Number
 },
   quantity: {
     type: Number,

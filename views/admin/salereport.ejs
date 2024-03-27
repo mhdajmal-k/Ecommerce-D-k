@@ -4,13 +4,19 @@
     <h2 class="mt-4 mb-4 text-center">Sales Report</h2>
     <div class="flex mb-30" style="display: flex; justify-content: space-evenly; align-items: center;">
       <div>
-        
+
         <p>Custom Date <input type="date" id="customDate">
-        </p> 
-        <BUtton class="btn btn-success ml-100" id="costomDateSubmit" >Submit</BUtton>
+        </p>
+        <BUtton class="btn btn-success ml-100" id="costomDateSubmit">Submit</BUtton>
+      </div>
+      <div>
+        <p>Stating Date<input type="date" id="startDate"></p>
+        <p>Ending Date <input type="date" id="endDate"></p>
+        <button class="btn btn-light " id="periodSubmit">Get Data</button>
       </div>
 
-     
+
+
 
       <p class="btn btn-light" id="today">
         Today Sales
@@ -19,7 +25,7 @@
         Weekly
       </p>
       <p class="btn btn-light" id="Monthly">
-       Monthly
+        Monthly
       </p>
       <p class="btn btn-light" id="year">
         year
@@ -40,50 +46,58 @@
           </tr>
         </thead>
         <tbody id="salesTableBody">
-          <% if (salereport && salereport.length> 0) { %>
-            <% salereport.forEach(order=> { %>
-              <% order.items.forEach(item=> { %>
-                <tr>
-                  <td>
-                    <%= new Date(order.orderDate).toLocaleDateString(); %>
-                  </td>
-                  <td>
-                    <%= order.orderNumber %>
-                  </td>
-                  <td>
-                    <%= order.userId.username %>
-                  </td>
-                  <td>
-                    <%= item.product.productName %>
-                  </td>
-                  <td>
-                    <%= item.quantity %>
-                  </td>
-                  <td>
-                    <%= item.price %>
-                  </td>
-                  <td>
-                    <%= order.couponDiscount %>
-                  </td>
-                  <td>
-                    <%= item.quantity * item.price %>
-                  </td>
-                </tr>
-                <% }); %>
-                  <% }); %>
-                    <% } else { %>
-                      <tr>
-                        <td colspan="8">No sales data</td>
-                      </tr>
-                      <% } %>
+          <% if (salereport && salereport.length > 0) { %>
+          <% salereport.forEach(order => { %>
+          <% order.items.forEach(item => { %>
+          <tr>
+            <td><%= new Date(order.orderDate).toLocaleDateString(); %></td>
+            <td><%= order.orderNumber %></td>
+            <td><%= order.userId.username %></td>
+            <td><%= item.product.productName %></td>
+            <td><%= item.quantity %></td>
+            <td><%= item.price %></td>
+            <td><%= order.couponDiscount %></td>
+            <td><%= item.quantity * item.price %></td>
+          </tr>
+          <% }); %>
+          <% }); %>
+          <% } else { %>
+          <tr>
+            <td colspan="8">No sales data</td>
+          </tr>
+          <% } %>
         </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4"></td>
+            <td colspan="2"><strong>Overall Sales Count:</strong></td>
+            <td colspan="2"><strong><%= overallSalesCount %></strong></td>
+          </tr>
+          <tr>
+            <td colspan="4"></td>
+            <td colspan="2"><strong>Overall Order Amount:</strong></td>
+            <td colspan="2"><strong><%= overallOrderAmount %></strong></td>
+          </tr>
+          <tr>
+            <td colspan="4"></td>
+            <td colspan="2"><strong>Overall Discount:</strong></td>
+            <td colspan="2"><strong><%= overallDiscount %></strong></td>
+          </tr>
+        </tfoot>
       </table>
-      <div class="container mb-30"  style="display: flex; justify-content:end; ">
+      
+      <div class="container mb-30" style="display: flex; justify-content:end; ">
       </div>
-    </div> 
-    <div class="text-end" >
-      <button class="btn btn-success" style="margin-right: 80px;" id="pdfButton"> Download PDF </button>
-      <button class="btn btn-success" id="toExcel"> Download to Excel </button>
+    </div>
+    <div class="text-end">
+      <% if (salereport && salereport.length> 0) { %>
+
+        <button class="btn btn-success" style="margin-right: 80px;" id="pdfButton"> Download PDF </button>
+        <button class="btn btn-success" id="toExcel"> Download to Excel </button>
+        <% } else { %>
+
+          <% } %>
+
     </div>
   </div>
 
@@ -101,149 +115,193 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
   <script>
-    
-    const today=document.getElementById("today")
-    today.addEventListener("click",()=>{
+
+    const today = document.getElementById("today")
+    today.addEventListener("click", () => {
       axios({
-  method: 'get',
-  url: '/admin/sortSalesReport?sortby=today',
-  
-})
-  .then(function (response) {
+        method: 'get',
+        url: '/admin/sortSalesReport?sortby=today',
 
-  console.log(response.data.saleData);
-  const data=response.data.saleData
-  appendingData(data)
+      })
+        .then(function (response) {
 
-  
-  }).catch((error)=>{
-    console.log(error);
-  })
+          console.log(response.data.saleData);
+          const data = response.data.saleData
+          appendingData(data)
+
+
+        }).catch((error) => {
+          console.log(error);
+        })
     })
 
 
     const weeklyButton = document.getElementById("weekly");
     weeklyButton.addEventListener("click", () => {
-        axios({
-            method: 'get',
-            url: '/admin/sortSalesReport?sortby=weekly',
-        })
+      axios({
+        method: 'get',
+        url: '/admin/sortSalesReport?sortby=weekly',
+      })
         .then(function (response) {
-            const data = response.data.saleData;
-            appendingData(data);
+          const data = response.data.saleData;
+          appendingData(data);
         })
         .catch((error) => {
-            console.log(error);
+          console.log(error);
         });
     });
 
     const MonthlyButton = document.getElementById("Monthly");
     MonthlyButton.addEventListener("click", () => {
-        axios({
-            method: 'get',
-            url: '/admin/sortSalesReport?sortby=Monthly',
-        })
+      axios({
+        method: 'get',
+        url: '/admin/sortSalesReport?sortby=Monthly',
+      })
         .then(function (response) {
-            const data = response.data.saleData;
-            appendingData(data);
+          const data = response.data.saleData;
+          appendingData(data);
         })
         .catch((error) => {
-            console.log(error);
+          console.log(error);
         });
     });
 
     const yearlyButton = document.getElementById("year");
     yearlyButton.addEventListener("click", () => {
-        axios({
-            method: 'get',
-            url: '/admin/sortSalesReport?sortby=yearly',
-        })
+      axios({
+        method: 'get',
+        url: '/admin/sortSalesReport?sortby=yearly',
+      })
         .then(function (response) {
-            const data = response.data.saleData;
-            appendingData(data);
+          const data = response.data.saleData;
+          appendingData(data);
         })
         .catch((error) => {
-            console.log(error);
+          console.log(error);
         });
     });
 
     const customButton = document.getElementById("customDate");
-   customButton.addEventListener("click", () => {
-        axios({
-            method: 'get',
-            url: '/admin/sortSalesReport?sortby=yearly',
-        })
+    customButton.addEventListener("click", () => {
+      axios({
+        method: 'get',
+        url: '/admin/sortSalesReport?sortby=yearly',
+      })
         .then(function (response) {
-            const data = response.data.saleData;
-            appendingData(data);
+          const data = response.data.saleData;
+          appendingData(data);
         })
         .catch((error) => {
-            console.log(error);
+          console.log(error);
         });
     });
 
-    const costomDateSubmit=document.getElementById("costomDateSubmit")
-    costomDateSubmit.addEventListener("click",()=>{
-    
-      const date=customDate.value
-      if(date==""){
+    const costomDateSubmit = document.getElementById("costomDateSubmit")
+    costomDateSubmit.addEventListener("click", () => {
+
+      const date = customDate.value
+      if (date == "") {
         const Toast = Swal.mixin({
-                            toast: true,
-                            position: "top",
-                            showConfirmButton: false,
-                            timer: 1000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.onmouseenter = Swal.stopTimer;
-                                toast.onmouseleave = Swal.resumeTimer;
-                            }
-                        });
-                        Toast.fire({
-                            icon: "warning",
-                            title: "invalid date"
-                        });
-                      
-      }else{
-         axios({
-            method: 'get',
-            url: `/admin/sortSalesReport?sortby=customDate&date=${date}`,
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "warning",
+          title: "invalid date"
+        });
+
+      } else {
+        axios({
+          method: 'get',
+          url: `/admin/sortSalesReport?sortby=customDate&date=${date}`,
         })
-        .then(function (response) {
+          .then(function (response) {
             const data = response.data.saleData;
             appendingData(data);
-        })
-        .catch((error) => {
+          })
+          .catch((error) => {
             console.log(error);
-        })
+          })
       }
     })
-    
+
+    const periodSubmit = document.getElementById("periodSubmit");
+
+periodSubmit.addEventListener("click", () => {
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+    const today = new Date();
+    const selectedStartDate = new Date(startDate);
+    const selectedEndDate = new Date(endDate);
+    if (startDate === "" || endDate === "") {
+        Swal.fire({
+            icon: "warning",
+            title: "Invalid date",
+            text: "Please select both start and end dates."
+        });
+    } else if (selectedEndDate > today) {
+        Swal.fire({
+            icon: "warning",
+            title: "Invalid ending date",
+            text: "End date cannot be greater than the current date."
+        });
+    } else if (selectedEndDate < selectedStartDate) {
+        Swal.fire({
+            icon: "warning",
+            title: "Invalid date range",
+            text: "End date cannot be earlier than the start date."
+        });
+    } else {
+        axios.get(`/admin/sortSalesReport?sortby=customPeriod&startDate=${startDate}&endDate=${endDate}`)
+            .then((response) => {
+                const data = response.data.saleData;
+                appendingData(data);
+            })
+            .catch((error) => {
+                console.log(error);
+                // Handle error
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An error occurred while fetching data."
+                });
+            });
+    }
+});
 
 
 
-const pdfButton=document.getElementById("pdfButton")
-pdfButton.addEventListener("click",()=>{
-  console.log("hihihihih");
-  const salesTableResposive=document.getElementById("salesTableResposive")
-  console.log(salesTableResposive,"it table data")
-  html2pdf().from(salesTableResposive).save();
 
-})
+    const pdfButton = document.getElementById("pdfButton")
+    pdfButton.addEventListener("click", () => {
+      console.log("hihihihih");
+      const salesTableResposive = document.getElementById("salesTableResposive")
+      console.log(salesTableResposive, "it table data")
+      html2pdf().from(salesTableResposive).save();
+
+    })
 
 
 
 
 
     function appendingData(data) {
- 
-        const tableBody = document.getElementById('salesTableBody');
-        tableBody.innerHTML = ''; 
 
-        if (data && data.length > 0) {
-            data.forEach(order => {
-                order.items.forEach(item => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
+      const tableBody = document.getElementById('salesTableBody');
+      tableBody.innerHTML = '';
+
+      if (data && data.length > 0) {
+        data.forEach(order => {
+          order.items.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
                         <td>${new Date(order.orderDate).toLocaleDateString()}</td>
                         <td>${order.orderNumber}</td>
                         <td>${order.userId.username}</td>
@@ -253,40 +311,40 @@ pdfButton.addEventListener("click",()=>{
                         <td>${order.couponDiscount}</td>
                         <td>${item.quantity * item.price}</td>
                     `;
-                    tableBody.appendChild(row);
-                });
-            });
-        } else {
-            const row = document.createElement('tr');
-            row.innerHTML = '<td colspan="8" class="text-center">No sales data</td>'; 
             tableBody.appendChild(row);
-        }
+          });
+        });
+      } else {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="8" class="text-center">No sales data</td>';
+        tableBody.appendChild(row);
+      }
     }
-        
+
     document.querySelector("#toExcel").addEventListener("click", () => {
-    const table = document.getElementById("salesTable");
-    const headers = [];
-    const headerCells = table.querySelectorAll("th");
-    headerCells.forEach(cell => {
+      const table = document.getElementById("salesTable");
+      const headers = [];
+      const headerCells = table.querySelectorAll("th");
+      headerCells.forEach(cell => {
         headers.push(cell.textContent.trim());
-    });
-    console.log(headers,"it headers")
-    const rows = table.querySelectorAll("tr");
-    const data = [];
-    rows.forEach(row => {
+      });
+      console.log(headers, "it headers")
+      const rows = table.querySelectorAll("tr");
+      const data = [];
+      rows.forEach(row => {
         const rowData = [];
         row.querySelectorAll("td").forEach(cell => {
-            rowData.push(cell.textContent.trim());
+          rowData.push(cell.textContent.trim());
         });
         data.push(rowData);
+      });
+
+      data.unshift(headers); // Add headers as the first row of data
+
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet(data);
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Data');
+      XLSX.writeFile(workbook, 'sales_data.xlsx');
     });
- 
-    data.unshift(headers); // Add headers as the first row of data
-    
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet(data);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sales Data');
-    XLSX.writeFile(workbook, 'sales_data.xlsx');
-}); 
 
   </script>

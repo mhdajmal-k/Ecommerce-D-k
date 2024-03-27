@@ -296,7 +296,7 @@ const addingOffer = async (req, res) => {
 
           return res.json({  message: "maximum offer exceed you have to limit(500) fo regular price" });
       }
-      const updatedProduct = await product.findByIdAndUpdate(productId, { $set: { sellingPrice: offerPrice } });
+      const updatedProduct = await product.findByIdAndUpdate(productId, { $set: { sellingPrice: offerPrice,productOffer:offerPrice } });
       if (updatedProduct) {
           return res.json({ status: true, message: "Offer activated successfully" });
       } else {
@@ -331,13 +331,28 @@ const applyCategoryOffer = async (req, res) => {
     }
     categoryData.offerPrice = offerPrice;
     await categoryData.save();
-    
     const products = await product.find({ categoryId: categoryId });
     for (const product of products) {
-      const categoryPercentage = product.price * (1 - offerPrice / 100);
-      product.sellingPrice = categoryPercentage;
-      product.offerApplied = true;
-      await product.save();
+      console.log(product);
+      const categoryPercentage = Math.ceil(product.price * (1 - categoryData.offerPrice/ 100))
+      console.log("/////////////////////////////////////////////////");
+      console.log(product.sellingPrice,"it the selling price");
+      console.log("///////////////////////////////");
+      console.log(categoryPercentage);
+      if(product.sellingPrice>categoryPercentage){
+        product.sellingPrice = categoryPercentage;
+        product.offerApplied = true;
+        await product.save();
+      }else{
+      
+        product.sellingPrice = product.productOffer??product.price
+
+        // console.log(product.sellingPrice,"it selling price");
+        // console.log(categoryPercentage,"it is the categoryOffee");
+        // product.sellingPrice = categoryPercentage;
+        product.offerApplied = true;
+        await product.save();
+      }
     }
     return res.status(200).json({ message: 'Category offer applied successfully' });
   } catch (error) {

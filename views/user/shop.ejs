@@ -315,13 +315,22 @@
                                                         <span><span><%product[i].categoryId.offerPrice  %>%</span></span>
                                                     <% } %>
                                                 </div> -->
-                                                <div class="product-price">
-                                    
-                                                    <span>RS <%=product[i].sellingPrice %> </span>
-                                                    <span class="old-price">
-                                                        <%= product[i].price%>
-                                                    </span>
-                                                </div>
+                                                <% if (product[i].sellingPrice  === product[i].price) { %>
+                                                    <div class="product-price">
+                                                
+                                                        <span>RS <%=product[i].sellingPrice %> </span>
+                                                        
+                                                    </div>
+                                                        <% } else { %>
+                                                         
+                                                            <div class="product-price">
+                                                
+                                                                <span>RS <%=product[i].sellingPrice %> </span>
+                                                                <span class="old-price">
+                                                                    <%= product[i].price%>
+                                                                </span>
+                                                            </div>
+                                                <% } %>
                                                 <!-- <div class="product-action-1 show">
                                                     <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i
                                                             class="fi-rs-shopping-bag-add"></i></a>

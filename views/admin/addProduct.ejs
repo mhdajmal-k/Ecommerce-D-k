@@ -1,5 +1,5 @@
 <%- include ("../partilas/admin") %>
-<link rel="stylesheet" href="/asset/css/cropper.css">
+
     <section class="content-main">
         <form method="post" action="/admin/addproduct" id="form" enctype="multipart/form-data">
             <% if (locals.message) { %>
@@ -111,11 +111,10 @@
                                 <div class="card-body">
                                     <div>
                                         <label class="form-label">Images</label>
-                                        <input class="form-control imageInput" name="images" type="file" accept="image/*"id="imageInput" multiple onchange="crope(event)">
+                                        <input class="form-control" name="images" type="file" accept="image/*"
+                                            id="imageInput" multiple>
                                         <div id="imagePreviewContainer" style="display: none;">
                                             <div id="imagePreviews" style="width: 100px;"></div>
-                                            <div id="imagePreview" style="width: 100px;"></div>
-
                                             
                                             <button id="deselectButton">Deselect All</button>
 
@@ -136,155 +135,7 @@
 
         </form>
     </section>
-    
-    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="modalLabel">Crop the image</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="img-container">
-                <img id="image" src="https://avatars0.githubusercontent.com/u/3456749">
-              </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="crop">Crop</button>
-                <button type="button" class="btn btn-primary" id="next">Next</button>
-            </div>
-          </div>
-        </div>
-       <!-- Ensure all necessary scripts are included -->
-<script src="https://unpkg.com/jquery@3/dist/jquery.min.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/bootstrap@4/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-<script src="/asset/js/cropper/cropper.js"></script>
 
-<script>
-   $(document).ready(function () {
-    // Define variables
-    var croppers = []; // Array to store Cropper instances for each image
-    var $modal = $('#modal');
-    var $progress = $('.progress');
-    var $alert = $('.alert');
-    var $progressBar = $('.progress-bar');
-    var imageInputs = document.querySelectorAll('.imageInput'); // Get all image input elements
-    var currentImageIndex = 0; // Index of the current image being cropped
-
-    // Function to initialize Cropper for a specific image
-    function initializeCropper(image) {
-        var cropper = new Cropper(image, {
-            aspectRatio: 1,
-            viewMode: 3,
-        });
-        croppers.push(cropper); // Add Cropper instance to the array
-    }
-
-    // Function to destroy all Cropper instances
-    function destroyAllCroppers() {
-        croppers.forEach(function (cropper) {
-            cropper.destroy();
-        });
-        croppers = []; // Reset the array
-    }
-
-    // Function to handle cropping and uploading
-    function cropAndUpload() {
-        var cropper = croppers[currentImageIndex];
-        var canvas = cropper.getCroppedCanvas({
-            width: 160,
-            height: 160,
-        });
-
-        // You can get the cropped image as a blob URL like this:
-        canvas.toBlob(function (blob) {
-            var croppedBlobUrl = URL.createObjectURL(blob);
-
-            // Create an image element
-            var imgElement = document.createElement('img');
-            imgElement.src = croppedBlobUrl;
-            imgElement.style.maxWidth = '100%'; // Ensure the image fits the container
-
-            // Append the image element to imagePreviews div
-            var imagePreviewsDiv = document.getElementById('imagePreviews');
-            imagePreviewsDiv.appendChild(imgElement);
-
-            // Increment currentImageIndex
-            currentImageIndex++;
-
-            // Check if there are more images to crop
-            if (currentImageIndex < imageInputs.length) {
-                // Show next image for cropping
-                var nextInput = imageInputs[currentImageIndex];
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    var image = document.createElement('img');
-                    image.src = e.target.result;
-                    $modal.find('.modal-body').html(image); // Replace modal body content with the image
-                };
-                reader.readAsDataURL(nextInput.files[0]);
-            } else {
-                // Show the image preview container when all images are cropped
-                var imagePreviewContainer = document.getElementById('imagePreviewContainer');
-                imagePreviewContainer.style.display = 'block';
-                // Hide the modal
-                $modal.modal('hide');
-                // Destroy Cropper instances after cropping all images
-                destroyAllCroppers();
-            }
-        }, 'image/jpeg');
-    }
-
-    // Event listener for cropping button
-    document.getElementById('crop').addEventListener('click', function () {
-        cropAndUpload();
-    });
-
-    document.getElementById('next').addEventListener('click', function () {
-            if (currentImageIndex < imageInputs.length - 1) {
-                currentImageIndex++;
-                var nextInput = imageInputs[currentImageIndex];
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    var image = document.createElement('img');
-                    image.src = e.target.result;
-                    $modal.find('.modal-body').html(image); // Replace modal body content with the image
-                };
-                reader.readAsDataURL(nextInput.files[0]);
-            }
-        });
-
-    // Event listener for file input change
-    imageInputs.forEach(function (input) {
-        input.addEventListener('change', function (event) {
-            const files = event.target.files;
-            if (files && files.length > 0) {
-                const file = files[0];
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    var image = document.createElement('img');
-                    image.src = e.target.result;
-                    $modal.find('.modal-body').html(image); // Replace modal body content with the image
-                    $modal.modal('show');
-                    $modal.one('shown.bs.modal', function () {
-                        initializeCropper(image); // Initialize Cropper for the current image
-                    });
-                    $modal.one('hidden.bs.modal', function () {
-                        // Destroy Cropper when modal is hidden
-                        destroyAllCroppers();
-                    });
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    });
-});
-</script>
-
-          
     <script>
 
         const product_title = document.getElementById("product_title")
@@ -292,19 +143,6 @@
         const size = document.getElementsByClassName("size")
 
 
-        if (files && files.length > 0) {
-          file = files[0];
-
-          if (URL) {
-            done(URL.createObjectURL(file));
-          } else if (FileReader) {
-            reader = new FileReader();
-            reader.onload = function (e) {
-              done(reader.result);
-            };
-            reader.readAsDataURL(file);
-          }
-        }
         const product_Description = document.getElementById("product_Description")
         const productPrice = document.getElementById("product_price")
         const sellingPrice = document.getElementById("sellingPrice")
@@ -534,4 +372,4 @@ deselectButton.addEventListener('click', function () {
 
 
 
-    </script>
+    </script>

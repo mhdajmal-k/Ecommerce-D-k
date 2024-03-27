@@ -349,7 +349,13 @@ const load_saleReport = async (req, res) => {
       .populate("userId")
       .populate("items.product");
     console.log(salereport, "its wind");
-    res.render("salereport", { salereport });
+    const overallSalesCount = salereport.length;
+    const overallOrderAmount = salereport.reduce((total, order) => total + order.totalAmount, 0);
+    const overallDiscount = salereport.reduce((total, order) => total + order.couponDiscount, 0);
+    console.log(overallSalesCount);
+    console.log(overallOrderAmount);
+    console.log(overallDiscount);
+    res.render("salereport", { salereport,overallSalesCount,overallOrderAmount,overallDiscount });
   } catch (error) {
     console.log(error);
   }
@@ -360,7 +366,9 @@ const load_saleReport = async (req, res) => {
 ////////////////////////sorting Sales Report
 const sortSalesReport = async (req, res) => {
   try {
-    const { sortby, date } = req.query;
+    console.log(req.query)
+    const { sortby, date,startDate, endDate } = req.query;
+    
     let SaleData;
 
     switch (sortby) {
@@ -444,10 +452,25 @@ const sortSalesReport = async (req, res) => {
           .populate("userId")
           .populate("items.product");
         break;
-      default:
-        return res.status(400).json({ message: "Invalid sortby parameter" });
-    }
-    res.json({ saleData: SaleData });
+        
+        case "customPeriod":
+        
+          const startCustomDate = new Date(startDate);
+          console.log(startDate);
+          console.log(startCustomDate);
+          const endCustomDate = new Date(endDate);
+          SaleData = await Order.find({
+            status: "Delivered",
+            orderDate: { $gte: startCustomDate, $lte: endCustomDate },
+          })
+            .populate("userId")
+            .populate("items.product");
+          break;
+        default:
+          return res.status(400).json({ message: "Invalid sortby parameter" });
+      }
+      console.log(SaleData,"it sales data");
+      res.json({ saleData: SaleData });
   } catch (error) {
     console.log(error);
   }

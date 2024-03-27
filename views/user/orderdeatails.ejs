@@ -110,7 +110,7 @@
                         <% if (item.isCancelled==true) { %>
 
                           <% } else if (userOrder.status=="Canceled" ||userOrder.status=="Pending Return Request"
-                            ||userOrder.status=="Returned" ) { %>
+                            ||userOrder.status=="Returned"||userOrder.status=="Delivered" ) { %>
                             <% } else { %>
                               <td class="action" data-title="Remove">
                                 <a href="#"
