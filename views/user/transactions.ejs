@@ -33,6 +33,31 @@
             </tbody>
         </table>
     </div>
+    <div class="pagination-area mt-15 mb-sm-5 mb-lg-0 text-center"> <!-- Added text-center class -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center m-5 ">
+    
+                <% if (currentPage> 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="/transactions?page=<%= currentPage - 1 %>"
+                            aria-label="Previous">prev
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                <% } %>
+    
+                <% for (let i=1; i <=totalPage; i++) { %>
+                    <li class="page-item <%= i == currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="/transactions?page=<%= i %>">
+                            <%= i %>
+                        </a>
+                    </li>
+                <% } %>
+    
+            </ul>
+        </nav>
+    </div>
+    
 <% } else { %>
     <p>No transactions found.</p>
 <% } %>

@@ -1,4 +1,10 @@
-﻿<%- include ("../partilas/userheader") -%>
+﻿<style>
+    
+  input[type="radio"] {
+    transform: scale(0.4);
+  }
+</style>
+<%- include ("../partilas/userheader") -%>
     <div class="mobile-header-active mobile-header-wrapper-style">
         <div class="mobile-header-wrapper-inner">
             <div class="mobile-header-top">
@@ -186,57 +192,7 @@
         </div>
         <section class="mt-50 mb-50">
             <div class="container">
-                <!-- <div class="row">
-                    <div class="col-lg-6 mb-sm-15">
-                        <div class="toggle_info">
-                            <span><i class="fi-rs-user mr-10"></i><span class="text-muted">Already have an account?</span> <a href="#loginform" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to login</a></span>
-                        </div>
-                        <div class="panel-collapse collapse login_form" id="loginform">
-                            <div class="panel-body">
-                                <p class="mb-30 font-sm">If you have shopped with us before, please enter your details below. If you are a new customer, please proceed to the Billing &amp; Shipping section.</p>
-                                <form method="post">
-                                    <div class="form-group">
-                                        <input type="text" name="email" placeholder="Username Or Email">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="password" name="password" placeholder="Password">
-                                    </div>
-                                    <div class="login_footer form-group">
-                                        <div class="chek-form">
-                                            <div class="custome-checkbox">
-                                                <input class="form-check-input" type="checkbox" name="checkbox" id="remember" value="">
-                                                <label class="form-check-label" for="remember"><span>Remember me</span></label>
-                                            </div>
-                                        </div>
-                                        <a href="#">Forgot password?</a>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-md" name="login">Log in</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="toggle_info">
-                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
-                        </div>
-                        <div class="panel-collapse collapse coupon_form " id="coupon">
-                            <div class="panel-body">
-                                <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
-                                <form method="post">
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Enter Coupon Code...">
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn  btn-md" name="login">Apply Coupon</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-                <div class="row">
+              <div class="row">
                     <div class="col-12">
                         <div class="divider mt-50 mb-50"></div>
                     </div>
@@ -247,7 +203,7 @@
                         <div class="mb-20">
                             <h4>View order details</h4>
                         </div>
-                        <div class="table-responsive order_table text-center">
+                        <div class="tabel table-responsive order_table text-center">
                             <table class="table">
                                 <% if (userCart && userCart.items.length>0) { %>
                                     <tr>
@@ -255,15 +211,10 @@
                                         <th>Total</th>
                                         <th>remove</th>
                                     </tr>
-
-
-
                                     <thead>
-
                                     </thead>
                                     <% for( let i=0; i < userCart.items.length; i++ ) { %>
                                         <tbody>
-
                                             <tr>
                                                 <td class="image product-thumbnail"><img
                                                         src="/uploads/products/<%= userCart.items[i].productId.image[0] %>"
@@ -275,13 +226,13 @@
                                                     <p>
                                                         <%= userCart.items[i].productId.categoryId.categoryTitle %>
                                                     </p>
+                                                    
                                                     <span class="product-qty">quantity x <%= userCart.items[i].quantity
                                                             %></span>
                                                     <br>
-
                                                     <span class="product-size">size: <%= userCart.items[i].size%></span>
+                                                    <br><span>prize: <%= userCart.items[i].productId.sellingPrice  %></span>
                                                 </td>
-
                                                 <td>
                                                     <%= userCart.items[i].subTotal %>
                                                 </td>
@@ -290,9 +241,6 @@
                                                         class="text-muted"><i class="fi-rs-trash"></i>
                                                 </td>
                                             </tr>
-
-
-
                                             <% } %>
                                                 <tr>
                                                     <th>SubTotal</th>
@@ -317,9 +265,7 @@
                                                 </tr>
                                                 <% } else { %>
                                                     <tr> No items in Cart Keep <a href="/shop" class="btn">Shop</a></tr>
-                                                    <% } %>
-
-
+                                        <% } %>
                                         </tbody>
                             </table>
                         </div>
@@ -335,7 +281,6 @@
                                         <div class="hidden" style="display: none;">
                                             <div class="right">
                                                 <div class="coupon">
-
                                                     <div class="form-row row justify-content-center">
                                                         <div class="form-group col-lg-6">
                                                             <input class="font-medium" name="Coupon"
@@ -359,8 +304,6 @@
                                         </div>
                             </div>
                             <% } %>
-
-
                                 <% } else { %>
                                     No coupons available
                                     <% } %>
@@ -399,19 +342,19 @@
                                             name="selectedPayment" id="wallet">
                                         <label class="form-check-label" for="wallet" data-bs-toggle="collapse"
                                             data-target="#wallet" aria-controls="CashOnDelivey">Wallet
-                                            
+
                                         </label>
                                         <h6 id="balance">Check balance?</h6>
                                         <p id="showbalance" style="display: none;">
                                             <% if (balance) { %>
                                                 Wallet balance: <%= balance %>
-                                            <% } %>
+                                                    <% } %>
                                         </p>
                                     </div>
-                                    
 
-                                    
-                                    
+
+
+
                                 </div>
                                 <div class="custome-radio">
                                     <div class="custome-radio">
@@ -426,8 +369,7 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-fill-out btn-block mt-30" id="placeOrderButton"
-                            style=" display: flex;margin-left: 25%; border-radius: 10px;
+                        <button class="btn btn-fill-out btn-block mt-30" id="placeOrderButton" style=" display: flex;margin-left: 25%; border-radius: 10px;
                             justify-content: center; width: 50%; font-size:larger;">Place
                             Order</button>
                     </div>
@@ -435,65 +377,56 @@
                 <!-- <div class="row"> -->
                 <div class="container">
                     <a href="/addAddress" class="btn mt-10">New Address</a>
-             
-                <div class="row">
-                    <% if (userAddress) { %>
-                        <% for (let i=0; i < userAddress.length; i++) { %>
-                            <div class="col-lg-6 mt-50">
-                                <div class="card mb-3 mb-lg-0">
-                                    <div class="card-header ">
-                                        <h5 class="mb-0 ">
-                                            <%= userAddress[i].addressType %> Address
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <p style="font-weight: bold;">
-                                            <%= userAddress[i].name %>
-                                        </p>
-                                        <address>
-                                            <%= userAddress[i].address %>, <br>
-                                                <%= userAddress[i].locality %>,<br>
-                                                    <%= userAddress[i].district %>, <br>
-                                                        <%= userAddress[i].state %>, <br>
-                                                            <%= userAddress[i].alternatePhone %>, <br>
-                                                                <%= userAddress[i].pinCode %>
-                                        </address>
-                                        <p>
-                                            <%= userAddress[i].state %>
-                                        </p>
-                                        <a href="/addressEdit?addressId=<%= userAddress[i]._id %>"
-                                            class="btn-small">Edit</a>
-                                        <div>
-                                            <% if (userAddress[i].default==true) { %>
-                                                <label for="address_<%= userAddress[i]._id %>">Select Address</label>
-                                                <input type="radio" id="address_<%= userAddress[i]._id %>"
-                                                    name="selectedAddress" value="<%= userAddress[i]._id %>" checked="">
-                                                <% } else { %>
+
+                    <div class="row">
+                        <% if (userAddress) { %>
+                            <% for (let i=0; i < userAddress.length; i++) { %>
+                                <div class="col-lg-6 mt-50">
+                                    <div class="card mb-3 mb-lg-0">
+                                        <div class="card-header ">
+                                            <h5 class="mb-0 ">
+                                                <%= userAddress[i].addressType %> Address
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <p style="font-weight: bold;">
+                                                <%= userAddress[i].name %>
+                                            </p>
+                                            <address>
+                                                <%= userAddress[i].address %>, <br>
+                                                    <%= userAddress[i].locality %>,<br>
+                                                        <%= userAddress[i].district %>, <br>
+                                                            <%= userAddress[i].state %>, <br>
+                                                                <%= userAddress[i].alternatePhone %>, <br>
+                                                                    <%= userAddress[i].pinCode %>
+                                            </address>
+                                            <p>
+                                                <%= userAddress[i].state %>
+                                            </p>
+                                            <a href="/addressEdit?addressId=<%= userAddress[i]._id %>"
+                                                class="btn-small">Edit</a>
+                                            <div>
+                                                <% if (userAddress[i].default==true) { %>
                                                     <label for="address_<%= userAddress[i]._id %>">Select
                                                         Address</label>
-                                                    <input type="radio" id="address_<%= userAddress[i]._id %>"
-                                                        name="selectedAddress" value="<%= userAddress[i]._id %>">
-                                                    <% } %>
-
-
-
+                                                    <input type="radio"  id="address_<%= userAddress[i]._id %>"
+                                                        name="selectedAddress" value="<%= userAddress[i]._id %>"
+                                                        checked="">
+                                                    <% } else { %>
+                                                        <label for="address_<%= userAddress[i]._id %>">Select
+                                                            Address</label>
+                                                        <input type="radio" id="address_<%= userAddress[i]._id %>"
+                                                            name="selectedAddress" value="<%= userAddress[i]._id %>">
+                                                        <% } %>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
-
-
-
-
-                            </div>
-                            <% } %>
                                 <% } %>
+                                    <% } %>
+                    </div>
                 </div>
             </div>
-            </div>
-
-
-
             </div>
             </div>
         </section>
@@ -505,19 +438,21 @@
 
         <script>
             couponApplied = false
-            couponId=[]
-            
+            couponId = []
+
             const discountAmount = document.getElementById("discountAmount");
             const orderTotal = document.getElementById("orderTotal");
-            const subTotal=orderTotal.innerHTML
-   
+            const subTotal = orderTotal.innerHTML
+
 
             /////////////////////////////////////accessing local storage value/////////////////////////////////
 
             document.addEventListener("DOMContentLoaded", function () {
-                console.log(couponId,"its coupon id");
+
+                console.log(couponId, "its coupon id");
                 const data = localStorage.getItem("coupon")
                 coupon_data = JSON.parse(data);
+                
                 if (localStorage.getItem("coupon")) {
                     if (coupon_data.maximumDiscountValue) {
                         discountAmount.innerHTML = coupon_data.maximumDiscountValue
@@ -550,47 +485,47 @@
 
 
             //////////////////////////////////// PALACE ORDER///////////////////////////////////////////
-            document.getElementById("placeOrderButton").addEventListener("click",async () => {
-    let id; 
-    if(localStorage.getItem("coupon")){
-        const couponData = localStorage.getItem("coupon");
-        const couponId = JSON.parse(couponData);
-        id = couponId.id; 
-    }
-    const userCartId = "<%= userCart._id %>";
-    if (userCartId && id){
-        const totalAmount=orderTotal.innerHTML.trim()
-      
-        $.ajax({
-            url:"/applycoupon",
-            method:'post',
-            data:{
-                couponId:id
-            },success:((response)=>{
-                if(response.status=="Coupon is not listed"){
-                    Swal.fire({
-                        title: "<span style='color: red;'> Coupon is invalid</span>",
-                        html: "<span style='color: Black;'>Sorry you applied coupon is not valid or its not active now</span>",
-                        icon: "warning",
-                        timer: 3000
-                    });
-                }else{
-                    placeOrder(userCartId,totalAmount);
+            document.getElementById("placeOrderButton").addEventListener("click", async () => {
+                let id;
+                if (localStorage.getItem("coupon")) {
+                    const couponData = localStorage.getItem("coupon");
+                    const couponId = JSON.parse(couponData);
+                    id = couponId.id;
                 }
+                const userCartId = "<%= userCart._id %>";
+                if (userCartId && id) {
+                    const totalAmount = orderTotal.innerHTML.trim()
 
-            }),error:((error)=>{
-                
+                    $.ajax({
+                        url: "/applycoupon",
+                        method: 'post',
+                        data: {
+                            couponId: id
+                        }, success: ((response) => {
+                            if (response.status == "Coupon is not listed") {
+                                Swal.fire({
+                                    title: "<span style='color: red;'> Coupon is invalid</span>",
+                                    html: "<span style='color: Black;'>Sorry you applied coupon is not valid or its not active now</span>",
+                                    icon: "warning",
+                                    timer: 3000
+                                });
+                            } else {
+                                placeOrder(userCartId, totalAmount);
+                            }
+
+                        }), error: ((error) => {
+
+                        })
+
+                    })
+
+
+                } else {
+
+                    const totalAmount = orderTotal.innerHTML.trim()
+                    placeOrder(userCartId, totalAmount);
+                }
             })
-
-        })
-        
-     
-    } else {
-    
-        const totalAmount=orderTotal.innerHTML.trim()
-        placeOrder(userCartId,totalAmount);
-    }
-})
             //////////////////////////////////APPLYING COUPON////////////////////////////////////////////
 
             function applyCoupon(id, couponDiscount, maximumDiscount, index) {
@@ -669,42 +604,42 @@
                 const maximumDiscountValue = parseInt(maximumDiscount)
                 discountAmount.innerHTML = 0
                 const Discount = Math.round((total * couponDiscountValue) / 100);
-                if(Discount>maximumDiscountValue){
-                    orderTotal.innerText = parseInt(subTotal) 
-                    const Toast = Swal.mixin({
-                            toast: true,
-                            position: "top",
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.onmouseenter = Swal.stopTimer;
-                                toast.onmouseleave = Swal.resumeTimer;
-                            }
-                        });
-                        Toast.fire({
-                            icon: "success",
-                            title: "Coupon Removed"
-                        })
-                      
-                }else{
-                   
+                if (Discount > maximumDiscountValue) {
                     orderTotal.innerText = parseInt(subTotal)
                     const Toast = Swal.mixin({
-                            toast: true,
-                            position: "top",
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.onmouseenter = Swal.stopTimer;
-                                toast.onmouseleave = Swal.resumeTimer;
-                            }
-                        });
-                        Toast.fire({
-                            icon: "success",
-                            title: "Coupon Removed"
-                        })
+                        toast: true,
+                        position: "top",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Coupon Removed"
+                    })
+
+                } else {
+
+                    orderTotal.innerText = parseInt(subTotal)
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top",
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+                    Toast.fire({
+                        icon: "success",
+                        title: "Coupon Removed"
+                    })
                 }
 
                 discountAmount.innerText = 0
@@ -718,7 +653,7 @@
 
             //////////////////////////////PALACE ORDER MAIN FUNCTION  ///////////////////////////////////////
 
-            function placeOrder(cartId,total) {
+            function placeOrder(cartId, total) {
                 const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
                 const selectedPayment = document.querySelector('input[name="selectedPayment"]:checked');
                 if (selectedAddress == null) {
@@ -741,24 +676,24 @@
                     return;
                 }
                 const paymentOption = selectedPayment.value;
-                
-                    if(total>5000 &&paymentOption=="cod"){
-                        Swal.fire({
-                                title: "<span style='color: red;'>Cash On Delivery NO Available</span>",
-                                html: "<span style='color: BLACK;'>COD AVAILABLE ONLY RS  5000</span>",
-                                icon: "error",
-                                timer: 3000
-                            });
-                            return  
-                    }
-                   
-               
+
+                if (total > 5000 && paymentOption == "cod") {
+                    Swal.fire({
+                        title: "<span style='color: red;'>Cash On Delivery NO Available</span>",
+                        html: "<span style='color: BLACK;'>COD AVAILABLE ONLY RS  5000</span>",
+                        icon: "error",
+                        timer: 3000
+                    });
+                    return
+                }
+
+
                 $.ajax({
                     url: "/placeOrder",
                     method: "post",
                     data: {
                         cartId: cartId,
-                        total:total,
+                        total: total,
                         addressId: selectedAddress.value,
                         paymentOption: paymentOption
                     }, success: (response) => {
@@ -795,16 +730,16 @@
                                 timer: 3000
                             });
                             setTimeout(() => {
-                                location.href="/cart"
+                                location.href = "/cart"
                             }, 3100);
-                        }else if(response.status =='no wallet'){
+                        } else if (response.status == 'no wallet') {
                             Swal.fire({
                                 title: "<span style='color: red;'>No wallet!</span>",
                                 html: "<span style='color: blue;'>Please to up you wallet for the placing order</span>",
                                 icon: "warning",
                                 timer: 3000
                             });
-                        }else if(response.status =="low balance"){
+                        } else if (response.status == "low balance") {
                             Swal.fire({
                                 title: "<span style='color: red;'>Low balance!</span>",
                                 html: "<span style='color: blue;'>Please to up you wallet for the placing order</span>",
@@ -812,9 +747,9 @@
                                 timer: 3000
                             });
                         }
-                         else if (response.status == "order placed") {
+                        else if (response.status == "order placed") {
                             localStorage.removeItem('coupon');
-                            couponApplied=false
+                            couponApplied = false
                             Swal.fire({
                                 title: "<span style='color: green;'>Order Placed</span>",
                                 html: "<span style='color: blue;'>Our order have been Placed keep shop with us</span>",
@@ -826,7 +761,7 @@
                             }, 3100);
                         } else if (response.status = "razorPay") {
                             localStorage.removeItem('coupon');
-                            couponApplied=false
+                            couponApplied = false
 
                             razorPayPayment(response.generateRazor, response.user, response.userOrder, response.cartIdforPassing)
                         }
@@ -921,8 +856,10 @@
 
                 var rzp1 = new Razorpay(options);
                 rzp1.on('payment.failed', function (response) {
+                    window.location.href = "/checkOut"
 
-                    // alert(response.error.code);
+
+                    alert(response.error.code);
                     // alert(response.error.description);
                     // alert(response.error.source);
                     // alert(response.error.step);
@@ -930,12 +867,12 @@
                     // alert(response.error.metadata.order_id);
                     // alert(response.error.metadata.payment_id);
 
-                    Swal.fire({
-                        title: "<span style='color: red;'>payment filed</span>",
-                        html: response.error.reason,
-                        icon: "error",
-                        timer: 3000
-                    });
+                    // Swal.fire({
+                    //     title: "<span style='color: red;'>payment filed</span>",
+                    //     html: response.error.reason,
+                    //     icon: "error",
+                    //     timer: 3000
+                    // });
                 });
                 rzp1.open();
             }
@@ -981,14 +918,14 @@
 
             const balance = document.getElementById("balance");
 
-balance.addEventListener("click", () => {
-    const show = document.getElementById("showbalance");
-    if (show.style.display === 'block') {
-        show.style.display = 'none'; // Hide the balance if it's currently visible
-    } else {
-        show.style.display = 'block'; // Show the balance if it's currently hidden
-    }
-});
+            balance.addEventListener("click", () => {
+                const show = document.getElementById("showbalance");
+                if (show.style.display === 'block') {
+                    show.style.display = 'none'; // Hide the balance if it's currently visible
+                } else {
+                    show.style.display = 'block'; // Show the balance if it's currently hidden
+                }
+            });
 
 
         </script>

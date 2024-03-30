@@ -43,7 +43,6 @@ const load_cart = async (req, res) => {
     userCart.save();
     console.log(userCart, "llllllllllllllllllllllllllll");
   }
-  // const selectedSize = productData.size.find((item) => item.size === size);
   if (userCart) {
     const productIdsInCart = userCart.items.map((item) => item.productId._id);
     const randomProduct = await product.aggregate([
@@ -135,7 +134,7 @@ const removeItem = async (req, res) => {
     const subTotal = toRemove.subTotal;
     const updatedCart = await cart.findOneAndUpdate(
       { userId: user },
-      { $pull: { items: { _id: itemId } } }, // Remove the item with the specified _id
+      { $pull: { items: { _id: itemId } } }, 
       { new: true }
     );
     updatedCart.total -= subTotal;

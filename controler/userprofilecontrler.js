@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 const address = require("../model/address_model");
 const user = require("../model/user_model");
-const order=require("../model/order_model")
+const order = require("../model/order_model");
 const { session } = require("passport");
 const { json } = require("express");
-const securePassword=require("../controler/helper/securingPassword");
-const bcrypt=require("bcrypt")
-const coupon=require("../model/coupon")
-const Wallet=require("../model/wallet")
+const securePassword = require("../controler/helper/securingPassword");
+const bcrypt = require("bcrypt");
+const coupon = require("../model/coupon");
+const Wallet = require("../model/wallet");
 
-// 
+//
 
 const load_profile = async (req, res) => {
   try {
@@ -25,17 +25,36 @@ const load_profile = async (req, res) => {
     console.log(error.message);
   }
 };
-const load_order=async(req,res)=>{
-  try {
-    console.log(req.session,"jjjjjjjjjjjjjjjjjjjjjjjjj");
-   const orderData=await (await order.find({userId:req.session.userId}))
-   console.log(orderData,"kkkkkkkkkkkkkkkkkkkkkkkkkk");
 
-   res.render("orders",{orderData:orderData})
+
+
+const load_order = async (req, res) => {
+  try {
+    console.log(req.session, "jjjjjjjjjjjjjjjjjjjjjjjjj");
+    const count = await order
+      .find({ userId: req.session.userId })
+      .countDocuments();
+    console.log(count);
+    const page = parseInt(req.query.page) || 1;
+    const limit = 15;
+    const skip = (page - 1) * limit;
+    const totalPage = Math.ceil(count / limit);
+    const orderData = await order
+      .find({ userId: req.session.userId }).sort({orderDate:-1})
+      .limit(limit)
+      .skip(skip);
+    console.log(orderData, "kkkkkkkkkkkkkkkkkkkkkkkkkk");
+    res.render("orders", {
+      orderData: orderData,
+      currentPage: page,
+      totalPage: totalPage,
+    });
   } catch (error) {
-    
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
-}
+};
+
 
 const load_addAddress = async (req, res) => {
   try {
@@ -60,18 +79,17 @@ const addAddress = async (req, res) => {
       locationType,
     } = req.body;
 
-  
     // Check if the mobile number already exists in the database
-    const userId=req.session.userId
-    const existingUser = await user.findById(userId)
-    if (existingUser.mobile==mobile) {
-    res.render("addAddress", {
+    const userId = req.session.userId;
+    const existingUser = await user.findById(userId);
+    if (existingUser.mobile == mobile) {
+      res.render("addAddress", {
         message: "Please enter another mobile number",
       });
-      return
+      return;
     } else {
       let newAddress;
-      if(locationType=="home"){
+      if (locationType == "home") {
         newAddress = new address({
           user: req.session.userId,
           name: name,
@@ -84,24 +102,24 @@ const addAddress = async (req, res) => {
           alternatePhone: mobile,
           addressType: locationType,
           alternativePhone: mobile,
-          default:true
-        })
-      }else{
-           newAddress = new address({
-            user: req.session.userId,
-            name: name,
-            pinCode: pinCode,
-            locality: locality,
-            address: addressArea,
-            district: district,
-            state: state,
-            landmark: landmark,
-            alternatePhone: mobile,
-            addressType: locationType,
-            alternativePhone: mobile,
-          })
+          default: true,
+        });
+      } else {
+        newAddress = new address({
+          user: req.session.userId,
+          name: name,
+          pinCode: pinCode,
+          locality: locality,
+          address: addressArea,
+          district: district,
+          state: state,
+          landmark: landmark,
+          alternatePhone: mobile,
+          addressType: locationType,
+          alternativePhone: mobile,
+        });
       }
-      
+
       if (newAddress) {
         console.log(newAddress, "hhhhhhhhhhhhhhhhhhhhhhhhhhhh");
         const savedAddress = await newAddress.save();
@@ -130,25 +148,23 @@ const load_editAddress = async (req, res) => {
   }
 };
 
-
-const addressDelete=async(req,res)=>{
+const addressDelete = async (req, res) => {
   try {
-    console.log("hello")
-    console.log(req.body,":address id");
-    const {Id}=req.body
-    const deleteAddress=await address.findByIdAndDelete(Id)
-    if(deleteAddress){
-   res.json({status:true})
-    }else{
-      res.status(500).json("error")
+    console.log("hello");
+    console.log(req.body, ":address id");
+    const { Id } = req.body;
+    const deleteAddress = await address.findByIdAndDelete(Id);
+    if (deleteAddress) {
+      res.json({ status: true });
+    } else {
+      res.status(500).json("error");
     }
-   
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
+};
 
- const editAddress = async (req, res) => {
+const editAddress = async (req, res) => {
   try {
     console.log("pppppppppppppppppppppppppppppppppppppppp");
     console.log(req.body);
@@ -200,89 +216,66 @@ const load_editProfile = async (req, res) => {
     console;
   }
 };
-const editProfile=async(req,res)=>{
+const editProfile = async (req, res) => {
   try {
-    const userId=req.session.userId
+    const userId = req.session.userId;
     console.log(req.body);
-    const {username,mobile}=req.body
-    const userDataEdit=await user.findByIdAndUpdate({_id:userId},{$set:{
-      username:username,
-      mobile:mobile,
-    }},{new:true})
-    res.redirect("/profile")
+    const { username, mobile } = req.body;
+    const userDataEdit = await user.findByIdAndUpdate(
+      { _id: userId },
+      {
+        $set: {
+          username: username,
+          mobile: mobile,
+        },
+      },
+      { new: true }
+    );
+    res.redirect("/profile");
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
-
-// const changePassword= async(req,res)=>{
-//   try {
-//     console.log(req.body);
-//     const {currentPassword,newPassword}=req.body
-//     const {userId}= req.session
-//     const userData=await user.findById({_id:userId})
-//   const passwordMatch= await bcrypt.compare(currentPassword,userData.password)
-//   console.log(passwordMatch,"compare");
-//   if(passwordMatch==false){
-//     return res.json({status:"invalid password"})
-//   }
-//   const hashPassword=await securePassword(newPassword)
-//   console.log(hashPassword,"000000000000000000000000000000000000000000");
-//   if(hashPassword){
-//     console.log("Hlelo");
-//     userData.password=hashPassword
-//     await userData.save();
-//     req.session.userId=null
-//     req.session.user=false
-//     return res.json({status:"password reset success"})
-//   }
-
-//   } catch (error) {
-//     console.log(error.message)
-//   }
-  // 
-// }
+};
 
 
 const changePassword = async (req, res) => {
   try {
     console.log("hello");
-      const { currentPassword, newPassword } = req.body;
-      const { userId } = req.session;
-      console.log(currentPassword,newPassword)
-      const userData = await user.findById(userId);
-      console.log(userData,"userDAtea");
+    const { currentPassword, newPassword } = req.body;
+    const { userId } = req.session;
+    console.log(currentPassword, newPassword);
+    const userData = await user.findById(userId);
+    console.log(userData, "userDAtea");
 
-      if (!userData) {
-          return res.status(404).json({ error: "User not found" });
-      }
+    if (!userData) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
-      
-      const passwordMatch = await bcrypt.compare(currentPassword, userData.password);
-      console.log(passwordMatch,":currentPassword");
+    const passwordMatch = await bcrypt.compare(
+      currentPassword,
+      userData.password
+    );
+    console.log(passwordMatch, ":currentPassword");
 
-      if (!passwordMatch) {
-        console.log("inside password dismatch");
-          return res.json({ status: "invalid password" });
-      }
+    if (!passwordMatch) {
+      console.log("inside password dismatch");
+      return res.json({ status: "invalid password" });
+    }
 
-  
-      const hashedPassword = await securePassword(newPassword);
+    const hashedPassword = await securePassword(newPassword);
 
-      if (hashedPassword) {
+    if (hashedPassword) {
+      userData.password = hashedPassword;
+      await userData.save();
 
-          userData.password = hashedPassword;
-          await userData.save();
-          
-      
-          req.session.userId = null;
-          req.session.user = false;
+      req.session.userId = null;
+      req.session.user = false;
 
-          return res.json({ status: "password reset success" });
-      }
+      return res.json({ status: "password reset success" });
+    }
   } catch (error) {
-      console.error("Error changing password:", error);
-      return res.status(500).json({ error: "Internal server error" });
+    console.error("Error changing password:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -294,8 +287,8 @@ const load_coupons = async (req, res) => {
       $and: [
         { listed: true },
         { user: { $nin: [userId] } },
-        { expiryDate: { $gt: currentDate } } 
-      ]
+        { expiryDate: { $gt: currentDate } },
+      ],
     });
     console.log(coupons);
     res.render("coupons", { couponData: coupons });
@@ -305,17 +298,27 @@ const load_coupons = async (req, res) => {
   }
 };
 
-
 const load_transactions = async (req, res) => {
   try {
     const { userId } = req.session;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 15;
+    const skip = (page - 1) * limit;
+
+    const count = await Wallet.findOne({ user: userId }).populate({
+      path: "transactions",
+    });
+    const countPage = count.transactions.length;
+
+    const totalPage = Math.ceil(countPage / limit);
+
     const wallet = await Wallet.findOne({ user: userId }).populate({
       path: "transactions",
-      options: { sort: { createdAt: -1 } }
+      options: { sort: { createdAt: -1 }, skip, limit },
     });
 
     if (wallet) {
-      res.render("transactions", { wallet: wallet });
+      res.render("transactions", { wallet, currentPage: page, totalPage });
     } else {
       res.render("transactions", { wallet: null });
     }
@@ -324,9 +327,7 @@ const load_transactions = async (req, res) => {
     // Handle error
     res.status(500).send("Internal Server Error");
   }
-}
-
-
+};
 
 module.exports = {
   load_profile,
@@ -340,5 +341,5 @@ module.exports = {
   changePassword,
   load_order,
   load_coupons,
-  load_transactions
+  load_transactions,
 };

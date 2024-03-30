@@ -1,6 +1,7 @@
 const order = require("../model/order_model");
 const Wallet = require("../model/wallet");
 const { Transaction } = require("../model/transaction");
+const WalletCreationAndUpdating=require("../controler/helper/walletCrationAndUpdation")
 
 
 ///////////////////////orders///////////////
@@ -30,7 +31,6 @@ const load_orders = async (req, res) => {
 const load_ordersDetails = async (req, res) => {
   try {
     const { orderId } = req.query;
-    console.log("hi");
     const orderData = await order
       .findById({ _id: orderId })
       .populate("userId")
@@ -64,25 +64,7 @@ const changeOrderStatus = async (req, res) => {
       const userOrder = await order.findById(orderId);
       const user = userOrder.userId;
       const totalAmount = userOrder.totalAmount;
-      let UserWallet = await Wallet.findOne({ user: user });
-      console.log(UserWallet);
-      if (!UserWallet) {
-        UserWallet = new Wallet({
-          user: user,
-          balance: totalAmount,
-          transactions: [],
-        });
-      } else {
-        UserWallet.balance += totalAmount;
-      }
-      const transaction = new Transaction({
-        user: user,
-        amount: totalAmount,
-        type: "refund",
-        description: "refund money for your return order",
-      });
-      UserWallet.transactions.push(transaction._id);
-      await Promise.all([transaction.save(), UserWallet.save()]);
+     const updated=await WalletCreationAndUpdating(user,totalAmount)
     }
     res.json({ status: "orderStatusChanged" });
   } catch (error) {

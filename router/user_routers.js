@@ -69,7 +69,8 @@ const {
   applycoupon,
   returnRequest,
   generatePdf,
-  returnOneProduct
+  returnOneProduct,
+  rePayment
 }=orderController
 
 
@@ -172,6 +173,7 @@ user_router
 .post("/return-request",isBlocked,isLogin,returnRequest)
 .get("/generate-invoice",isBlocked,isLogin,generatePdf)
 .post("/returnOneProduct",isBlocked,isLogin,returnOneProduct)
+.post("/rePayment",isBlocked,isLogin,rePayment)
 
 //==================================  wallet controller================================
 

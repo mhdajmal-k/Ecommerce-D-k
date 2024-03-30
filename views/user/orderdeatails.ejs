@@ -15,179 +15,161 @@
   }
 </style>
 <%- include ("../partilas/userheader") -%>
-  <div class="container">
-    <div class="table-responsive" style="margin: 90px">
-      <% if (userOrder.status=="Delivered" ) { %>
-        <div style="display: flex; justify-content: space-between; margin: 10px;">
-          <div>
-            <button class="mb-15 btn btn-secondary" id="returnButton">
-              Return Order
-            </button>
-            <div id="returnReasons" style=" display: none">
-              <div class="return-reason">
-                <input class="radio" type="radio" name="returnReason" id="productDamaged" value="Product Damaged">
-                <label for="productDamaged">Product Damaged</label>
-              </div>
-              <div class="return-reason">
-                <input class="radio" type="radio" name="returnReason" id="wrongSize" value="Wrong Size">
-                <label for="wrongSize">Wrong Size</label>
-              </div>
-              <div class="return-reason">
-                <input class="radio" type="radio" name="returnReason" id="wrongProduct" value="Wrong Product">
-                <label for="wrongProduct">Wrong Product</label>
-              </div>
-              <div class="return-reason">
-                <input class="radio" type="radio" name="returnReason" id="otherReason" value="Other">
-                <label for="otherReason">Other</label>
-                <input type="text" id="otherReasonText" placeholder="Type reason for the return"
-                  style="width: 50%; display: none;">
-              </div>
-              <div style="margin-top: 20px;">
-                <button class="btn" id="requestReturnButton">Request Return</button>
-              </div>
-            </div>
+<div class="container">
+  <div class="table-responsive" style="margin: 90px">
+    <% if (userOrder.status=="Delivered" ) { %>
+    <div style="display: flex; justify-content: space-between; margin: 10px;">
+      <div>
+        <% userOrder.items.forEach(item=> { %>
+        <% if (item.isReturned==true) { %>
+        <% } else { %>
+        <button class="mb-15 btn btn-secondary" id="returnButton">Return Order</button>
+        <% } %>
+        <% }) %>
+        <div id="returnReasons" style=" display: none">
+          <div class="return-reason">
+            <input class="radio" type="radio" name="returnReason" id="productDamaged" value="Product Damaged">
+            <label for="productDamaged">Product Damaged</label>
           </div>
-          <div>
-
-            <a class="btn btn-success" href="/generate-invoice?id=<%= userOrder._id %>">View Invoice</a>
-
-
-
+          <div class="return-reason">
+            <input class="radio" type="radio" name="returnReason" id="wrongSize" value="Wrong Size">
+            <label for="wrongSize">Wrong Size</label>
+          </div>
+          <div class="return-reason">
+            <input class="radio" type="radio" name="returnReason" id="wrongProduct" value="Wrong Product">
+            <label for="wrongProduct">Wrong Product</label>
+          </div>
+          <div class="return-reason">
+            <input class="radio" type="radio" name="returnReason" id="otherReason" value="Other">
+            <label for="otherReason">Other</label>
+            <input type="text" id="otherReasonText" placeholder="Type reason for the return" style="width: 50%; display: none;">
+          </div>
+          <div style="margin-top: 20px;">
+            <button class="btn" id="requestReturnButton">Request Return</button>
           </div>
         </div>
-        <% } %>
-
-          <table class="table shopping-summery text-center clean">
-            <thead>
-              <tr class="main-heading">
-                <th scope="col">Order ID</th>
-                <th scope="col">Image</th>
-                <th scope="col">Product</th>
-                <th scope="col">Unite Price</th>
-                <th scope="col">Subtotal</th>
-                <th scope="col">Status</th>
-                <th scope="col">payment</th>
-                <% if (userOrder.status) { %>
-
-                  <th scope="col">Return </th>
-                  <% } else { %>
-
-                    <th scope="col">cancel</th>
-                    <% } %>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (userOrder && userOrder.items.length> 0) { %> <% if (userOrder.status=="Delivered" ||
-                  userOrder.status=="Returned" || userOrder.status=="Canceled" ||
-                  userOrder.status=="Pending Return Request" ) { %>
-
-                  <% } else { %>
-                    <button class="btn btn-danger" onclick="cancelOrder('<%= userOrder._id %>')">
-                      Cancel Order <% } %>
-                    </button>
-
-                    <% userOrder.items.forEach((item)=> { %>
-                      <tr>
-                        <td>
-                          <%= userOrder.orderNumber %>
-                        </td>
-                        <td class="image product-thumbnail">
-                          <img src="/uploads/products/<%= item.product.image[1] %>" alt="#" />
-                        </td>
-                        <td class="product-des product-name">
-                          <h5 class="product-name">
-                            <a href="shop-product-right.html">
-                              <%= item.product.productName %>
-                            </a>
-                          </h5>
-                          <br />
-                          <p>Quantity:<%= item.quantity %>
-                          </p>
-                          <p>Size:<%= item.size %>
-                          </p>
-                        </td>
-                        <td>
-                          <%= item.product.sellingPrice %>
-                        </td>
-                        <td>
-                          <%= item.price %>
-                        </td>
-                        <td>
-                          <% if (item.isCancelled==true) { %>
-                            Canceled
-                            
-                            <% } else if (userOrder.items.isReturned==true ) { %>
-                             Returned
-                            <% } else if (userOrder.status=="Delivered" ) { %>
-                              Delivered
-                              <% } else if (userOrder.status=="pending" ) { %>
-                                Pending
-                                <% } else if (userOrder.status=="Canceled" ) { %>
-                                  Cancelled
-                                <% } else if (userOrder.status=="Returned" ) { %>
-                                  Returned
-                                  <% } else { %>
-                                    Confirmed
-                                    <% } %>
-                        </td>
-                        <td>
-                          <%= userOrder.payment %>
-                        </td>
-                        <% if (item.isCancelled==true) { %>
-
-                          <% } else if (userOrder.status=="Delivered" ) { %>
-                            <td>
-                              <button class="btn btn-secondary" id="requestReturnOneProduct" onclick="returnOneProduct('<%=item.product._id%>')">return
-                              </button>
-                            </td>
-                            <% } else if (userOrder.status=="Canceled" ||userOrder.status=="Pending Return Request"
-                              ||userOrder.status=="Returned" ) { %>
-
-
-                              <% } else { %>
-                                <td class="action" data-title="Remove">
-                                  <a href="#"
-                                    onclick="cancelOneProduct('<%=item.product._id%>','<%=userOrder.userId._id%>','<%= userOrder._id%>')"
-                                    class="text-muted"><i class="fi-rs-trash"></i>
-                                  </a>
-                                </td>
-
-                                <% } %>
-                      </tr>
-                      <% }); %>
-                        <tr>
-                          <th>Coupon Discount</th>
-                          <td colspan="3" class="font-xl text-brand fw-900">
-                            <%= userOrder.couponDiscount %>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>Total</th>
-                          <td colspan="3" class="product-subtotal">
-                            <span class="font-xl text-brand fw-900">
-                              <%= userOrder.totalAmount %>
-                            </span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th>Status</th>
-                          <td colspan="6" class="status">
-                            <span class="font-xl text-brand fw-900">
-                              <%= userOrder.status %>
-                            </span>
-                          </td>
-                        </tr>
-
-                        <% } else { %>
-                          <tr>
-                            <td colspan="5" class="text-center">No products in the order.</td>
-                          </tr>
-                          <% } %>
-            </tbody>
-          </table>
+      </div>
+      <div>
+        <a class="btn btn-success" href="/generate-invoice?id=<%= userOrder._id %>">View Invoice</a>
+      </div>
     </div>
+    <% } %>
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+    <table class="table table-responsive shopping-summery text-center clean">
+      <thead>
+        <tr class="main-heading">
+          <th scope="col">Order ID</th>
+          <th scope="col">Image</th>
+          <th scope="col">Product</th>
+          <th scope="col">Unit Price</th>
+          <th scope="col">Subtotal</th>
+          <th scope="col">Status</th>
+          <th scope="col">Payment</th>
+          <% if (userOrder.status=="Delivered" ) { %>
+          <th scope="col">Return</th>
+          <% } else { %>
+          <th scope="col">Cancel</th>
+          <% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (userOrder && userOrder.items.length > 0) { %>
+
+          <% let allItemsCanceled = userOrder.items.every(item => item.isCancelled) %>
+          <% if (allItemsCanceled || userOrder.status=="Delivered" || userOrder.status=="Returned" || userOrder.status=="Canceled" || userOrder.status=="Pending Return Request" || userOrder.status=="Payment Failed") { %>
+              <!-- Hide the button -->
+          <% } else { %>
+              <button class="btn btn-danger mb-15" onclick="cancelOrder('<%= userOrder._id %>')">Cancel Order</button>
+          <% } %>
+     
+      
+        <% userOrder.items.forEach((item)=> { %>
+        <tr>
+          <td><%= userOrder.orderNumber %></td>
+          <td class="image product-thumbnail">
+            <img src="/uploads/products/<%= item.product.image[1] %>" alt="#" />
+          </td>
+          <td class="product-des product-name">
+            <h5 class="product-name">
+              <a href="shop-product-right.html"><%= item.product.productName %></a>
+            </h5>
+            <br />
+            <p>Quantity:<%= item.quantity %></p>
+            <p>Size:<%= item.size %></p>
+          </td>
+          <td><%= item.product.sellingPrice %></td>
+          <td><%= item.price %></td>
+          <td>
+            <% if (item.isCancelled==true) { %>
+            Canceled
+            <% } else if (item.isReturned==true) { %>
+            Returned
+            <% } else if (userOrder.status=="Delivered" ) { %>
+            Delivered
+            <% } else if (userOrder.status=="Pending" ) { %>
+            Pending
+            <% } else if (userOrder.status=="Canceled" ) { %>
+            Cancelled
+            <% } else if (userOrder.status=="Returned" ) { %>
+            Returned
+            <% } else { %>
+            Confirmed
+            <% } %>
+          </td>
+          <td><%= userOrder.payment %></td>
+          <% if (item.isCancelled==true||item.isReturned==true) { %>
+          <% } else if (userOrder.status=="Delivered" ) { %>
+          <td>
+            <button class="btn btn-secondary" id="requestReturnOneProduct" onclick="returnOneProduct('<%=item.product._id%>')">Return</button>
+          </td>
+          <% } else if (userOrder.status=="Canceled" ||userOrder.status=="Pending Return Request" ||userOrder.status=="Returned" ||userOrder.status=="Payment Failed" ) { %>
+          <% } else { %>
+          <td class="action" data-title="Remove">
+            <a href="#" onclick="cancelOneProduct('<%=item.product._id%>','<%=userOrder.userId._id%>','<%= userOrder._id%>')"
+              class="text-muted"><i class="fi-rs-trash"></i></a>
+          </td>
+          <% } %>
+        </tr>
+        <% }); %>
+        <tr>
+          <th>Coupon Discount</th>
+          <td colspan="3" class="font-xl text-brand fw-900"><%= userOrder.couponDiscount %></td>
+        </tr>
+        <tr>
+          <th>Total</th>
+          <td colspan="3" class="product-subtotal"><span class="font-xl text-brand fw-900"><%= userOrder.totalAmount %></span></td>
+        </tr>
+        <tr>
+          <th>Status</th>
+          <td colspan="6" class="status">
+            <% if (userOrder.items.some(item=> item.isReturned == true)) { %>
+            order Returned
+            <% } else if (userOrder.items.some(item=> item.isCancelled == true)) { %>
+            order Canceled
+            <% } else { %>
+            <span class="font-xl text-brand fw-900"><%= userOrder.status %></span>
+            <% } %>
+          </td>
+        </tr>
+        <% } else { %>
+        <tr>
+          <td colspan="5" class="text-center">No products in the order.</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
   </div>
+    <% if (userOrder.status=="Payment Failed" ) { %>
+    <div class="d-flex justify-content-center">
+      <button class="btn btn-success" onclick="rePayment('<%=userOrder._id %>')">Re-Payment</button>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+
   <%- include("../partilas/userfooter") -%>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
     <script>
@@ -379,7 +361,7 @@
           }
         });
       }
-  
+
       function returnOneProduct(orderItemId) {
         // alert(orderItemId)
         Swal.fire({
@@ -393,17 +375,17 @@
             const userOrderId = "<%= userOrder._id%>";
 
             const ReasonValue = result.value;
-            console.log("Other reason:",ReasonValue);
+            console.log("Other reason:", ReasonValue);
             $.ajax({
               url: "/returnOneProduct",
               method: "post",
               data: {
                 reason: ReasonValue,
                 userOrder: userOrderId,
-                itemProductId:orderItemId
+                itemProductId: orderItemId
               },
               success: (response) => {
-                if (response.status==true) {
+                if (response.status == true) {
                   Swal.fire({
                     title: "<span style='color: red;'>success</span>",
                     html: "<span style='color: blue;'>Your Return Request Placed</span>",
@@ -414,7 +396,7 @@
                     window.location.reload();
                   }, 2000);
                 }
-              },error:(xhr,status,error)=>{
+              }, error: (xhr, status, error) => {
                 Swal.fire({
                   title: "<span style='color: red;'>Error</span>",
                   html: "<span style='color: blue;'>An error occurred while returning the order</span>",
@@ -427,7 +409,116 @@
 
         })
       }
-      
+      function rePayment(orderId) {
+        alert("hi");
+        $.ajax({
+          url: `/rePayment?id=${orderId}`,
+          method: "post",
+          success: (response) => {
+            if (response.status == true) {
+              alert(response.CartData)
+              razorPayPayment(response.generateRazor,response.userOrder,response.CartData)
+            }
+          },
+          error: (xhr, status, error) => {
+            // Handle error response here
+          }
+        });
+      }
+      function razorPayPayment(RazorPayOrderID, userOrder,CartData) {
+        alert("hi it fromo the paymet")
+                const amount = RazorPayOrderID.amount;
+                const userOrderId = RazorPayOrderID.receipt;
+                const razorPayOrderId = RazorPayOrderID.id;
+                // alert(razorPayOrderId);
+                // alert(amount);
+                // alert(userOrderId);
+                // alert(user);
+                // alert(user.username);
+                var options = {
+                    "key": "rzp_test_SWPaqecbwGGJZa",
+                    "amount": amount,
+                    "currency": "INR",
+                    "name": "Duck & Wave",
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": razorPayOrderId,
+                    "handler": function (response) {
+                        $.ajax({
+                            url: "/razorPayVerify",
+                            method: "post",
+                            data: {
+                                response: response,
+                                razorPayOrderId: razorPayOrderId,
+                                userOrder: userOrder,
+                                cartId:CartData
+                            },
+                            success: function (data) {
+                                if (data.status) {
+
+                                    location.href = "/orderSuccess"
+                                } else {
+                                    Swal.fire({
+                                        title: "<span style='color: red;'>payment filed</span>",
+                                        html: data.error,
+                                        icon: "error",
+                                        timer: 3000
+                                    });
+                                    setTimeout(() => {
+                                        location.href = "/cart"
+                                    }, 3100);
+                                }
+                            }
+                            ,
+                            error: function (error) {
+                                console.error("Error in AJAX call");
+                                console.error(error);
+                                alert("Error");
+                            }
+                        });
+                    },
+                    "prefill": {
+                        "name":"",
+                        "email": "",
+                        "contact":""
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#095a40"
+                    }
+                };
+
+                var rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function (response) {
+                    $.ajax({
+                        url: "/razorapayFailed",
+                        method: "post",
+                        data: {
+                            userOrder: userOrder
+                        }, success: ((response) => {
+
+                        })
+                    })
+
+                    // alert(response.error.code);
+                    // alert(response.error.description);
+                    // alert(response.error.source);
+                    // alert(response.error.step);
+                    // alert(response.error.reason);
+                    // alert(response.error.metadata.order_id);
+                    // alert(response.error.metadata.payment_id);
+
+                    // Swal.fire({
+                    //     title: "<span style='color: red;'>payment filed</span>",
+                    //     html: response.error.reason,
+                    //     icon: "error",
+                    //     timer: 3000
+                    // });
+                });
+                rzp1.open();
+            }
 
 
     </script>

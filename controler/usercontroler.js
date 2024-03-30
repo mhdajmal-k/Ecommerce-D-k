@@ -436,22 +436,20 @@ const browsCategory = async (req, res) => {
     console.log(req.query);
     const { categoryId,filter } = req.query;
     const { skip, page, pageSize, totalPage } = await pagination(req, res);
-    let categorySort
+    let categorySort;
     if(filter != ""&&categoryId!=""){ 
+      console.log("hihih");
       if(filter == 'lowtohigh'){
         categorySort = await product.find({ categoryId: categoryId }).sort({ sellingPrice: 1 })
         .skip(skip)
         .limit(pageSize);;
       }
       if(filter == 'highToLow'){
+        console.log("inside the HightoLow");
         categorySort = await product.find({ categoryId: categoryId }).sort({ sellingPrice: -1 })
         .skip(skip)
         .limit(pageSize);;
-      }
-      if(filter == 'highToLow'){
-        categorySort = await product.find({ categoryId: categoryId }).sort({ sellingPrice: -1 })
-        .skip(skip)
-        .limit(pageSize);;
+        console.log(categorySort);
       }
       if(filter == 'newArrival'){
         categorySort = await product.find({ categoryId: categoryId }).sort({
@@ -479,13 +477,9 @@ const browsCategory = async (req, res) => {
         categorySort = await product.find({ categoryId: categoryId })
       }
     }else{
+      console.log("inside");
       if(filter == 'lowtohigh'){
         categorySort = await product.find().sort({ sellingPrice: 1 })
-        .skip(skip)
-        .limit(pageSize);;
-      }
-      if(filter == 'highToLow'){
-        categorySort = await product.find().sort({ sellingPrice: -1 })
         .skip(skip)
         .limit(pageSize);;
       }
@@ -518,6 +512,8 @@ const browsCategory = async (req, res) => {
       }
     }
     const categories = await category.find();
+    console.log("///////////////////////////////////");
+    console.log(categorySort,"it inside ");
     res.render("shop", {
       product: categorySort,
       totalPage,

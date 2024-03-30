@@ -34,7 +34,6 @@ const verify_login = async (req, res) => {
       if (adminPassword) {
         req.session.admin = adminEmail._id;
         req.session.adminOn = true;
-
         res.redirect("/admin/dashboard");
       } else {
         res.render("adminLogin", { message: "password is incorrect!" });
@@ -57,14 +56,14 @@ const Dashboard_load = async (req, res) => {
     const orders = await Order.find({
       status: { $in: ["Delivered", "Confirmed"] },
     }).countDocuments();
-    console.log(orders,"it orderssssssssssssssssssss");
+    console.log(orders, "it orderssssssssssssssssssss");
     const productCont = await Product.find({
       isBlocked: "false",
     }).countDocuments();
     const categories = await Category.find({ isList: "true" }).countDocuments();
     const totalSale = await Order.aggregate([
       {
-        $match: { status:  { $in: ["Delivered", "Confirmed"] } },
+        $match: { status: { $in: ["Delivered", "Confirmed"] } },
       },
       { $group: { _id: null, total: { $sum: "$totalAmount" } } },
     ]);
@@ -78,7 +77,7 @@ const Dashboard_load = async (req, res) => {
     const monthlySales = await Order.aggregate([
       {
         $match: {
-          status:  { $in: ["Delivered", "Confirmed"] },
+          status: { $in: ["Delivered", "Confirmed"] },
           orderDate: { $gte: startOfMonth, $lte: endOfMonth },
         },
       },
@@ -125,7 +124,6 @@ const Dashboard_load = async (req, res) => {
     const productDetails = await Product.find({
       _id: { $in: bestSellingProduct },
     }).populate("categoryId");
-
     //top selling category
     const topSellingCategories = await Product.aggregate([
       {
@@ -149,7 +147,6 @@ const Dashboard_load = async (req, res) => {
 
     // Weekly chart
     const notification = await Notification.find({});
-
     const topCategory = await category.find({ _id: topSellingCategories });
     res.render("adminDashboard", {
       orders,
@@ -168,7 +165,9 @@ const Dashboard_load = async (req, res) => {
 
 const loadChart = async (req, res) => {
   try {
-    let newOrder = await Order.find({ status:{ $in: ["Delivered", "Confirmed"] }});
+    let newOrder = await Order.find({
+      status: { $in: ["Delivered", "Confirmed"] },
+    });
     function countOrdersByDay(orders) {
       const ordersCountByDay = {
         Sunday: 0,
@@ -179,12 +178,9 @@ const loadChart = async (req, res) => {
         Friday: 0,
         Saturday: 0,
       };
-
       orders.forEach((order) => {
         const orderDate = new Date(order.orderDate);
-
         const dayOfWeek = orderDate.getDay();
-
         switch (dayOfWeek) {
           case 0:
             ordersCountByDay["Sunday"]++;
@@ -211,7 +207,6 @@ const loadChart = async (req, res) => {
             break;
         }
       });
-
       return ordersCountByDay;
     }
     ordersCountForCurrentWeekByDay = countOrdersByDay(newOrder);
@@ -230,25 +225,17 @@ const loadChart = async (req, res) => {
         November: 0,
         December: 0,
       };
-
       orders.forEach((order) => {
         const orderDate = new Date(order.orderDate);
         const monthName = new Intl.DateTimeFormat("en-US", {
           month: "long",
         }).format(orderDate);
-         // Get month name
-         console.log(monthName,"it monthName");
-
-        // Increment the count for the month
+        console.log(monthName, "it monthName");
         ordersCountByMonth[monthName]++;
       });
 
       return ordersCountByMonth;
     }
-
-    // Count of orders for each month
-
-    // Count of orders for each month
     const ordersCountForCurrentYearByMonth = countOrdersByMonth(newOrder);
     function calculateRevenueByMonth(orders) {
       const revenueByMonth = {
@@ -265,33 +252,26 @@ const loadChart = async (req, res) => {
         November: 0,
         December: 0,
       };
-
       orders.forEach((order) => {
         const orderDate = new Date(order.orderDate);
         const monthName = new Intl.DateTimeFormat("en-US", {
           month: "long",
         }).format(orderDate); // Get month name
-
         // Check if the order is delivered
         if (order.status === "Delivered") {
           // Add the total amount to the revenue for the month
           revenueByMonth[monthName] += order.totalAmount;
         }
       });
-
       return revenueByMonth;
     }
-
     // Revenue of orders delivered for each month
     const revenueForCurrentYearByMonth = calculateRevenueByMonth(newOrder);
-
-    res
-      .status(200)
-      .json({
-        dataCurrentWeek: ordersCountForCurrentWeekByDay,
-        dataCurrentYear: ordersCountForCurrentYearByMonth,
-        revenueCurrentYear: revenueForCurrentYearByMonth,
-      });
+    res.status(200).json({
+      dataCurrentWeek: ordersCountForCurrentWeekByDay,
+      dataCurrentYear: ordersCountForCurrentYearByMonth,
+      revenueCurrentYear: revenueForCurrentYearByMonth,
+    });
   } catch (error) {}
 };
 
@@ -306,7 +286,6 @@ const userLoad = async (req, res) => {
     const skip = (page - 1) * size;
     const totalPage = Math.ceil(userCount / size);
     const userData = await user.find({}).skip(skip).limit(size);
-
     res.render("usersList", {
       users: userData,
       currentPage: page,
@@ -344,18 +323,25 @@ const userBlockUnblock = async (req, res) => {
 
 const load_saleReport = async (req, res) => {
   try {
-    console.log("hi");
     const salereport = await Order.find({ status: { $in: ["Delivered"] } })
       .populate("userId")
       .populate("items.product");
     console.log(salereport, "its wind");
     const overallSalesCount = salereport.length;
-    const overallOrderAmount = salereport.reduce((total, order) => total + order.totalAmount, 0);
-    const overallDiscount = salereport.reduce((total, order) => total + order.couponDiscount, 0);
-    console.log(overallSalesCount);
-    console.log(overallOrderAmount);
-    console.log(overallDiscount);
-    res.render("salereport", { salereport,overallSalesCount,overallOrderAmount,overallDiscount });
+    const overallOrderAmount = salereport.reduce(
+      (total, order) => total + order.totalAmount,
+      0
+    );
+    const overallDiscount = salereport.reduce(
+      (total, order) => total + order.couponDiscount,
+      0
+    );
+    res.render("salereport", {
+      salereport,
+      overallSalesCount,
+      overallOrderAmount,
+      overallDiscount,
+    });
   } catch (error) {
     console.log(error);
   }
@@ -366,9 +352,9 @@ const load_saleReport = async (req, res) => {
 ////////////////////////sorting Sales Report
 const sortSalesReport = async (req, res) => {
   try {
-    console.log(req.query)
-    const { sortby, date,startDate, endDate } = req.query;
-    
+    console.log(req.query);
+    const { sortby, date, startDate, endDate } = req.query;
+
     let SaleData;
 
     switch (sortby) {
@@ -452,27 +438,26 @@ const sortSalesReport = async (req, res) => {
           .populate("userId")
           .populate("items.product");
         break;
-        
-        case "customPeriod":
-        
-          const startCustomDate = new Date(startDate);
-          console.log(startDate);
-          console.log(startCustomDate);
-          const endCustomDate = new Date(endDate);
-          SaleData = await Order.find({
-            status: "Delivered",
-            orderDate: { $gte: startCustomDate, $lte: endCustomDate },
-          })
-            .populate("userId")
-            .populate("items.product");
-          break;
-        default:
-          return res.status(400).json({ message: "Invalid sortby parameter" });
-      }
-      console.log(SaleData,"it sales data");
-      res.json({ saleData: SaleData });
+      case "customPeriod":
+        const startCustomDate = new Date(startDate);
+        console.log(startDate);
+        console.log(startCustomDate);
+        const endCustomDate = new Date(endDate);
+        SaleData = await Order.find({
+          status: "Delivered",
+          orderDate: { $gte: startCustomDate, $lte: endCustomDate },
+        })
+          .populate("userId")
+          .populate("items.product");
+        break;
+      default:
+        return res.status(400).json({ message: "Invalid sortby parameter" });
+    }
+    console.log(SaleData, "it sales data");
+    res.json({ saleData: SaleData });
   } catch (error) {
     console.log(error);
+     res.status(500).json({ message: "Internal server error" });
   }
 };
 /////////////////////////////////////
@@ -481,11 +466,9 @@ const sortSalesReport = async (req, res) => {
 
 const load_review = async (req, res) => {
   try {
-    console.log("hi");
     const review = await Reviews.find({})
       .populate("productId")
       .populate("userId");
-    console.log(review, "it reviwe");
     res.render("reviews", { review });
   } catch (error) {
     console.log(error);

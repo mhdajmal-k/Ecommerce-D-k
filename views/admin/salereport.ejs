@@ -67,7 +67,7 @@
           </tr>
           <% } %>
         </tbody>
-        <tfoot>
+        <tfoot id="tableFooter">
           <tr>
             <td colspan="4"></td>
             <td colspan="2"><strong>Overall Sales Count:</strong></td>
@@ -262,6 +262,7 @@ periodSubmit.addEventListener("click", () => {
         axios.get(`/admin/sortSalesReport?sortby=customPeriod&startDate=${startDate}&endDate=${endDate}`)
             .then((response) => {
                 const data = response.data.saleData;
+
                 appendingData(data);
             })
             .catch((error) => {
@@ -293,33 +294,69 @@ periodSubmit.addEventListener("click", () => {
 
 
     function appendingData(data) {
+  const tableBody = document.getElementById('salesTableBody');
+  const tableFooter = document.getElementById("tableFooter");
+  tableBody.innerHTML = '';
+  tableFooter.innerHTML = "";
 
-      const tableBody = document.getElementById('salesTableBody');
-      tableBody.innerHTML = '';
+  let overallSalesCount = 0;
+  let overallOrderAmount = 0;
+  let overallDiscount = 0;
 
-      if (data && data.length > 0) {
-        data.forEach(order => {
-          order.items.forEach(item => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                        <td>${new Date(order.orderDate).toLocaleDateString()}</td>
-                        <td>${order.orderNumber}</td>
-                        <td>${order.userId.username}</td>
-                        <td>${item.product.productName}</td>
-                        <td>${item.quantity}</td>
-                        <td>${item.price}</td>
-                        <td>${order.couponDiscount}</td>
-                        <td>${item.quantity * item.price}</td>
-                    `;
-            tableBody.appendChild(row);
-          });
-        });
-      } else {
+  if (data && data.length > 0) {
+    data.forEach(order => {
+      order.items.forEach(item => {
         const row = document.createElement('tr');
-        row.innerHTML = '<td colspan="8" class="text-center">No sales data</td>';
+        row.innerHTML = `
+          <td>${new Date(order.orderDate).toLocaleDateString()}</td>
+          <td>${order.orderNumber}</td>
+          <td>${order.userId.username}</td>
+          <td>${item.product.productName}</td>
+          <td>${item.quantity}</td>
+          <td>${item.price}</td>
+          <td>${order.couponDiscount}</td>
+          <td>${item.quantity * item.price}</td>
+        `;
         tableBody.appendChild(row);
-      }
-    }
+
+        // Update overall values
+        overallSalesCount++;
+        overallOrderAmount += item.quantity * item.price;
+        overallDiscount += order.couponDiscount;
+      });
+    });
+  } else {
+    const row = document.createElement('tr');
+    row.innerHTML = '<td colspan="8" class="text-center">No sales data</td>';
+    tableBody.appendChild(row);
+  }
+
+  // Append footer data
+  const footerRow1 = document.createElement('tr');
+  footerRow1.innerHTML = `
+    <td colspan="4"></td>
+    <td colspan="2"><strong>Overall Sales Count:</strong></td>
+    <td colspan="2"><strong>${overallSalesCount}</strong></td>
+  `;
+  tableFooter.appendChild(footerRow1);
+
+  const footerRow2 = document.createElement('tr');
+  footerRow2.innerHTML = `
+    <td colspan="4"></td>
+    <td colspan="2"><strong>Overall Order Amount:</strong></td>
+    <td colspan="2"><strong>${overallOrderAmount}</strong></td>
+  `;
+  tableFooter.appendChild(footerRow2);
+
+  const footerRow3 = document.createElement('tr');
+  footerRow3.innerHTML = `
+    <td colspan="4"></td>
+    <td colspan="2"><strong>Overall Discount:</strong></td>
+    <td colspan="2"><strong>${overallDiscount}</strong></td>
+  `;
+  tableFooter.appendChild(footerRow3);
+}
+
 
     document.querySelector("#toExcel").addEventListener("click", () => {
       const table = document.getElementById("salesTable");
