@@ -1,9 +1,9 @@
-﻿<style>
+﻿<!-- <style>
     
   input[type="radio"] {
     transform: scale(0.4);
   }
-</style>
+</style> -->
 <%- include ("../partilas/userheader") -%>
     <div class="mobile-header-active mobile-header-wrapper-style">
         <div class="mobile-header-wrapper-inner">
@@ -245,7 +245,7 @@
                                                 <tr>
                                                     <th>SubTotal</th>
                                                     <td class="product-subtotal" colspan="3">
-                                                        <%= userCart.total %>
+                                                        <%=userCart.total %>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -292,7 +292,8 @@
                                                         <div class="form-group col-lg-6">
                                                             <button class="btn btn-sm" class="fi-rs-label mr-10"
                                                                 id="apply<%=i%>" style="display: inline-block;"
-                                                                onclick="applyCoupon('<%=coupons[i]._id%>','<%=coupons[i].couponDiscount%>','<%=coupons[i].maximumDiscount%>','<%=i%>')">Apply</button>
+
+                                                                onclick="applyCoupon('<%=coupons[i]._id%>','<%=coupons[i].couponDiscount%>','<%=coupons[i].maximumDiscount%>','<%=i%>','<%= coupons[i].minimumPrice %>')">Apply</button>
                                                             <button class="btn btn-danger" id="remove<%=i%>"
                                                                 style="display: none;"
                                                                 onclick="removeCoupon('<%=coupons[i]._id%>','<%=coupons[i].couponDiscount%>','<%=coupons[i].maximumDiscount%>','<%=i%>')">Remove</button>
@@ -442,18 +443,23 @@
 
             const discountAmount = document.getElementById("discountAmount");
             const orderTotal = document.getElementById("orderTotal");
-            const subTotal = orderTotal.innerHTML
+            const subTotal = orderTotal.innerHTML.trim()
+
 
 
             /////////////////////////////////////accessing local storage value/////////////////////////////////
 
             document.addEventListener("DOMContentLoaded", function () {
-
-                console.log(couponId, "its coupon id");
                 const data = localStorage.getItem("coupon")
                 coupon_data = JSON.parse(data);
-                
                 if (localStorage.getItem("coupon")) {
+                    if(coupon_data.minimumPrice>subTotal){
+                        alert("responce")
+                        couponApplied = false
+                    localStorage.removeItem('coupon');
+                    return
+                    }
+                  
                     if (coupon_data.maximumDiscountValue) {
                         discountAmount.innerHTML = coupon_data.maximumDiscountValue
                         orderTotal.innerText = orderTotal.innerHTML - coupon_data.maximumDiscountValue
@@ -528,7 +534,7 @@
             })
             //////////////////////////////////APPLYING COUPON////////////////////////////////////////////
 
-            function applyCoupon(id, couponDiscount, maximumDiscount, index) {
+            function applyCoupon(id, couponDiscount, maximumDiscount, index,minimumPrice) {
                 if (couponApplied == true) {
                     Swal.fire({
                         title: "<span style='color: red;'>Coupon Already applied</span>",
@@ -542,10 +548,13 @@
                 const couponDiscountValue = parseInt(couponDiscount);
                 const Discount = Math.round((total * couponDiscountValue) / 100);
                 const maximumDiscountValue = parseInt(maximumDiscount);
+
+               
                 if (Discount > maximumDiscountValue) {
                     orderTotal.innerText = total - maximumDiscountValue;
                     discountAmount.innerText = maximumDiscountValue;
-                    const obj = { maximumDiscountValue, id, index }
+                    const obj = { maximumDiscountValue, id, index,minimumPrice}
+                    console.log(obj)
                     localStorage.setItem('coupon', JSON.stringify(obj))
                     const Toast = Swal.mixin({
                         toast: true,
@@ -584,7 +593,7 @@
                         icon: "success",
                         title: "Coupon Applied"
                     })
-                    const obj = { Discount, id, index }
+                    const obj = { Discount, id, index,minimumPrice }
                     localStorage.setItem('coupon', JSON.stringify(obj))
                     ////////////////////////////UI CHANGING//////////////////////////
                     document.getElementById("remove" + index).style.display = "inline-block"
@@ -907,6 +916,7 @@
                                         timer: 1000,
                                     });
                                 }
+                            
                                 setTimeout(() => {
                                     location.href = "/checkOut"
                                 }, 1200);

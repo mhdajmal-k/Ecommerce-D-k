@@ -367,19 +367,16 @@ const forgotPassword = async (req, res) => {
     const { email } = req.body;
     console.log(email);
     const existingUser = await user.findOne({ email: email });
-    console.log(existingUser, "its existing user");
     if (existingUser) {
       const forgotPassword_OTP = await generateOTP(6);
       console.log(forgotPassword_OTP, "its the forgot password otp");
       req.session.forgotPassword_OTP = forgotPassword_OTP;
       req.session.forgotPassword_email = email;
       const a = await sendMail(email, forgotPassword_OTP);
-      console.log("success");
       res.redirect("/forgotPassword_verify");
     } else {
       res.render("forgotPassword", { message: "invalid email please sign up" });
     }
-    // render('verifyForgotPassword')
   } catch (error) {
     console.log(error.message);
   }
@@ -437,7 +434,7 @@ const browsCategory = async (req, res) => {
     const { categoryId,filter } = req.query;
     const { skip, page, pageSize, totalPage } = await pagination(req, res);
     let categorySort;
-    if(filter != ""&&categoryId!=""){ 
+    if(filter !=""&&categoryId!=""){ 
       console.log("hihih");
       if(filter == 'lowtohigh'){
         categorySort = await product.find({ categoryId: categoryId }).sort({ sellingPrice: 1 })
@@ -600,10 +597,8 @@ const submitReview = async (req, res) => {
 //////////////////////////////////////////
  const removeFromWishList=async(req,res)=>{
   try {
-  
     const {userId}=req.session
     const{productId}=req.body
-;
     const userWishlist=await wishList.findOneAndUpdate({userId:userId},{$pull:{items:{productId:productId}}})
     if(userWishlist){
       res.json({status:true})

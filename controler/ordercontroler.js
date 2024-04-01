@@ -152,6 +152,14 @@ const place_Order = async (req, res) => {
       return;
     }
     if (paymentOption == "wallet") {
+     
+      console.log("inside");
+      const wallet = await Wallet.findOne({ user: userId });
+      console.log(wallet);
+      if (!wallet) {
+        res.json({ status: "no wallet" });
+        return;
+      }
       const order = orderCreation(
         userAddress,
         user,
@@ -161,18 +169,11 @@ const place_Order = async (req, res) => {
         paymentOption,
         couponAmount
       );
-      const createOrder = await Order.create(order);
-      console.log("inside");
-      const wallet = await Wallet.findOne({ user: userId });
-      console.log(wallet);
-      if (!wallet) {
-        res.json({ status: "no wallet" });
-        return;
-      }
-      if (createOrder.totalAmount > wallet.balance) {
+      if (order.totalAmount > wallet.balance) {
         res.json({ status: "low balance" });
         return;
       }
+      const createOrder = await Order.create(order);
       await cart.findByIdAndDelete({ _id: cartId });
       for (const orderedProduct of createOrder.items) {
         const orderedProductId = orderedProduct.product;
@@ -367,6 +368,7 @@ const cancelOneProduct = async (req, res) => {
     const productIndex = userOrders.items.findIndex(
       (item) => item.product._id.toString() === productId.toString()
     );
+  
     userOrders.items[productIndex].isCancelled = true;
     const price = userOrders.items[productIndex].price;
     const orderedSize = userOrders.items[productIndex].size;
@@ -374,21 +376,30 @@ const cancelOneProduct = async (req, res) => {
     // userOrders.totalAmount -= price;
     await userOrders.save();
     if (userOrders.payment == "razorPay" || userOrders.payment == "wallet") {
+      const totalOrderProduct = userOrders.items.length;
+      console.log(totalOrderProduct);
+      let amountToRefund = price;
+      if (userOrders.couponDiscount) {
+        const discountPerProduct = Math.ceil(
+          userOrders.couponDiscount / totalOrderProduct
+        );
 
+        amountToRefund -= discountPerProduct;
+      }
       const user = userOrders.userId;
       let UserWallet = await Wallet.findOne({ user: user });
       if (!UserWallet) {
         UserWallet = new Wallet({
           user: userOrders.userId,
-          balance: price,
+          balance: amountToRefund,
           transactions: [],
         });
       } else {
-        UserWallet.balance += price;
+        UserWallet.balance += amountToRefund;
       }
       const transaction = new Transaction({
         user: userOrders.userId,
-        amount: price,
+        amount: amountToRefund,
         type: "refund",
         description: "refund money for you Cancelled One product",
       });

@@ -9,16 +9,22 @@ const { promisify } = require("util");
 const randomId = require("../controler/helper/randomId");
 const unlinkAsync = promisify(fs.unlink);
 const path = require("path");
-const { log } = require("console");
+const { log, count } = require("console");
 const { render } = require("../router/admin_routers");
 
 //product page
 
 const load_products = async (req, res) => {
   try {
-    const productData = await product.find({}).populate("categoryId");
+    const page = req.query.page || 1;
+    const limit = 8;
+    const skip = (page - 1) * limit;
+    const productCount = await product.find({ isBlocked: false }).countDocuments();
+    const totalPage = Math.ceil(productCount / limit);
+    const productData = await product.find({}).populate("categoryId").skip(skip).limit(limit);
 
-    res.render("productList", { products: productData });
+    res.render("productList", { products: productData,totalPage,
+      currentPage: page });
   } catch (error) {
     console.log(error.message);
   }
@@ -265,15 +271,25 @@ const delete_image = async (req, res) => {
   }
 };
 
-const productOffer=async(req,res)=>{
+const productOffer = async (req, res) => {
   try {
-    console.log("hi");
-    const allProduct=await product.find({isBlocked:false})
-   res.render("productOffer",{allProduct})
+    const page = req.query.page || 1;
+    const limit = 8;
+    const skip = (page - 1) * limit;
+    const productCount = await product.find({ isBlocked: false }).countDocuments();
+    const totalPage = Math.ceil(productCount / limit);
+    const allProduct = await product.find({ isBlocked: false }).skip(skip).limit(limit)
+    res.render("productOffer", {
+      allProduct,
+      totalPage,
+      currentPage: page
+    });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
   }
-}
+};
+
 
 const addingOffer = async (req, res) => {
   try {

@@ -1,7 +1,7 @@
 <%- include ("../partilas/admin") -%>
 <div class="container mt-4">
     <h1>Ratings</h1>
-    <div class="table-responsive">
+    <div class="table-responsive container">
         <table class="table table-bordered table-hover">
             <thead class="thead-dark">
                 <tr>
@@ -13,21 +13,33 @@
                 </tr>
             </thead>
             <tbody>
-                <% review.forEach(function(rating) { %>
+                <% if (review.length>0) { %>
+                 
+                    <% review.forEach(function(rating) { %>
+                        <tr>
+                            <td><%= rating.productId.productName %></td>
+                            <td>
+                                <% if (rating.userId && rating.userId.username) { %>
+                                    <%= rating.userId.username %>
+                                <% } else { %>
+                                    N/A
+                                <% } %>
+                            </td>
+                            <td><%= rating.rating %></td>
+                            <td><%= rating.review %></td>
+                            <td><%= rating.createdAt.toLocaleString() %></td>
+                        </tr>
+                    <% }); %>
+              
+                <% } else { %>
+                 
                     <tr>
-                        <td><%= rating.productId.productName %></td>
-                        <td>
-                            <% if (rating.userId && rating.userId.username) { %>
-                                <%= rating.userId.username %>
-                            <% } else { %>
-                                N/A
-                            <% } %>
-                        </td>
-                        <td><%= rating.rating %></td>
-                        <td><%= rating.review %></td>
-                        <td><%= rating.createdAt.toLocaleString() %></td>
+                        <td colspan="5" class="text-center">No Review</td>
                     </tr>
-                <% }); %>
+                <% } %>
+               
+                
+                
             </tbody>
             
         </table>
