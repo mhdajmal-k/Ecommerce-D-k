@@ -5,7 +5,7 @@ const order = require("../model/order_model");
 const { session } = require("passport");
 const { json } = require("express");
 const securePassword = require("../controler/helper/securingPassword");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const coupon = require("../model/coupon");
 const Wallet = require("../model/wallet");
 
