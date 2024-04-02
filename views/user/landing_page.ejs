@@ -284,10 +284,26 @@
                                                         <span>90%</span>
                                                     </span> -->
                                                 </div>
-                                                <div class="product-price">
+                                                <% if (products[i].sellingPrice  === products[i].price) { %>
+                                                    <div class="product-price">
+                                                
+                                                        <span>RS <%=products[i].sellingPrice %> </span>
+                                                        
+                                                    </div>
+                                                        <% } else { %>
+                                                         
+                                                            <div class="product-price">
+                                                
+                                                                <span>RS <%=products[i].sellingPrice %> </span>
+                                                                <span class="old-price">
+                                                                    <%= products[i].price%>
+                                                                </span>
+                                                            </div>
+                                                <% } %>
+                                                <!-- <div class="product-price">
                                                     <span>RS <%= products[i].sellingPrice %></span>
                                                     <span class="old-price"><%= products[i].price %></span>
-                                                </div>
+                                                </div> -->
                                             </div>
                                         </div>
                                     </div>
@@ -406,10 +422,23 @@
                                                     <span>90%</span>
                                                 </span> -->
                                             </div>
-                                            <div class="product-price">
-                                                <span>RS <%= newArrival[i].sellingPrice %></span>
-                                                <span class="old-price"><%= newArrival[i].price %></span>
-                                            </div>
+                                            <% if (newArrival[i].sellingPrice  === newArrival[i].price) { %>
+                                                <div class="product-price">
+                                            
+                                                    <span>RS <%=newArrival[i].sellingPrice %> </span>
+                                                    
+                                                </div>
+                                                    <% } else { %>
+                                                     
+                                                        <div class="product-price">
+                                            
+                                                            <span>RS <%=newArrival[i].sellingPrice %> </span>
+                                                            <span class="old-price">
+                                                                <%= newArrival[i].price%>
+                                                            </span>
+                                                        </div>
+                                            <% } %>
+                                          
                                         </div>
                                     </div>
                                 </div>
