@@ -65,6 +65,7 @@ app.use((err, req, res, next) => {
     res.sendFile(path.join(__dirname,"500.html"))
 });
 
+console.log("HELLO AJMAL")
 
 ///////port
  const port=process.env.port||3001
