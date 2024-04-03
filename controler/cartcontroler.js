@@ -40,11 +40,39 @@ const load_cart = async (req, res) => {
       userCart.items.splice(carts, 1);
       cartsInd.forEach((el) => el--);
     });
-    userCart.save();
+
+    // Save the modified userCart only once after all modifications
+    await userCart.save();
     console.log(userCart, "llllllllllllllllllllllllllll");
   }
+
   if (userCart) {
+    let newTotal=0
+    const cartData=[]
+    userCart.items.forEach(item=>{
+    cartData.push(item.productId.sellingPrice)
+
+    })
+    console.log(cartData,"it cartData");
+    for(let i=0;i<userCart.items.length;i++){
+      if(cartData[i]*userCart.items[i].quantity!==userCart.items[i].subTotal){
+        userCart.items[i].subTotal=cartData[i]*userCart.items[i].quantity
+       
+     
+      
+      }
+
+    }
+    await userCart.save();
+    let total = 0;
+    userCart.items.forEach((element) => {
+      total += element.subTotal;
+    });
+    userCart.total=total
+    await userCart.save();
     const productIdsInCart = userCart.items.map((item) => item.productId._id);
+    console.log(productIdsInCart);
+  
     const randomProduct = await product.aggregate([
       { $match: { _id: { $nin: productIdsInCart } } },
       { $sample: { size: 4 } },
@@ -54,6 +82,7 @@ const load_cart = async (req, res) => {
     res.render("cart", { cart: null, relatedProducts: [] });
   }
 };
+
 ///////////////////////////////////
 
 
