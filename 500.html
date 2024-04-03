@@ -267,7 +267,14 @@ body div#error p span:after {
         <div id="box"></div>
         <h3>ERROR 500</h3>
         <p>Things are a little <span>unstable</span> here</p>
-        <p>I suggest come back later</p>
+        <p >I suggest come back later</p>
+        <button id="back"> Back</button>
       </div>
 </body>
+<script>
+  const back=document.getElementById("back")
+back.addEventListener("click",()=>{
+  window.history.back()
+})
+</script>
 </html>
