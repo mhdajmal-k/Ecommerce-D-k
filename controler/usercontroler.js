@@ -437,35 +437,39 @@ const browsCategory = async (req, res) => {
     if(filter !=""&&categoryId!=""){ 
       console.log("hihih");
       if(filter == 'lowtohigh'){
+        console.log("inside the low to high");
         categorySort = await product.find({ categoryId: categoryId }).sort({ sellingPrice: 1 })
         .skip(skip)
         .limit(pageSize);;
-      }
-      if(filter == 'highToLow'){
+        console.log(categorySort );
+      }else if(filter == 'highToLow'){
         console.log("inside the HightoLow");
         categorySort = await product.find({ categoryId: categoryId }).sort({ sellingPrice: -1 })
         .skip(skip)
         .limit(pageSize);;
         console.log(categorySort);
-      }
-      if(filter == 'newArrival'){
+      }else if(filter == 'newArrival'){
+        console.log("inside the arrival");
         categorySort = await product.find({ categoryId: categoryId }).sort({
           createdAt: -1,
         })
         .skip(skip)
         .limit(pageSize);;
-      }
-      if(filter == 'averageRating'){
+      }else if(filter == 'averageRating'){
+        console.log("inside the rat");
+
         categorySort = await product.find({ categoryId: categoryId }).sort({rating:-1})
         .skip(skip)
         .limit(pageSize);;
-      }
-      if(filter == 'accedingOrder'){
+      }else if(filter == 'accedingOrder'){
+        console.log("inside the asce");
+
         categorySort = await product.find({ categoryId: categoryId }).sort({ productName: 1 })
         .skip(skip)
         .limit(pageSize);;
-      }
-      if(filter == 'descendingOrder'){
+      }else if(filter == 'descendingOrder'){
+        console.log("inside the desc");
+
         categorySort = await product.find({ categoryId: categoryId }) .sort({ productName: -1 })
         .skip(skip)
         .limit(pageSize);;
@@ -476,6 +480,7 @@ const browsCategory = async (req, res) => {
     }else{
       console.log("inside");
       if(filter == 'lowtohigh'){
+        console.log("LOWTO HIGH");
         categorySort = await product.find().sort({ sellingPrice: 1 })
         .skip(skip)
         .limit(pageSize);;
