@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dkwave-depl
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+     app: dkwave
+  template:
+    metadata:
+      labels:
+        app: dkwave
+    spec:
+     containers:
+        - name: dkwave
+          image: mhdajmal/duckandwave       
+     

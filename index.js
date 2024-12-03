@@ -68,7 +68,8 @@ app.use((err, req, res, next) => {
 console.log("HELLO AJMAL")
 
 ///////port
- const port=process.env.port||3001
+ const port=3000
+//  process.env.port
 app.listen(port,()=>{
     console.log(`server is ready${port}`)
 })

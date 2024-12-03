@@ -617,7 +617,7 @@ const submitReview = async (req, res) => {
 
 
  const add_ToWishlist = async (req, res) => {
-    try {
+    try { 
         const { productId } = req.body;
         const { userId } = req.session;
         if (!userId) {

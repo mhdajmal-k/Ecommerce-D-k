@@ -410,7 +410,7 @@
                 productId:productId
             },success:(response)=>{
             
-                if(response.status=="invalid User"){
+                if(response.status=="invalid User"){ 
                     window.location.href = "/login"
                 }else if(response.status=="add to wishlist"){
                     const Toast = Swal.mixin({

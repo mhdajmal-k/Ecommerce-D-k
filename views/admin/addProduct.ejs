@@ -324,16 +324,12 @@
         //     imagePreviews.innerHTML = '';
         //     imagePreviewContainer.style.display = 'none';
         // });
-
         let selectedFiles = [];
-
         imageInput.addEventListener('change', function (event) {
         const files = event.target.files;
-
         if (files) {
             imagePreviews.innerHTML = '';
             selectedFiles = Array.from(files);
-
             selectedFiles.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = function (e) {
@@ -354,12 +350,10 @@
                     
                         imageInput.files = remainingFileList.files;
                     }); 
-
                     imagePreviews.appendChild(imgElement);
                 };
                 reader.readAsDataURL(file);
             });
-
             imagePreviewContainer.style.display = 'block';
         }
     });
