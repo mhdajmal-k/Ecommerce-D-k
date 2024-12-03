@@ -6,6 +6,10 @@
 Duck and Wave is an e-commerce platform specializing in a wide range of lifestyle products, providing users with a seamless shopping experience. The platform allows customers to browse an extensive product catalog, view detailed descriptions, and make secure purchases effortlessly. Duck and Wave is designed to combine convenience with reliability, featuring intuitive navigation, advanced search options, and a secure checkout system.
 
 ---
+## 📸 UI Screenshot
+Here’s a screenshot of the UI interface:
+![UI Screenshot](https://github.com/mhdajmal-k/Ecommerce-D-k/blob/main/public/assets/imgs/home/dkimage.png?raw=true)
+
 
 ## 🚀 Features
 
