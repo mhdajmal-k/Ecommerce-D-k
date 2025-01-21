@@ -18,7 +18,6 @@ const login_load = async (req, res) => {
   try {
     res.render("adminLogin");
   } catch (error) {
-    console.log(error.message + "from herer");
   }
 };
 ////////////////////////////////////////////////////////
@@ -230,7 +229,7 @@ const loadChart = async (req, res) => {
         const monthName = new Intl.DateTimeFormat("en-US", {
           month: "long",
         }).format(orderDate);
-        console.log(monthName, "it monthName");
+
         ordersCountByMonth[monthName]++;
       });
 
@@ -272,7 +271,7 @@ const loadChart = async (req, res) => {
       dataCurrentYear: ordersCountForCurrentYearByMonth,
       revenueCurrentYear: revenueForCurrentYearByMonth,
     });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 ///////////////////////////////////
@@ -406,7 +405,7 @@ const sortSalesReport = async (req, res) => {
         })
           .populate("userId")
           .populate("items.product");
-        console.log(SaleData);
+
         break;
       case "yearly":
         const startOfYear = new Date(new Date().getFullYear(), 0, 1);
@@ -440,8 +439,7 @@ const sortSalesReport = async (req, res) => {
         break;
       case "customPeriod":
         const startCustomDate = new Date(startDate);
-        console.log(startDate);
-        console.log(startCustomDate);
+
         const endCustomDate = new Date(endDate);
         SaleData = await Order.find({
           status: "Delivered",
@@ -457,7 +455,7 @@ const sortSalesReport = async (req, res) => {
     res.json({ saleData: SaleData });
   } catch (error) {
     console.log(error);
-     res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 /////////////////////////////////////

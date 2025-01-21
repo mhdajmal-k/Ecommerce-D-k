@@ -8,26 +8,7 @@
 
         </div>
         <div class="card mb-4">
-            <header class="card-header">
-                <div class="row gx-3">
 
-                    <div class="col-lg-2 col-6 col-md-3">
-                        <select class="form-select">
-                            <option>Status</option>
-                            <option>Active</option>
-                            <option>Disabled</option>
-                            <option>Show all</option>
-                        </select>
-                    </div>
-                    <!-- <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Show 20</option>
-                                <option>Show 30</option>
-                                <option>Show 40</option>
-                            </select>
-                        </div>
-                    </div> -->
-            </header> <!-- card-header end// -->
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -81,37 +62,37 @@
                                                                         <td><span
                                                                                 class="badge bg-danger">Canceled</span>
                                                                         </td>
-                                                                    <% } else if (orderData.status=="shipped" ) { %>
-                                                                        <td><span
-                                                                                class="badge bg-light">Shipped</span>
-                                                                        </td>
-                                                                        <% } else { %>
+                                                                        <% } else if (orderData.status=="shipped" ) { %>
                                                                             <td><span
-                                                                                    class="badge bg-secondary text-white">Pending
-                                                                                    Return Request</span></td>
-                                                                            <% } %>
+                                                                                    class="badge bg-light">Shipped</span>
+                                                                            </td>
+                                                                            <% } else { %>
+                                                                                <td><span
+                                                                                        class="badge bg-secondary text-white">Pending
+                                                                                        Return Request</span></td>
+                                                                                <% } %>
 
 
 
-                                                                                <td>
-                                                                                    <%= orderData.orderDate %>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <%= orderData.payment %>
-                                                                                </td>
-                                                                                <td class="text-end">
-                                                                                    <a
-                                                                                        href="/admin/orderDetails?orderId=<%=orderData._id%>">
-                                                                                        <button
-                                                                                            class="btn btn-secondary"
-                                                                                            type="button"
-                                                                                            data-bs-toggle="dropdown"
-                                                                                            aria-expanded="false">
-                                                                                            Details
-                                                                                        </button>
-                                                                                    </a>
+                                                                                    <td>
+                                                                                        <%= orderData.orderDate %>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <%= orderData.payment %>
+                                                                                    </td>
+                                                                                    <td class="text-end">
+                                                                                        <a
+                                                                                            href="/admin/orderDetails?orderId=<%=orderData._id%>">
+                                                                                            <button
+                                                                                                class="btn btn-secondary"
+                                                                                                type="button"
+                                                                                                data-bs-toggle="dropdown"
+                                                                                                aria-expanded="false">
+                                                                                                Details
+                                                                                            </button>
+                                                                                        </a>
 
-                                                                                </td>
+                                                                                    </td>
                                         </tr>
                                         <% } } else { %>
                                             <tr>

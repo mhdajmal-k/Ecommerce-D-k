@@ -21,45 +21,44 @@
     <main>
         <header class="main-header style-2 navbar">
             <div class="col-brand">
-                
+
             </div>
-            <div class="col-nav">
+            <!-- <div class="col-nav">
                 <ul class="nav">
+
                     <li class="nav-item">
-                        <a class="nav-link btn-icon" href="#">
-                            <i class="material-icons md-notifications animation-shake"></i>
-                            <span class="badge rounded-pill">3</span>
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
                     </li>
                     <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
-                            <a class="dropdown-item text-brand" href="#"><img src="/asset/imgs/theme/flag-us.png" alt="English">English</a>
-                            <a class="dropdown-item" href="#"><img src="/asset/imgs/theme/flag-fr.png" alt="Français">Français</a>
-                            <a class="dropdown-item" href="#"><img src="/asset/imgs/theme/flag-jp.png" alt="Français">日本語</a>
-                            <a class="dropdown-item" href="#"><img src="/asset/imgs/theme/flag-cn.png" alt="Français">中国人</a>
-                        </div>
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage"
+                            aria-expanded="false"><i class="material-icons md-public"></i></a>
                     </li>
                     <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/asset/imgs/people/avatar2.jpg" alt="User"></a>
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
+                            aria-expanded="false"> <img class="img-xs rounded-circle"
+                                src="/asset/imgs/people/avatar2.jpg" alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit
+                                Profile</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account
+                                Settings</a>
+                            <a class="dropdown-item" href="#"><i
+                                    class="material-icons md-account_balance_wallet"></i>Wallet</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
-                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help
+                                center</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            <a class="dropdown-item text-danger" href="#"><i
+                                    class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
                 </ul>
-            </div>
+            </div> -->
         </header>
         <section class="content-main mt-80 mb-80">
             <div class="card mx-auto card-login">
@@ -68,29 +67,31 @@
                     <form action="/admin" method="post">
                         <div class="mb-3">
                             <!-- dont forgot to remove value -->
-                            <input class="form-control" placeholder="email"  name="email" type="text" value="admin@gmail.com">
+                            <input class="form-control" placeholder="email" name="email" type="text" value="">
                         </div> <!-- form-group// -->
                         <div class="mb-3">
-                            <input class="form-control" placeholder="Password" name="password" type="password" value="Admin@123">
+                            <input class="form-control" placeholder="Password" name="password" type="password" value="">
                         </div> <!-- form-group// -->
-                
+
                         <div class="mb-4">
                             <button type="submit" class="btn btn-primary w-100"> Login </button>
                             <% if (locals.message) { %>
-                                <p id="erromMessage" class="text-danger text-center"><%= message %></p>
-                             
-                            <% } %>
+                                <p id="erromMessage" class="text-danger text-center">
+                                    <%= message %>
+                                </p>
+
+                                <% } %>
                         </div> <!-- form-group// -->
                     </form>
-                
-                
+
+
                 </div>
             </div>
         </section>
         <footer class="main-footer text-center">
             <p class="font-xs">
                 <script>
-                document.write(new Date().getFullYear())
+                    document.write(new Date().getFullYear())
                 </script> ©,d&K
             </p>
             <p class="font-xs mb-30">All rights reserved</p>
@@ -101,12 +102,12 @@
     <script src="/asset/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="/asset/js/main.js" type="text/javascript"></script>
-   
+
 </body>
-<script> 
-setTimeout(()=>{
-document.getElementById("erromMessage").style.display="none"
-},2000)
+<script>
+    setTimeout(() => {
+        document.getElementById("erromMessage").style.display = "none"
+    }, 2000)
 </script>
 
 </html>

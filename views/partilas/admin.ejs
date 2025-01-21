@@ -16,18 +16,20 @@
     <!-- Template CSS -->
     <link href="/asset/css/main.css" rel="stylesheet" type="text/css" />
 
- 
-        
-        
+
+
+
 </head>
 
 <body>
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
-            <a href="/"><span style="font-size: 40px; font-weight: bolder; color: red;">Duck & wave</span></a>
+            <a href="/admin/Dashboard"><span style="font-size: 40px; font-weight: bolder; color: red;">Duck &
+                    wave</span></a>
             <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
             </div>
         </div>
         <nav>
@@ -52,7 +54,7 @@
                     <a class="menu-link" href="/admin/listOrders"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
-                 
+
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="/admin/Dashboard"> <i class="icon material-icons md-store"></i>
@@ -61,7 +63,7 @@
                     <div class="submenu">
                         <a href="/admin/product-Offer">Product Offer</a>
                         <a href="/admin/category-Offer">Category Offer</a>
-                     
+
                     </div>
                 </li>
                 <li class="menu-item">
@@ -75,12 +77,12 @@
                         <a href="page-form-product-4.html">Add product 4</a>
                     </div> -->
                 </li>
-            
+
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/userLoad"> <i class="icon material-icons md-person"></i>
                         <span class="text">Users</span>
                     </a>
-                    
+
                 </li>
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/Reviews"> <i class="icon material-icons md-comment"></i>
@@ -91,14 +93,15 @@
                     <a href="/admin/category" class="menu-link"> <i class="icon material-icons md-stars"></i>
                         <span class="text">Category</span>
                     </a>
-                            
+
                 </li>
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-redeem"></i>
                         <span class="text">Coupons</span> </a>
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" disabled href="/admin/salereport"> <i class="icon material-icons md-pie_chart"></i>
+                    <a class="menu-link" disabled href="/admin/salereport"> <i
+                            class="icon material-icons md-pie_chart"></i>
                         <span class="text">Sale Report</span>
                     </a>
                 </li>
@@ -130,7 +133,8 @@
                 <form class="searchform">
                     <div class="input-group">
                         <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                        <button class="btn btn-light bg" type="button"> <i
+                                class="material-icons md-search"></i></button>
                     </div>
                     <datalist id="search_terms">
                         <option value="Products">
@@ -141,23 +145,28 @@
                 </form>
             </div>
             <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i
+                        class="material-icons md-apps"></i> </button>
                 <ul class="nav">
                     <li class="nav-item">
                         <a class="nav-link btn-icon" href="#" data-toggle="modal" data-target="#notificationModal">
                             <i class="material-icons md-notifications animation-shake" id="notifications"></i>
                             <% if (locals.notification) { %>
-                                <span class="badge rounded-pill"> <%= notification.length %></span>
-                              <% if (notification.length>0) { %>
-                               
-                                <textarea id="textToSpeech" readonly>you have new <%= notification.length %> notification</textarea>
-                              <% } %>
-                            <% } %>
+                                <span class="badge rounded-pill">
+                                    <%= notification.length %>
+                                </span>
+                                <% if (notification.length>0) { %>
+
+                                    <textarea id="textToSpeech"
+                                        readonly>you have new <%= notification.length %> notification</textarea>
+                                    <% } %>
+                                        <% } %>
                         </a>
                     </li>
-                    
+
                     <!-- Modal -->
-                    <div class="modal fade" id="notificationModal" tabindex="-1" role="dialog" aria-labelledby="notificationModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="notificationModal" tabindex="-1" role="dialog"
+                        aria-labelledby="notificationModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -167,34 +176,40 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <% if (locals.notification && locals.notification.length > 0) { %>
+                                    <% if (locals.notification && locals.notification.length> 0) { %>
                                         <ul>
                                             <% locals.notification.forEach(function(notification) { %>
                                                 <% notification.messages.forEach(function(message) { %>
-                                                    <li><%= message.message %></li>
+                                                    <li>
+                                                        <%= message.message %>
+                                                    </li>
                                                     <input type="hidden" class="orderId" value="<%= message.orderId %>">
-                                                    <button class="btn btn-light notificatonViewd" data-notification-id="<%= notification._id %>" data-message-id="<%= message._id %>">View</button>
-                                                <% }); %>
-                                            <% }); %>
+                                                    <button class="btn btn-light notificatonViewd"
+                                                        data-notification-id="<%= notification._id %>"
+                                                        data-message-id="<%= message._id %>">View</button>
+                                                    <% }); %>
+                                                        <% }); %>
                                         </ul>
-                                    <% } else { %>
-                                        <p>No notifications</p>
-                                    <% } %>
+                                        <% } else { %>
+                                            <p>No notifications</p>
+                                            <% } %>
                                 </div>
-                                
-                                
+
+
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i>
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i
+                                class="material-icons md-cast"></i></a>
                     </li>
                     <!-- <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
@@ -206,50 +221,53 @@
                         </div>
                     </li> -->
                     <li class="dropdown nav-item">
-                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src="/asset/imgs/people/avatar2.jpg" alt="User"></a>
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
+                            aria-expanded="false"> <img class="img-xs rounded-circle"
+                                src="/asset/imgs/people/avatar2.jpg" alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
-            
-                            <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
+
+                            <a class="dropdown-item text-danger" href="/admin/logout"><i
+                                    class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
                 </ul>
             </div>
         </header>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script>
-     const notificationButtons = document.querySelectorAll(".notificatonViewd");
-    
- 
-        const textToSpeech = document.getElementById("textToSpeech");
-        textToSpeech.addEventListener("click", () => {
-            let speech = new SpeechSynthesisUtterance(textToSpeech.value);
-            window.speechSynthesis.speak(speech);
-        });
-    
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script>
+            const notificationButtons = document.querySelectorAll(".notificatonViewd");
 
 
-notificationButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        const notificationId = button.getAttribute("data-notification-id");
-        const messageId = button.getAttribute("data-message-id");
-        const orderId = button.previousElementSibling.value; 
+            const textToSpeech = document.getElementById("textToSpeech");
+            textToSpeech.addEventListener("click", () => {
+                let speech = new SpeechSynthesisUtterance(textToSpeech.value);
+                window.speechSynthesis.speak(speech);
+            });
 
-        $.ajax({
-            url: "/admin/notificationViewed",
-            method: "POST",
-            data: { notificationId: notificationId, messageId: messageId },
-            success: function(response) {
-                if (response.status == true) {
-                    window.location.href = `/admin/orderDetails?orderId=${orderId}`;
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error(error);
-            }
-        });
-    });
-});
-</script>
+
+
+            notificationButtons.forEach(button => {
+                button.addEventListener("click", () => {
+                    const notificationId = button.getAttribute("data-notification-id");
+                    const messageId = button.getAttribute("data-message-id");
+                    const orderId = button.previousElementSibling.value;
+
+                    $.ajax({
+                        url: "/admin/notificationViewed",
+                        method: "POST",
+                        data: { notificationId: notificationId, messageId: messageId },
+                        success: function (response) {
+                            if (response.status == true) {
+                                window.location.href = `/admin/orderDetails?orderId=${orderId}`;
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                });
+            });
+        </script>
